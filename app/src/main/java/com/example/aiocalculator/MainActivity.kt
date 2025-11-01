@@ -7,10 +7,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.aiocalculator.ui.navigation.BottomNavigationBar
+import com.example.aiocalculator.ui.navigation.NavigationGraph
+import com.example.aiocalculator.ui.navigation.Screen
 import com.example.aiocalculator.ui.theme.AIOCalculatorTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +23,39 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AIOCalculatorTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                MainScreen()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun MainScreen() {
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AIOCalculatorTheme {
-        Greeting("Android")
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            // Show bottom navigation only for main screens
+            if (currentRoute in listOf(
+                    Screen.Home.route,
+                    Screen.Calculators.route,
+                    Screen.History.route,
+                    Screen.Settings.route
+                )
+            ) {
+                BottomNavigationBar(
+                    navController = navController,
+                    currentRoute = currentRoute
+                )
+            }
+        }
+    ) { innerPadding ->
+        NavigationGraph(
+            navController = navController,
+            startDestination = Screen.Home.route
+        )
     }
 }
