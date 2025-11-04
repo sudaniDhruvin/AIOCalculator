@@ -15,6 +15,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.example.aiocalculator.R
 
 data class SettingsItem(
     val id: String,
@@ -33,28 +36,28 @@ fun SettingsScreen(
             id = "1",
             title = "Share App",
             iconName = "share",
-            color = "#4CAF50", // Light green
+            color = "#E8F5E9", // Very light green
             onClick = { /* Handle share app */ }
         ),
         SettingsItem(
             id = "2",
             title = "Rate App",
             iconName = "rate",
-            color = "#2196F3", // Light blue
+            color = "#E3F2FD", // Very light blue
             onClick = { /* Handle rate app */ }
         ),
         SettingsItem(
             id = "3",
             title = "Privacy Policy",
             iconName = "privacy",
-            color = "#795548", // Brown
+            color = "#EFEBE9", // Very light brown/maroon
             onClick = { /* Handle privacy policy */ }
         ),
         SettingsItem(
             id = "4",
             title = "More App",
             iconName = "more",
-            color = "#FF9800", // Orange
+            color = "#FFF3E0", // Very light orange
             onClick = { /* Handle more app */ }
         )
     )
@@ -62,7 +65,7 @@ fun SettingsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(Color(0xFFFAFAFA)) // Off-white background
     ) {
         // Blue Header
         HeaderSection()
@@ -72,7 +75,7 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp, vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp) // Increased spacing between cards
         ) {
             settingsItems.forEach { item ->
                 SettingsItemCard(
@@ -122,30 +125,29 @@ fun SettingsItemCard(
             .fillMaxWidth()
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), // Subtle shadow
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = 16.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Icon on the left
+            // Icon on the left - rounded square with light color
             Box(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(48.dp)
                     .background(
                         color = Color(android.graphics.Color.parseColor(item.color)),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(10.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = getIconForSettingsItem(item.iconName),
+                Image(
+                    painter = painterResource(id = getIconResourceForSettingsItem(item.iconName)),
                     contentDescription = item.title,
-                    tint = Color.White,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(24.dp)
                 )
             }
             
@@ -155,16 +157,16 @@ fun SettingsItemCard(
             Text(
                 text = item.title,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Normal,
                 color = Color.Black,
                 modifier = Modifier.weight(1f)
             )
             
             // Chevron arrow on the right
             Icon(
-                imageVector = Icons.Default.Check,
+                imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = "Navigate",
-                tint = Color.Gray,
+                tint = Color.Black,
                 modifier = Modifier.size(20.dp)
             )
         }
@@ -179,5 +181,15 @@ fun getIconForSettingsItem(iconName: String): ImageVector {
         "privacy" -> Icons.Default.Lock // Lock/Shield icon for privacy
         "more" -> Icons.Default.Home // Grid icon for more
         else -> Icons.Default.Settings
+    }
+}
+
+fun getIconResourceForSettingsItem(iconName: String): Int {
+    return when (iconName) {
+        "share" -> R.drawable.share
+        "rate" -> R.drawable.rate
+        "privacy" -> R.drawable.privacy
+        "more" -> R.drawable.more
+        else -> R.drawable.settings
     }
 }

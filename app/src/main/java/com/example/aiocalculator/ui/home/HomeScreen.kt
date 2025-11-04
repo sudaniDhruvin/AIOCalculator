@@ -26,6 +26,9 @@ import androidx.compose.ui.unit.sp
 import com.example.aiocalculator.data.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.example.aiocalculator.R
 
 @Composable
 fun HomeScreen(
@@ -212,10 +215,9 @@ fun FeaturedToolCard(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = getIconForTool(tool.iconName),
+                Image(
+                    painter = painterResource(id = getIconResourceForTool(tool.iconName)),
                     contentDescription = tool.name,
-                    tint = Color.White,
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -336,10 +338,9 @@ fun RecentCalculationCard(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = getIconForTool(calculation.iconName),
+                Image(
+                    painter = painterResource(id = getIconResourceForTool(calculation.iconName)),
                     contentDescription = calculation.calculatorType,
-                    tint = Color.White,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -383,6 +384,18 @@ fun getIconForTool(iconName: String): ImageVector {
         "ic_gst_vat" -> Icons.Default.Home
         "ic_other_calculators" -> Icons.Default.Home
         else -> Icons.Default.Home
+    }
+}
+
+fun getIconResourceForTool(iconName: String): Int {
+    return when (iconName) {
+        "ic_emi_calculator" -> R.drawable.white_dollar_cal
+        "ic_sip_calculator" -> R.drawable.white_cal
+        "ic_loan_calculator" -> R.drawable.loan_percent
+        "ic_bank_calculator" -> R.drawable.home_percent
+        "ic_gst_vat" -> R.drawable.gst_percent
+        "ic_other_calculators" -> R.drawable.calculator
+        else -> R.drawable.calculator
     }
 }
 

@@ -17,6 +17,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.example.aiocalculator.R
 
 data class CalculatorItem(
     val id: String,
@@ -174,10 +177,9 @@ fun CalculatorCard(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = getIconForCalculator(calculator.iconName),
+                Image(
+                    painter = painterResource(id = getIconResourceForCalculator(calculator.iconName)),
                     contentDescription = calculator.name,
-                    tint = Color.White,
                     modifier = Modifier.size(18.dp)
                 )
             }
@@ -232,6 +234,35 @@ fun getIconForCalculator(iconName: String): ImageVector {
         "cash_note_counter" -> Icons.Default.Home
         "charging_time" -> Icons.Default.Home
         else -> Icons.Default.Home
+    }
+}
+
+fun getIconResourceForCalculator(iconName: String): Int {
+    return when (iconName) {
+        "emi_calculator" -> R.drawable.loan
+        "quick_calculator" -> R.drawable.cal
+        "advance_emi" -> R.drawable.advance
+        "compare_loans" -> R.drawable.compare
+        "sip_calculator" -> R.drawable.sip_cal
+        "quick_sip" -> R.drawable.white_quick_sip
+        "advance_sip" -> R.drawable.advance_sip
+        "compare_sip" -> R.drawable.compare_sip
+        "swp_calculator" -> R.drawable.swp
+        "stp_calculator" -> R.drawable.stp
+        "loan_profile" -> R.drawable.loan_profile
+        "prepayment_roi" -> R.drawable.roi_change
+        "check_eligibility" -> R.drawable.check_eligibility
+        "moratorium" -> R.drawable.moratorium
+        "fd_calculator" -> R.drawable.fd_cal
+        "rd_calculator" -> R.drawable.rd_cal
+        "ppf_calculator" -> R.drawable.ppf_cal
+        "simple_interest" -> R.drawable.simple_interest
+        "gst_calculator" -> R.drawable.gst
+        "vat_calculator" -> R.drawable.vat
+        "discount_calculator" -> R.drawable.discount
+        "cash_note_counter" -> R.drawable.cash_note
+        "charging_time" -> R.drawable.charging
+        else -> R.drawable.calculator
     }
 }
 
