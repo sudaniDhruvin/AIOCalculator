@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,7 +51,7 @@ fun HomeScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(Color(0xFFFAFAFA)) // Off-white background
     ) {
         // Header Section
         item {
@@ -147,12 +148,12 @@ fun FeaturedToolsSection(
         // Use Column with Row instead of LazyVerticalGrid to avoid nested lazy lists
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp) // Increased spacing
         ) {
             // First row of 3 items
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp) // Match vertical spacing
             ) {
                 tools.take(3).forEach { tool ->
                     FeaturedToolCard(
@@ -167,7 +168,7 @@ fun FeaturedToolsSection(
             if (tools.size > 3) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(16.dp) // Match vertical spacing
                 ) {
                     tools.drop(3).take(3).forEach { tool ->
                         FeaturedToolCard(
@@ -188,13 +189,16 @@ fun FeaturedToolCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val iconColor = Color(android.graphics.Color.parseColor(tool.color))
+    val lightCardColor = lightenColorForCard(iconColor)
+    
     Card(
         modifier = modifier
             .height(140.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), // Subtle shadow
+        colors = CardDefaults.cardColors(containerColor = lightCardColor) // Light version of icon color
     ) {
         Column(
             modifier = Modifier
@@ -210,7 +214,7 @@ fun FeaturedToolCard(
                 modifier = Modifier
                     .size(56.dp)
                     .background(
-                        color = Color(android.graphics.Color.parseColor(tool.color)),
+                        color = iconColor,
                         shape = RoundedCornerShape(10.dp)
                     ),
                 contentAlignment = Alignment.Center
@@ -218,7 +222,7 @@ fun FeaturedToolCard(
                 Image(
                     painter = painterResource(id = getIconResourceForTool(tool.iconName)),
                     contentDescription = tool.name,
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(24.dp)
                 )
             }
             
@@ -234,7 +238,7 @@ fun FeaturedToolCard(
                 Text(
                     text = formatToolName(tool.name),
                     fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Normal,
                     color = Color.Black,
                     textAlign = TextAlign.Center,
                     maxLines = 2,
@@ -296,8 +300,8 @@ fun RecentCalculationsSection(
 
         // Use Column instead of LazyColumn to avoid nested lazy lists
         Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp) // Increased spacing
         ) {
             calculations.forEach { calculation ->
                 RecentCalculationCard(
@@ -314,13 +318,17 @@ fun RecentCalculationCard(
     calculation: RecentCalculation,
     onClick: () -> Unit
 ) {
+    val baseColor = Color(android.graphics.Color.parseColor(calculation.color))
+    val lightIconContainerColor = lightenIconContainerColor(baseColor) // Light color for container
+    val darkIconColor = darkenIconColor(baseColor) // Dark color for icon
+    
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), // Subtle shadow
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)) // Uniform very light off-white
     ) {
         Row(
             modifier = Modifier
@@ -328,20 +336,22 @@ fun RecentCalculationCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Icon
+            // Icon container with light background
             Box(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(48.dp)
                     .background(
-                        color = Color(android.graphics.Color.parseColor(calculation.color)),
-                        shape = RoundedCornerShape(8.dp)
+                        color = lightIconContainerColor,
+                        shape = RoundedCornerShape(10.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) {
+                // Use Image with colorFilter to tint the icon dark
                 Image(
-                    painter = painterResource(id = getIconResourceForTool(calculation.iconName)),
+                    painter = painterResource(id = getIconResourceForRecentCalculation(calculation.iconName)),
                     contentDescription = calculation.calculatorType,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(24.dp),
+                    colorFilter = ColorFilter.tint(darkIconColor)
                 )
             }
             
@@ -354,7 +364,7 @@ fun RecentCalculationCard(
                 Text(
                     text = calculation.calculatorType,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Bold, // Bold text
                     color = Color.Black
                 )
                 Text(
@@ -364,11 +374,12 @@ fun RecentCalculationCard(
                 )
             }
             
-            // Arrow icon
+            // Chevron arrow icon
             Icon(
-                imageVector = Icons.Default.Check,
+                imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = "Navigate",
-                tint = Color.Gray
+                tint = Color(0xFF616161), // Dark gray
+                modifier = Modifier.size(20.dp)
             )
         }
     }
@@ -391,6 +402,49 @@ fun getIconResourceForTool(iconName: String): Int {
     return when (iconName) {
         "ic_emi_calculator" -> R.drawable.white_dollar_cal
         "ic_sip_calculator" -> R.drawable.white_cal
+        "ic_loan_calculator" -> R.drawable.loan_percent
+        "ic_bank_calculator" -> R.drawable.home_percent
+        "ic_gst_vat" -> R.drawable.gst_percent
+        "ic_other_calculators" -> R.drawable.calculator
+        else -> R.drawable.calculator
+    }
+}
+
+// Helper function to create a very light version of the icon color for card background
+fun lightenColorForCard(color: Color): Color {
+    // Mix with white (90% white, 10% original color) to create a very light tint
+    val lightenFactor = 0.9f
+    val r = (color.red * (1 - lightenFactor) + lightenFactor).coerceIn(0f, 1f)
+    val g = (color.green * (1 - lightenFactor) + lightenFactor).coerceIn(0f, 1f)
+    val b = (color.blue * (1 - lightenFactor) + lightenFactor).coerceIn(0f, 1f)
+    return Color(r, g, b, color.alpha)
+}
+
+// Helper function to create light color for icon container in Recent Calculations
+fun lightenIconContainerColor(color: Color): Color {
+    // Mix with white (70% white, 30% original color) to create a light tint
+    val lightenFactor = 0.7f
+    val r = (color.red * (1 - lightenFactor) + lightenFactor).coerceIn(0f, 1f)
+    val g = (color.green * (1 - lightenFactor) + lightenFactor).coerceIn(0f, 1f)
+    val b = (color.blue * (1 - lightenFactor) + lightenFactor).coerceIn(0f, 1f)
+    return Color(r, g, b, color.alpha)
+}
+
+// Helper function to create dark color for icons in Recent Calculations
+fun darkenIconColor(color: Color): Color {
+    // Darken by reducing brightness (multiply by 0.6)
+    val darkenFactor = 0.6f
+    val r = (color.red * darkenFactor).coerceIn(0f, 1f)
+    val g = (color.green * darkenFactor).coerceIn(0f, 1f)
+    val b = (color.blue * darkenFactor).coerceIn(0f, 1f)
+    return Color(r, g, b, color.alpha)
+}
+
+// Get icon resource for Recent Calculations (using regular icons, not white ones)
+fun getIconResourceForRecentCalculation(iconName: String): Int {
+    return when (iconName) {
+        "ic_emi_calculator" -> R.drawable.calculator // Use regular calculator icon
+        "ic_sip_calculator" -> R.drawable.calculator
         "ic_loan_calculator" -> R.drawable.loan_percent
         "ic_bank_calculator" -> R.drawable.home_percent
         "ic_gst_vat" -> R.drawable.gst_percent
