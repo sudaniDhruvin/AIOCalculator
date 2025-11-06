@@ -34,15 +34,31 @@ object DataRepository {
     fun getBottomNavItems(): List<BottomNavItem> {
         return appData?.bottomNavigationItems ?: emptyList()
     }
+    
+    fun getCalculatorItemsForRoute(route: String): List<CalculatorItemData> {
+        return appData?.featuredTools?.find { it.route == route }?.calculatorItems ?: emptyList()
+    }
+    
+    fun getFeaturedToolByRoute(route: String): FeaturedTool? {
+        return appData?.featuredTools?.find { it.route == route }
+    }
 }
 
 // Data classes for JSON parsing
+data class CalculatorItemData(
+    val id: String,
+    val name: String,
+    @SerializedName("iconName") val iconName: String,
+    val color: String
+)
+
 data class FeaturedTool(
     val id: String,
     val name: String,
     @SerializedName("iconName") val iconName: String,
     val route: String,
-    val color: String
+    val color: String,
+    @SerializedName("calculatorItems") val calculatorItems: List<CalculatorItemData> = emptyList()
 )
 
 data class RecentCalculation(

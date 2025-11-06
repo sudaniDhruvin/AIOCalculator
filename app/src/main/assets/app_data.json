@@ -5,42 +5,192 @@
       "name": "EMI Calculators",
       "iconName": "ic_emi_calculator",
       "route": "/emi_calculator",
-      "color": "#4CAF50"
+      "color": "#4DAE53",
+      "calculatorItems": [
+        {
+          "id": "1",
+          "name": "EMI Calculator",
+          "iconName": "emi_calculator",
+          "color": "#2CBE04"
+        },
+        {
+          "id": "2",
+          "name": "Quick Calculator",
+          "iconName": "quick_calculator",
+          "color": "#FF9800"
+        },
+        {
+          "id": "3",
+          "name": "Advance EMI",
+          "iconName": "advance_emi",
+          "color": "#00BBD5"
+        },
+        {
+          "id": "4",
+          "name": "Compare Loans",
+          "iconName": "compare_loans",
+          "color": "#2395F3"
+        }
+      ]
     },
     {
       "id": "2",
       "name": "SIP Calculators",
       "iconName": "ic_sip_calculator",
       "route": "/sip_calculator",
-      "color": "#FF9800"
+      "color": "#FF9800",
+      "calculatorItems": [
+        {
+          "id": "5",
+          "name": "SIP Calculator",
+          "iconName": "sip_calculator",
+          "color": "#9C27B0"
+        },
+        {
+          "id": "6",
+          "name": "Quick SIP",
+          "iconName": "quick_sip",
+          "color": "#775342"
+        },
+        {
+          "id": "7",
+          "name": "Advance SIP",
+          "iconName": "advance_sip",
+          "color": "#F3235E"
+        },
+        {
+          "id": "8",
+          "name": "Compare SIP",
+          "iconName": "compare_sip",
+          "color": "#422DCE"
+        },
+        {
+          "id": "9",
+          "name": "SWP Calculator",
+          "iconName": "swp_calculator",
+          "color": "#0B8D6E"
+        },
+        {
+          "id": "10",
+          "name": "STP Calculator",
+          "iconName": "stp_calculator",
+          "color": "#2CBE04"
+        }
+      ]
     },
     {
       "id": "3",
       "name": "Loan Calculators",
       "iconName": "ic_loan_calculator",
       "route": "/loan_calculator",
-      "color": "#2196F3"
+      "color": "#00BBD5",
+      "calculatorItems": [
+        {
+          "id": "11",
+          "name": "Pre Payment ROI Change",
+          "iconName": "prepayment_roi",
+          "color": "#00BBD5"
+        },
+        {
+          "id": "12",
+          "name": "Loan Profile",
+          "iconName": "loan_profile",
+          "color": "#FF9800"
+        },
+        {
+          "id": "13",
+          "name": "Moratorium Calculator",
+          "iconName": "moratorium",
+          "color": "#982AAA"
+        },
+        {
+          "id": "14",
+          "name": "Check Eligibility",
+          "iconName": "check_eligibility",
+          "color": "#2395F3"
+        }
+      ]
     },
     {
       "id": "4",
       "name": "Bank Calculators",
       "iconName": "ic_bank_calculator",
       "route": "/bank_calculator",
-      "color": "#3F51B5"
+      "color": "#2395F3",
+      "calculatorItems": [
+        {
+          "id": "15",
+          "name": "FD Calculator",
+          "iconName": "fd_calculator",
+          "color": "#775342"
+        },
+        {
+          "id": "16",
+          "name": "RD Calculator",
+          "iconName": "rd_calculator",
+          "color": "#F3235E"
+        },
+        {
+          "id": "17",
+          "name": "PPF Calculator",
+          "iconName": "ppf_calculator",
+          "color": "#422DCE"
+        },
+        {
+          "id": "18",
+          "name": "Simple Interest",
+          "iconName": "simple_interest",
+          "color": "#0B8D6E"
+        }
+      ]
     },
     {
       "id": "5",
       "name": "GST & VAT",
       "iconName": "ic_gst_vat",
       "route": "/gst_vat_calculator",
-      "color": "#9C27B0"
+      "color": "#982AAA",
+      "calculatorItems": [
+        {
+          "id": "19",
+          "name": "GST Calculator",
+          "iconName": "gst_calculator",
+          "color": "#2CBE04"
+        },
+        {
+          "id": "20",
+          "name": "VAT Calculator",
+          "iconName": "vat_calculator",
+          "color": "#FF9800"
+        }
+      ]
     },
     {
       "id": "6",
       "name": "Other Calculators",
       "iconName": "ic_other_calculators",
       "route": "/other_calculators",
-      "color": "#795548"
+      "color": "#775342",
+      "calculatorItems": [
+        {
+          "id": "21",
+          "name": "Discount Calculator",
+          "iconName": "discount_calculator",
+          "color": "#982AAA"
+        },
+        {
+          "id": "22",
+          "name": "Cash Note Counter",
+          "iconName": "cash_note_counter",
+          "color": "#00BBD5"
+        },
+        {
+          "id": "23",
+          "name": "Charging Time",
+          "iconName": "charging_time",
+          "color": "#775342"
+        }
+      ]
     }
   ],
   "recentCalculations": [
@@ -108,4 +258,3 @@
     }
   ]
 }
-
