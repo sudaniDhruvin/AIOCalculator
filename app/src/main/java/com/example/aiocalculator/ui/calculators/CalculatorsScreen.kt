@@ -5,47 +5,47 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
 import com.example.aiocalculator.R
-
-data class CalculatorItem(
-    val id: String,
-    val name: String,
-    val iconName: String,
-    val color: String
-)
-
-data class CalculatorCategory(
-    val id: String,
-    val title: String,
-    val items: List<CalculatorItem>
-)
+import com.example.aiocalculator.data.DataRepository
+import com.example.aiocalculator.data.CalculatorItemData
 
 @Composable
 fun CalculatorsScreen(
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onCalculatorClick: (String) -> Unit = {}
 ) {
-    val categories = getCalculatorCategories()
+    val context = LocalContext.current
+    var featuredTools by remember { mutableStateOf<List<com.example.aiocalculator.data.FeaturedTool>>(emptyList()) }
+
+    LaunchedEffect(Unit) {
+        val data = DataRepository.loadAppData(context)
+        featuredTools = data.featuredTools
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // Header Section
+        // Header Section - centered "Calculators" text, no back arrow
         HeaderSection()
         
         // Calculators List
@@ -54,12 +54,13 @@ fun CalculatorsScreen(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            categories.forEach { category ->
+            featuredTools.forEach { featuredTool ->
                 item {
                     CalculatorCategorySection(
-                        category = category,
-                        onCalculatorClick = { calculator ->
-                            // Handle calculator click
+                        categoryTitle = featuredTool.name,
+                        calculatorItems = featuredTool.calculatorItems,
+                        onCalculatorClick = { calculatorId ->
+                            onCalculatorClick(calculatorId)
                         }
                     )
                 }
@@ -79,63 +80,102 @@ fun HeaderSection() {
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
-            .background(Color(0xFF2196F3)) // Blue color
+            .background(Color(0xFF2196F3))
     ) {
-        Column(
+        Text(
+            text = "Calculators",
+            color = Color.White,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 20.dp).padding(top = 20.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Calculators",
-                color = Color.White,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
+                .align(Alignment.Center)
+                .padding(top = 20.dp),
+            textAlign = TextAlign.Center
+        )
     }
 }
 
 @Composable
 fun CalculatorCategorySection(
-    category: CalculatorCategory,
-    onCalculatorClick: (CalculatorItem) -> Unit
+    categoryTitle: String,
+    calculatorItems: List<CalculatorItemData>,
+    onCalculatorClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
         // Category Title
         Text(
-            text = category.title,
+            text = categoryTitle,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
             modifier = Modifier.padding(bottom = 12.dp)
         )
         
-        // Calculator Grid
+        // Calculator Grid - use same card design as CommonCalculatorCategoryScreen
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Display calculators in rows of 3
-            category.items.chunked(3).forEach { rowItems ->
+            // Special layout for EMI Calculators (3 cards in first row, 1 in second row)
+            if (categoryTitle == "EMI Calculators" && calculatorItems.size == 4) {
+                // First row with 3 cards
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    rowItems.forEach { calculator ->
+                    calculatorItems.take(3).forEach { calculator ->
                         CalculatorCard(
                             calculator = calculator,
-                            onClick = { onCalculatorClick(calculator) },
+                            onClick = { onCalculatorClick(calculator.id) },
                             modifier = Modifier.weight(1f)
                         )
                     }
-                    // Add empty spaces if row has less than 3 items
-                    repeat(3 - rowItems.size) {
-                        Spacer(modifier = Modifier.weight(1f))
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                // Second row with 1 card - starts at same position as first row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    calculatorItems.drop(3).take(1).forEach { calculator ->
+                        CalculatorCard(
+                            calculator = calculator,
+                            onClick = { onCalculatorClick(calculator.id) },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    
+                    // Add empty spaces to maintain row structure
+                    Spacer(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            } else {
+                // Default layout: Display calculators in rows of 3
+                calculatorItems.chunked(3).forEachIndexed { rowIndex, rowItems ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        rowItems.forEach { calculator ->
+                            CalculatorCard(
+                                calculator = calculator,
+                                onClick = { onCalculatorClick(calculator.id) },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                        // Add empty spaces if row has less than 3 items
+                        repeat(3 - rowItems.size) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+                    
+                    // Add spacing between rows
+                    if (rowIndex < calculatorItems.chunked(3).size - 1) {
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
@@ -145,187 +185,45 @@ fun CalculatorCategorySection(
 
 @Composable
 fun CalculatorCard(
-    calculator: CalculatorItem,
+    calculator: CalculatorItemData,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
             .width(80.dp)
-            .height(85.dp)
+            .height(80.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF7F7F7))
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(vertical = 8.dp, horizontal = 6.dp),
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+            verticalArrangement = Arrangement.Center
         ) {
-            // Icon at top - fixed position
-            Spacer(modifier = Modifier.height(4.dp))
-            
-            Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .background(
-                        color = Color(android.graphics.Color.parseColor(calculator.color)),
-                        shape = RoundedCornerShape(8.dp)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = getIconResourceForCalculator(calculator.iconName)),
-                    contentDescription = calculator.name,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
+            Image(
+                painter = painterResource(id = getWhiteIconResourceForCalculator(calculator.iconName)),
+                contentDescription = calculator.name,
+                modifier = Modifier.size(24.dp)
+            )
             
             Spacer(modifier = Modifier.height(6.dp))
             
-            // Text below icon - fixed height container for consistent alignment
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = calculator.name,
-                    fontSize = 9.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.Black,
-                    maxLines = 2,
-                    lineHeight = 11.sp,
-                    textAlign = TextAlign.Center
-                )
-            }
+            Text(
+                text = calculator.name,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color.Black,
+                textAlign = TextAlign.Center,
+                lineHeight = 14.sp,
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = 3,
+                overflow = TextOverflow.Visible
+            )
         }
     }
-}
-
-@Composable
-fun getIconForCalculator(iconName: String): ImageVector {
-    return when (iconName) {
-        "emi_calculator" -> Icons.Default.Home
-        "quick_calculator" -> Icons.Default.Home
-        "advance_emi" -> Icons.Default.Home
-        "compare_loans" -> Icons.Default.Home
-        "sip_calculator" -> Icons.Default.Home
-        "quick_sip" -> Icons.Default.Home
-        "advance_sip" -> Icons.Default.Home
-        "compare_sip" -> Icons.Default.Home
-        "swp_calculator" -> Icons.Default.Home
-        "stp_calculator" -> Icons.Default.Home
-        "loan_profile" -> Icons.Default.Home
-        "prepayment_roi" -> Icons.Default.Home
-        "check_eligibility" -> Icons.Default.CheckCircle
-        "moratorium" -> Icons.Default.Home
-        "fd_calculator" -> Icons.Default.Lock
-        "rd_calculator" -> Icons.Default.Home
-        "ppf_calculator" -> Icons.Default.Home
-        "simple_interest" -> Icons.Default.Home
-        "gst_calculator" -> Icons.Default.Home
-        "vat_calculator" -> Icons.Default.Home
-        "discount_calculator" -> Icons.Default.Home
-        "cash_note_counter" -> Icons.Default.Home
-        "charging_time" -> Icons.Default.Home
-        else -> Icons.Default.Home
-    }
-}
-
-fun getIconResourceForCalculator(iconName: String): Int {
-    return when (iconName) {
-        "emi_calculator" -> R.drawable.loan
-        "quick_calculator" -> R.drawable.cal
-        "advance_emi" -> R.drawable.advance
-        "compare_loans" -> R.drawable.compare
-        "sip_calculator" -> R.drawable.sip_cal
-        "quick_sip" -> R.drawable.white_quick_sip
-        "advance_sip" -> R.drawable.advance_sip
-        "compare_sip" -> R.drawable.compare_sip
-        "swp_calculator" -> R.drawable.swp
-        "stp_calculator" -> R.drawable.stp
-        "loan_profile" -> R.drawable.loan_profile
-        "prepayment_roi" -> R.drawable.roi_change
-        "check_eligibility" -> R.drawable.check_eligibility
-        "moratorium" -> R.drawable.moratorium
-        "fd_calculator" -> R.drawable.fd_cal
-        "rd_calculator" -> R.drawable.rd_cal
-        "ppf_calculator" -> R.drawable.ppf_cal
-        "simple_interest" -> R.drawable.simple_interest
-        "gst_calculator" -> R.drawable.gst
-        "vat_calculator" -> R.drawable.vat
-        "discount_calculator" -> R.drawable.discount
-        "cash_note_counter" -> R.drawable.cash_note
-        "charging_time" -> R.drawable.charging
-        else -> R.drawable.calculator
-    }
-}
-
-fun getCalculatorCategories(): List<CalculatorCategory> {
-    return listOf(
-        CalculatorCategory(
-            id = "emi",
-            title = "EMI Calculators",
-            items = listOf(
-                CalculatorItem("1", "EMI Calculator", "emi_calculator", "#4CAF50"),
-                CalculatorItem("2", "Quick Calculator", "quick_calculator", "#FF9800"),
-                CalculatorItem("3", "Advance EMI", "advance_emi", "#9C27B0"),
-                CalculatorItem("4", "Compare Loans", "compare_loans", "#2196F3")
-            )
-        ),
-        CalculatorCategory(
-            id = "sip",
-            title = "SIP Calculators",
-            items = listOf(
-                CalculatorItem("5", "SIP Calculator", "sip_calculator", "#9C27B0"),
-                CalculatorItem("6", "Quick SIP Calculator", "quick_sip", "#FF9800"),
-                CalculatorItem("7", "Advance SIP", "advance_sip", "#4CAF50"),
-                CalculatorItem("8", "Compare SIP", "compare_sip", "#2196F3"),
-                CalculatorItem("9", "SWP Calculator", "swp_calculator", "#F44336"),
-                CalculatorItem("10", "STP Calculator", "stp_calculator", "#4CAF50")
-            )
-        ),
-        CalculatorCategory(
-            id = "loan",
-            title = "Loan Calculators",
-            items = listOf(
-                CalculatorItem("11", "Loan Profile", "loan_profile", "#FF9800"),
-                CalculatorItem("12", "Pre Payment ROI Change", "prepayment_roi", "#03A9F4"),
-                CalculatorItem("13", "Check Eligibility", "check_eligibility", "#9C27B0"),
-                CalculatorItem("14", "Moratorium Calculator", "moratorium", "#03A9F4")
-            )
-        ),
-        CalculatorCategory(
-            id = "bank",
-            title = "Bank Calculators",
-            items = listOf(
-                CalculatorItem("15", "FD Calculator", "fd_calculator", "#795548"),
-                CalculatorItem("16", "RD Calculator", "rd_calculator", "#E91E63"),
-                CalculatorItem("17", "PPF Calculator", "ppf_calculator", "#9C27B0"),
-                CalculatorItem("18", "Simple Interest", "simple_interest", "#4CAF50")
-            )
-        ),
-        CalculatorCategory(
-            id = "gst",
-            title = "GST & VAT",
-            items = listOf(
-                CalculatorItem("19", "GST Calculator", "gst_calculator", "#4CAF50"),
-                CalculatorItem("20", "VAT Calculator", "vat_calculator", "#FF9800")
-            )
-        ),
-        CalculatorCategory(
-            id = "other",
-            title = "Other Calculators",
-            items = listOf(
-                CalculatorItem("21", "Discount Calculator", "discount_calculator", "#9C27B0"),
-                CalculatorItem("22", "Cash Note Counter", "cash_note_counter", "#2196F3"),
-                CalculatorItem("23", "Charging Time", "charging_time", "#FF9800")
-            )
-        )
-    )
 }
