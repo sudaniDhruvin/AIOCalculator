@@ -12,6 +12,7 @@ import com.example.aiocalculator.ui.calculators.CommonCalculatorCategoryScreen
 import com.example.aiocalculator.ui.emi.EMICalculatorScreen
 import com.example.aiocalculator.ui.emi.EMIDetailsScreen
 import com.example.aiocalculator.ui.emi.EMIResult
+import com.example.aiocalculator.ui.emi.QuickCalculatorScreen
 import com.example.aiocalculator.ui.history.HistoryScreen
 import com.example.aiocalculator.ui.home.HomeScreen
 import com.example.aiocalculator.ui.settings.SettingsScreen
@@ -36,6 +37,10 @@ sealed class Screen(val route: String) {
     }
     
     object EMIDetails : Screen("emi_details") {
+        fun createRoute() = route
+    }
+    
+    object QuickCalculator : Screen("quick_calculator") {
         fun createRoute() = route
     }
 }
@@ -101,6 +106,10 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                     if (calculatorId == "1") {
                         navController.navigate(Screen.EMICalculator.createRoute())
                     }
+                    // Navigate to Quick Calculator screen when id is "2"
+                    else if (calculatorId == "2") {
+                        navController.navigate(Screen.QuickCalculator.createRoute())
+                    }
                 }
             )
         }
@@ -134,6 +143,12 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                     onBackClick = { navController.popBackStack() }
                 )
             }
+        }
+        
+        composable(Screen.QuickCalculator.createRoute()) {
+            QuickCalculatorScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
         
         composable(Screen.SIPCalculators.route) {
