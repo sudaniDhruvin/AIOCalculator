@@ -9,24 +9,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.aiocalculator.data.*
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.aiocalculator.data.*
+import com.example.aiocalculator.data.local.AppDatabase
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
 import com.example.aiocalculator.R
@@ -39,46 +38,75 @@ fun HomeScreen(
     onViewAllRecent: () -> Unit = {}
 ) {
     val context = LocalContext.current
-    var featuredTools by remember { mutableStateOf<List<FeaturedTool>>(emptyList()) }
-    var recentCalculations by remember { mutableStateOf<List<RecentCalculation>>(emptyList()) }
-
-    LaunchedEffect(Unit) {
-        val data = DataRepository.loadAppData(context)
-        featuredTools = data.featuredTools
-        recentCalculations = data.recentCalculations
+    val viewModel: HomeViewModel = viewModel {
+        val database = AppDatabase.getDatabase(context)
+        val recentCalculationRepository = RecentCalculationRepository(database)
+        HomeViewModel(context, DataRepository, recentCalculationRepository)
     }
+    val uiState by viewModel.uiState.collectAsState()
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFFAFAFA)) // Off-white background
-    ) {
-        // Header Section
-        item {
-            HeaderSection()
+    when {
+        uiState.isLoading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
-
-        // Featured Tools Section
-        item {
-            FeaturedToolsSection(
-                tools = featuredTools,
-                onToolClick = onFeaturedToolClick,
-                onViewAll = onViewAllFeatured
-            )
+        uiState.error != null -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(
+                        text = "Error: ${uiState.error}",
+                        color = MaterialTheme.colorScheme.error
+                    )
+                    Button(onClick = { viewModel.refresh() }) {
+                        Text("Retry")
+                    }
+                }
+            }
         }
+        else -> {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFFAFAFA)) // Off-white background
+            ) {
+                // Header Section
+                item {
+                    HeaderSection()
+                }
 
-        // Recent Calculations Section
-        item {
-            RecentCalculationsSection(
-                calculations = recentCalculations,
-                onCalculationClick = onRecentCalculationClick,
-                onViewAll = onViewAllRecent
-            )
-        }
+                // Featured Tools Section
+                item {
+                    FeaturedToolsSection(
+                        tools = uiState.featuredTools,
+                        onToolClick = onFeaturedToolClick,
+                        onViewAll = onViewAllFeatured
+                    )
+                }
 
-        // Bottom padding for navigation bar
-        item {
-            Spacer(modifier = Modifier.height(80.dp))
+                // Recent Calculations Section
+                item {
+                    RecentCalculationsSection(
+                        calculations = uiState.recentCalculations,
+                        onCalculationClick = onRecentCalculationClick,
+                        onViewAll = onViewAllRecent
+                    )
+                }
+
+                // Bottom padding for navigation bar
+                item {
+                    Spacer(modifier = Modifier.height(80.dp))
+                }
+            }
         }
     }
 }
@@ -288,26 +316,57 @@ fun RecentCalculationsSection(
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
-            Text(
-                text = "View All",
-                fontSize = 14.sp,
-                color = Color.Gray,
-                modifier = Modifier.clickable { onViewAll() }
-            )
+            if (calculations.isNotEmpty()) {
+                Text(
+                    text = "View All",
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    modifier = Modifier.clickable { onViewAll() }
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Use Column instead of LazyColumn to avoid nested lazy lists
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp) // Increased spacing
-        ) {
-            calculations.forEach { calculation ->
-                RecentCalculationCard(
-                    calculation = calculation,
-                    onClick = { onCalculationClick(calculation.detailsRoute) }
-                )
+        // Show empty state if no calculations
+        if (calculations.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 48.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    // Empty state icon - composite icon showing calculator, document, and chart
+                    Image(
+                        painter = painterResource(id = R.drawable.no_data),
+                        contentDescription = "No calculations",
+                        modifier = Modifier.size(76.dp)
+                    )
+                    
+                    Text(
+                        text = "No Any Calculations",
+                        fontSize = 15.sp,
+                        color = Color(0xFF919191), // Light grey color
+                        fontWeight = FontWeight.Normal
+                    )
+                }
+            }
+        } else {
+            // Use Column instead of LazyColumn to avoid nested lazy lists
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp) // Increased spacing
+            ) {
+                calculations.forEach { calculation ->
+                    RecentCalculationCard(
+                        calculation = calculation,
+                        onClick = { onCalculationClick(calculation.detailsRoute) }
+                    )
+                }
             }
         }
     }
@@ -440,11 +499,11 @@ fun darkenIconColor(color: Color): Color {
     return Color(r, g, b, color.alpha)
 }
 
-// Get icon resource for Recent Calculations (using regular icons, not white ones)
+// Get icon resource for Recent Calculations (using category icons)
 fun getIconResourceForRecentCalculation(iconName: String): Int {
     return when (iconName) {
-        "ic_emi_calculator" -> R.drawable.calculator // Use regular calculator icon
-        "ic_sip_calculator" -> R.drawable.calculator
+        "ic_emi_calculator" -> R.drawable.white_dollar_cal
+        "ic_sip_calculator" -> R.drawable.white_cal
         "ic_loan_calculator" -> R.drawable.loan_percent
         "ic_bank_calculator" -> R.drawable.home_percent
         "ic_gst_vat" -> R.drawable.gst_percent

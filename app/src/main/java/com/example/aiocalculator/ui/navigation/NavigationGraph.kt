@@ -1,9 +1,13 @@
 package com.example.aiocalculator.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.aiocalculator.data.CalculationTracker
+import com.example.aiocalculator.data.DataRepository
 import com.example.aiocalculator.ui.calculators.CalculatorsScreen
 import com.example.aiocalculator.ui.calculators.CommonCalculatorCategoryScreen
 import com.example.aiocalculator.ui.history.HistoryScreen
@@ -57,7 +61,13 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
         }
         
         composable(Screen.Calculators.route) {
-            CalculatorsScreen()
+            val context = LocalContext.current
+            CalculatorsScreen(
+                onCalculatorClick = { calculatorId ->
+                    saveCalculationFromCalculatorsScreen(context, calculatorId)
+                    // TODO: Navigate to actual calculator screen
+                }
+            )
         }
         
         composable(Screen.History.route) {
@@ -70,64 +80,108 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
         
         // Calculator category screens - all use common screen component with JSON data
         composable(Screen.EMICalculators.route) {
+            val context = LocalContext.current
             CommonCalculatorCategoryScreen(
                 route = "/emi_calculator",
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
-                    // Handle individual calculator click
+                    saveCalculationForId(context, calculatorId, "EMI Calculators", "/emi_calculator")
+                    // TODO: Navigate to actual calculator screen
                 }
             )
         }
         
         composable(Screen.SIPCalculators.route) {
+            val context = LocalContext.current
             CommonCalculatorCategoryScreen(
                 route = "/sip_calculator",
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
-                    // Handle individual calculator click
+                    saveCalculationForId(context, calculatorId, "SIP Calculators", "/sip_calculator")
+                    // TODO: Navigate to actual calculator screen
                 }
             )
         }
         
         composable(Screen.LoanCalculators.route) {
+            val context = LocalContext.current
             CommonCalculatorCategoryScreen(
                 route = "/loan_calculator",
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
-                    // Handle individual calculator click
+                    saveCalculationForId(context, calculatorId, "Loan Calculators", "/loan_calculator")
+                    // TODO: Navigate to actual calculator screen
                 }
             )
         }
         
         composable(Screen.BankCalculators.route) {
+            val context = LocalContext.current
             CommonCalculatorCategoryScreen(
                 route = "/bank_calculator",
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
-                    // Handle individual calculator click
+                    saveCalculationForId(context, calculatorId, "Bank Calculators", "/bank_calculator")
+                    // TODO: Navigate to actual calculator screen
                 }
             )
         }
         
         composable(Screen.GSTVATCalculators.route) {
+            val context = LocalContext.current
             CommonCalculatorCategoryScreen(
                 route = "/gst_vat_calculator",
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
-                    // Handle individual calculator click
+                    saveCalculationForId(context, calculatorId, "GST & VAT", "/gst_vat_calculator")
+                    // TODO: Navigate to actual calculator screen
                 }
             )
         }
         
         composable(Screen.OtherCalculators.route) {
+            val context = LocalContext.current
             CommonCalculatorCategoryScreen(
                 route = "/other_calculators",
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
-                    // Handle individual calculator click
+                    saveCalculationForId(context, calculatorId, "Other Calculators", "/other_calculators")
+                    // TODO: Navigate to actual calculator screen
                 }
             )
         }
     }
+}
+
+/**
+ * Helper function to save calculation when calculator is clicked
+ * This should be called from a non-composable context
+ */
+private fun saveCalculationForId(
+    context: android.content.Context,
+    calculatorId: String,
+    calculatorType: String,
+    route: String
+) {
+    CalculationTracker.saveCalculationForId(
+        context = context,
+        calculatorId = calculatorId,
+        calculatorType = calculatorType,
+        route = route
+    )
+}
+
+/**
+ * Helper function to save calculation when calculator is clicked from CalculatorsScreen
+ * Finds the calculator's category and saves it
+ */
+private fun saveCalculationFromCalculatorsScreen(
+    context: android.content.Context,
+    calculatorId: String
+) {
+    CalculationTracker.saveCalculationFromCalculatorsScreen(
+        context = context,
+        calculatorId = calculatorId
+    )
 }
 
