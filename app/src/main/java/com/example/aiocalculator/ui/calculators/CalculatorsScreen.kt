@@ -113,70 +113,33 @@ fun CalculatorCategorySection(
             modifier = Modifier.padding(bottom = 12.dp)
         )
         
-        // Calculator Grid - use same card design as CommonCalculatorCategoryScreen
+        // Calculator Grid - Display calculators in rows of 4
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Special layout for EMI Calculators (3 cards in first row, 1 in second row)
-            if (categoryTitle == "EMI Calculators" && calculatorItems.size == 4) {
-                // First row with 3 cards
+            // Display calculators in rows of 4
+            calculatorItems.chunked(4).forEachIndexed { rowIndex, rowItems ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    calculatorItems.take(3).forEach { calculator ->
+                    rowItems.forEach { calculator ->
                         CalculatorCard(
                             calculator = calculator,
                             onClick = { onCalculatorClick(calculator.id) },
                             modifier = Modifier.weight(1f)
                         )
                     }
+                    // Add empty spaces if row has less than 4 items
+                    repeat(4 - rowItems.size) {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
                 }
                 
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                // Second row with 1 card - starts at same position as first row
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    calculatorItems.drop(3).take(1).forEach { calculator ->
-                        CalculatorCard(
-                            calculator = calculator,
-                            onClick = { onCalculatorClick(calculator.id) },
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                    
-                    // Add empty spaces to maintain row structure
-                    Spacer(modifier = Modifier.weight(1f))
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-            } else {
-                // Default layout: Display calculators in rows of 3
-                calculatorItems.chunked(3).forEachIndexed { rowIndex, rowItems ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        rowItems.forEach { calculator ->
-                            CalculatorCard(
-                                calculator = calculator,
-                                onClick = { onCalculatorClick(calculator.id) },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                        // Add empty spaces if row has less than 3 items
-                        repeat(3 - rowItems.size) {
-                            Spacer(modifier = Modifier.weight(1f))
-                        }
-                    }
-                    
-                    // Add spacing between rows
-                    if (rowIndex < calculatorItems.chunked(3).size - 1) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
+                // Add spacing between rows
+                if (rowIndex < calculatorItems.chunked(4).size - 1) {
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
