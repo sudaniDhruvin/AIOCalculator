@@ -9,6 +9,9 @@ import com.example.aiocalculator.data.CalculationTracker
 import com.example.aiocalculator.data.DataRepository
 import com.example.aiocalculator.ui.calculators.CalculatorsScreen
 import com.example.aiocalculator.ui.calculators.CommonCalculatorCategoryScreen
+import com.example.aiocalculator.ui.emi.AdvanceEMICalculatorScreen
+import com.example.aiocalculator.ui.emi.AdvanceEMIDetailsScreen
+import com.example.aiocalculator.ui.emi.AdvanceEMIResult
 import com.example.aiocalculator.ui.emi.EMICalculatorScreen
 import com.example.aiocalculator.ui.emi.EMIDetailsScreen
 import com.example.aiocalculator.ui.emi.EMIResult
@@ -41,6 +44,14 @@ sealed class Screen(val route: String) {
     }
     
     object QuickCalculator : Screen("quick_calculator") {
+        fun createRoute() = route
+    }
+    
+    object AdvanceEMICalculator : Screen("advance_emi_calculator") {
+        fun createRoute() = route
+    }
+    
+    object AdvanceEMIDetails : Screen("advance_emi_details") {
         fun createRoute() = route
     }
 }
@@ -110,6 +121,10 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                     else if (calculatorId == "2") {
                         navController.navigate(Screen.QuickCalculator.createRoute())
                     }
+                    // Navigate to Advance EMI Calculator screen when id is "3"
+                    else if (calculatorId == "3") {
+                        navController.navigate(Screen.AdvanceEMICalculator.createRoute())
+                    }
                 }
             )
         }
@@ -149,6 +164,39 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
             QuickCalculatorScreen(
                 onBackClick = { navController.popBackStack() }
             )
+        }
+        
+        composable(Screen.AdvanceEMICalculator.createRoute()) {
+            AdvanceEMICalculatorScreen(
+                onBackClick = { navController.popBackStack() },
+                onViewDetails = { result, amount, interestRate, interestType, emiType ->
+                    navController.currentBackStackEntry?.savedStateHandle?.set("advanceEMIResult", result)
+                    navController.currentBackStackEntry?.savedStateHandle?.set("amount", amount)
+                    navController.currentBackStackEntry?.savedStateHandle?.set("interestRate", interestRate)
+                    navController.currentBackStackEntry?.savedStateHandle?.set("interestType", interestType)
+                    navController.currentBackStackEntry?.savedStateHandle?.set("emiType", emiType)
+                    navController.navigate(Screen.AdvanceEMIDetails.createRoute())
+                }
+            )
+        }
+        
+        composable(Screen.AdvanceEMIDetails.createRoute()) {
+            val advanceEMIResult = navController.previousBackStackEntry?.savedStateHandle?.get<AdvanceEMIResult>("advanceEMIResult")
+            val amount = navController.previousBackStackEntry?.savedStateHandle?.get<Double>("amount") ?: 0.0
+            val interestRate = navController.previousBackStackEntry?.savedStateHandle?.get<Double>("interestRate") ?: 0.0
+            val interestType = navController.previousBackStackEntry?.savedStateHandle?.get<String>("interestType") ?: "Reducing"
+            val emiType = navController.previousBackStackEntry?.savedStateHandle?.get<String>("emiType") ?: "EMI In Arrears"
+            
+            if (advanceEMIResult != null) {
+                AdvanceEMIDetailsScreen(
+                    emiResult = advanceEMIResult,
+                    amount = amount,
+                    interestRate = interestRate,
+                    interestType = interestType,
+                    emiType = emiType,
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
         }
         
         composable(Screen.SIPCalculators.route) {
