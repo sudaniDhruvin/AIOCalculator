@@ -206,7 +206,7 @@ fun CalculatorCard(
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(id = getWhiteIconResourceForCalculator(calculator.iconName)),
+                painter = painterResource(id = getIconResourceForCalculatorsScreen(calculator.iconName)),
                 contentDescription = calculator.name,
                 modifier = Modifier.size(24.dp)
             )
@@ -225,5 +225,34 @@ fun CalculatorCard(
                 overflow = TextOverflow.Visible
             )
         }
+    }
+}
+
+fun getIconResourceForCalculatorsScreen(iconName: String): Int {
+    return when (iconName) {
+        "emi_calculator" -> R.drawable.green_calce
+        "quick_calculator" -> R.drawable.orange_cal
+        "advance_emi" -> R.drawable.more_calce
+        "compare_loans" -> R.drawable.compare
+        "sip_calculator" -> R.drawable.spi
+        "quick_sip" -> R.drawable.sip_cal
+        "advance_sip" -> R.drawable.advance
+        "compare_sip" -> R.drawable.compare_sip
+        "swp_calculator" -> R.drawable.swp
+        "stp_calculator" -> R.drawable.stp
+        "loan_profile" -> R.drawable.loan_profile
+        "prepayment_roi" -> R.drawable.pre_payment
+        "check_eligibility" -> R.drawable.check_eligibility
+        "moratorium" -> R.drawable.moratorium
+        "fd_calculator" -> R.drawable.fd
+        "rd_calculator" -> R.drawable.rd
+        "ppf_calculator" -> R.drawable.ppf
+        "simple_interest" -> R.drawable.simple_interest
+        "gst_calculator" -> R.drawable.gst
+        "vat_calculator" -> R.drawable.vat
+        "discount_calculator" -> R.drawable.discount
+        "cash_note_counter" -> R.drawable.cash_note
+        "charging_time" -> R.drawable.charging
+        else -> R.drawable.calculator
     }
 }
