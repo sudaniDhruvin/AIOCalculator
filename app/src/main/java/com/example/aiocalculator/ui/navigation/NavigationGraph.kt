@@ -10,6 +10,7 @@ import com.example.aiocalculator.data.CalculationTracker
 import com.example.aiocalculator.data.DataRepository
 import com.example.aiocalculator.ui.calculators.CalculatorsScreen
 import com.example.aiocalculator.ui.calculators.CommonCalculatorCategoryScreen
+import com.example.aiocalculator.ui.emi.EMICalculatorScreen
 import com.example.aiocalculator.ui.history.HistoryScreen
 import com.example.aiocalculator.ui.home.HomeScreen
 import com.example.aiocalculator.ui.settings.SettingsScreen
@@ -27,6 +28,11 @@ sealed class Screen(val route: String) {
     object BankCalculators : Screen("bank_calculator")
     object GSTVATCalculators : Screen("gst_vat_calculator")
     object OtherCalculators : Screen("other_calculators")
+    
+    // Individual calculator screens
+    object EMICalculator : Screen("emi_calculator_input") {
+        fun createRoute() = route
+    }
 }
 
 @Composable
@@ -86,7 +92,20 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
                     saveCalculationForId(context, calculatorId, "EMI Calculators", "/emi_calculator")
-                    // TODO: Navigate to actual calculator screen
+                    // Navigate to EMI Calculator screen when id is "1"
+                    if (calculatorId == "1") {
+                        navController.navigate(Screen.EMICalculator.createRoute())
+                    }
+                }
+            )
+        }
+        
+        // Individual calculator screens
+        composable(Screen.EMICalculator.createRoute()) {
+            EMICalculatorScreen(
+                onBackClick = { navController.popBackStack() },
+                onCalculateClick = {
+                    // TODO: Navigate to results screen
                 }
             )
         }
