@@ -1,7 +1,6 @@
 package com.example.aiocalculator.ui.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -11,6 +10,8 @@ import com.example.aiocalculator.data.DataRepository
 import com.example.aiocalculator.ui.calculators.CalculatorsScreen
 import com.example.aiocalculator.ui.calculators.CommonCalculatorCategoryScreen
 import com.example.aiocalculator.ui.emi.EMICalculatorScreen
+import com.example.aiocalculator.ui.emi.EMIDetailsScreen
+import com.example.aiocalculator.ui.emi.EMIResult
 import com.example.aiocalculator.ui.history.HistoryScreen
 import com.example.aiocalculator.ui.home.HomeScreen
 import com.example.aiocalculator.ui.settings.SettingsScreen
@@ -31,6 +32,10 @@ sealed class Screen(val route: String) {
     
     // Individual calculator screens
     object EMICalculator : Screen("emi_calculator_input") {
+        fun createRoute() = route
+    }
+    
+    object EMIDetails : Screen("emi_details") {
         fun createRoute() = route
     }
 }
@@ -106,8 +111,29 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculateClick = {
                     // TODO: Navigate to results screen
+                },
+                onViewDetails = { result, amount, interestRate ->
+                    navController.currentBackStackEntry?.savedStateHandle?.set("emiResult", result)
+                    navController.currentBackStackEntry?.savedStateHandle?.set("amount", amount)
+                    navController.currentBackStackEntry?.savedStateHandle?.set("interestRate", interestRate)
+                    navController.navigate(Screen.EMIDetails.createRoute())
                 }
             )
+        }
+        
+        composable(Screen.EMIDetails.createRoute()) {
+            val emiResult = navController.previousBackStackEntry?.savedStateHandle?.get<EMIResult>("emiResult")
+            val amount = navController.previousBackStackEntry?.savedStateHandle?.get<Double>("amount") ?: 0.0
+            val interestRate = navController.previousBackStackEntry?.savedStateHandle?.get<Double>("interestRate") ?: 0.0
+            
+            if (emiResult != null) {
+                EMIDetailsScreen(
+                    emiResult = emiResult,
+                    amount = amount,
+                    interestRate = interestRate,
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
         }
         
         composable(Screen.SIPCalculators.route) {

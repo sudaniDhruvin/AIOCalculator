@@ -1,6 +1,7 @@
 package com.example.aiocalculator.ui.emi
 
 import android.annotation.SuppressLint
+import android.os.Parcelable
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -31,11 +32,13 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
 import kotlin.math.ceil
 import kotlin.math.ln
+import kotlinx.parcelize.Parcelize
 
 @Composable
 fun EMICalculatorScreen(
     onBackClick: () -> Unit,
-    onCalculateClick: () -> Unit
+    onCalculateClick: () -> Unit,
+    onViewDetails: (EMIResult, Double, Double) -> Unit = { _, _, _ -> }
 ) {
     var emiType by remember { mutableStateOf("EMI") }
     var amount by remember { mutableStateOf("") }
@@ -288,7 +291,13 @@ fun EMICalculatorScreen(
                         }
                         // View Details Button
                         Button(
-                            onClick = { /* Handle view details */ },
+                            onClick = {
+                                emiResult?.let { result ->
+                                    val amountValue = amount.toDoubleOrNull() ?: 0.0
+                                    val interestRateValue = interestRate.toDoubleOrNull() ?: 0.0
+                                    onViewDetails(result, amountValue, interestRateValue)
+                                }
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 25.dp, start = 28.dp, end = 28.dp, bottom = 35.dp),
@@ -744,6 +753,7 @@ enum class PeriodType {
     MONTH
 }
 
+@Parcelize
 data class EMIResult(
     val monthlyEMI: Double,
     val periodMonths: Int,
@@ -751,5 +761,5 @@ data class EMIResult(
     val processingFees: Double,
     val totalPayment: Double,
     val principal: Double
-)
+) : Parcelable
 
