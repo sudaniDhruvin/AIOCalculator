@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,15 +41,18 @@ fun EMICalculatorScreen(
     onCalculateClick: () -> Unit,
     onViewDetails: (EMIResult, Double, Double) -> Unit = { _, _, _ -> }
 ) {
-    var emiType by remember { mutableStateOf("EMI") }
-    var amount by remember { mutableStateOf("") }
-    var interestRate by remember { mutableStateOf("") }
-    var periodType by remember { mutableStateOf(PeriodType.YEARS) }
-    var period by remember { mutableStateOf("") }
-    var emi by remember { mutableStateOf("") }
-    var processingFee by remember { mutableStateOf("") }
-    var showResults by remember { mutableStateOf(false) }
-    var emiResult by remember { mutableStateOf<EMIResult?>(null) }
+    var emiType by rememberSaveable { mutableStateOf("EMI") }
+    var amount by rememberSaveable { mutableStateOf("") }
+    var interestRate by rememberSaveable { mutableStateOf("") }
+    var periodTypeString by rememberSaveable { mutableStateOf(PeriodType.YEARS.name) }
+    val periodType = remember(periodTypeString) { 
+        PeriodType.valueOf(periodTypeString)
+    }
+    var period by rememberSaveable { mutableStateOf("") }
+    var emi by rememberSaveable { mutableStateOf("") }
+    var processingFee by rememberSaveable { mutableStateOf("") }
+    var showResults by rememberSaveable { mutableStateOf(false) }
+    var emiResult by rememberSaveable { mutableStateOf<EMIResult?>(null) }
 
     Column(
         modifier = Modifier
@@ -101,12 +105,12 @@ fun EMICalculatorScreen(
                     PeriodTypeRadioButton(
                         label = "Years",
                         selected = periodType == PeriodType.YEARS,
-                        onClick = { periodType = PeriodType.YEARS }
+                        onClick = { periodTypeString = PeriodType.YEARS.name }
                     )
                     PeriodTypeRadioButton(
                         label = "Month",
                         selected = periodType == PeriodType.MONTH,
-                        onClick = { periodType = PeriodType.MONTH }
+                        onClick = { periodTypeString = PeriodType.MONTH.name }
                     )
                 }
 
@@ -184,7 +188,7 @@ fun EMICalculatorScreen(
                         period = ""
                         emi = ""
                         processingFee = ""
-                        periodType = PeriodType.YEARS
+                        periodTypeString = PeriodType.YEARS.name
                         showResults = false
                         emiResult = null
                     },
@@ -407,7 +411,7 @@ fun calculateEMI(
     return null
 }
 
-fun formatCurrency(amount: Double): String {
+private fun formatCurrency(amount: Double): String {
     return String.format("%,.0f", amount)
 }
 
@@ -520,25 +524,6 @@ fun PieChart(
         },
         modifier = modifier
     )
-}
-
-@Composable
-fun LegendItem(label: String, color: Color) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .size(12.dp)
-                .background(color, RoundedCornerShape(50))
-        )
-        Text(
-            text = label,
-            fontSize = 14.sp,
-            color = Color.Black
-        )
-    }
 }
 
 @Composable
