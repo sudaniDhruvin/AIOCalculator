@@ -27,6 +27,7 @@ import com.example.aiocalculator.ui.other.CashNoteCounterScreen
 import com.example.aiocalculator.ui.bank.PPFCalculatorScreen
 import com.example.aiocalculator.ui.bank.RDCalculatorScreen
 import com.example.aiocalculator.ui.bank.FDCalculatorScreen
+import com.example.aiocalculator.ui.loan.CheckEligibilityScreen
 import com.example.aiocalculator.ui.history.HistoryScreen
 import com.example.aiocalculator.ui.home.HomeScreen
 import com.example.aiocalculator.ui.settings.SettingsScreen
@@ -103,6 +104,10 @@ sealed class Screen(val route: String) {
     }
     
     object FDCalculator : Screen("fd_calculator") {
+        fun createRoute() = route
+    }
+    
+    object CheckEligibility : Screen("check_eligibility") {
         fun createRoute() = route
     }
 }
@@ -291,8 +296,17 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
                     saveCalculationForId(context, calculatorId, "Loan Calculators", "/loan_calculator")
-                    // TODO: Navigate to actual calculator screen
+                    // Navigate to Check Eligibility screen when id is "14"
+                    if (calculatorId == "14") {
+                        navController.navigate(Screen.CheckEligibility.createRoute())
+                    }
                 }
+            )
+        }
+        
+        composable(Screen.CheckEligibility.createRoute()) {
+            CheckEligibilityScreen(
+                onBackClick = { navController.popBackStack() }
             )
         }
         
