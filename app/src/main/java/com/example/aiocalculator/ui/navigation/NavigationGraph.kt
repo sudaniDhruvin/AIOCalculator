@@ -22,6 +22,7 @@ import com.example.aiocalculator.ui.emi.QuickCalculatorScreen
 import com.example.aiocalculator.ui.gst.GSTCalculatorScreen
 import com.example.aiocalculator.ui.gst.VATCalculatorScreen
 import com.example.aiocalculator.ui.other.DiscountCalculatorScreen
+import com.example.aiocalculator.ui.other.ChargingTimeCalculatorScreen
 import com.example.aiocalculator.ui.history.HistoryScreen
 import com.example.aiocalculator.ui.home.HomeScreen
 import com.example.aiocalculator.ui.settings.SettingsScreen
@@ -78,6 +79,10 @@ sealed class Screen(val route: String) {
     }
     
     object DiscountCalculator : Screen("discount_calculator") {
+        fun createRoute() = route
+    }
+    
+    object ChargingTimeCalculator : Screen("charging_time_calculator") {
         fun createRoute() = route
     }
 }
@@ -325,12 +330,22 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                     if (calculatorId == "21") {
                         navController.navigate(Screen.DiscountCalculator.createRoute())
                     }
+                    // Navigate to Charging Time Calculator screen when id is "23"
+                    else if (calculatorId == "23") {
+                        navController.navigate(Screen.ChargingTimeCalculator.createRoute())
+                    }
                 }
             )
         }
         
         composable(Screen.DiscountCalculator.createRoute()) {
             DiscountCalculatorScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+        
+        composable(Screen.ChargingTimeCalculator.createRoute()) {
+            ChargingTimeCalculatorScreen(
                 onBackClick = { navController.popBackStack() }
             )
         }
