@@ -19,6 +19,8 @@ import com.example.aiocalculator.ui.emi.EMIDetailsScreen
 import com.example.aiocalculator.ui.emi.EMIResult
 import com.example.aiocalculator.ui.emi.LoanTableEntry
 import com.example.aiocalculator.ui.emi.QuickCalculatorScreen
+import com.example.aiocalculator.ui.gst.GSTCalculatorScreen
+import com.example.aiocalculator.ui.gst.VATCalculatorScreen
 import com.example.aiocalculator.ui.history.HistoryScreen
 import com.example.aiocalculator.ui.home.HomeScreen
 import com.example.aiocalculator.ui.settings.SettingsScreen
@@ -63,6 +65,14 @@ sealed class Screen(val route: String) {
     }
     
     object CompareLoansTable : Screen("compare_loans_table") {
+        fun createRoute() = route
+    }
+    
+    object GSTCalculator : Screen("gst_calculator") {
+        fun createRoute() = route
+    }
+    
+    object VATCalculator : Screen("vat_calculator") {
         fun createRoute() = route
     }
 }
@@ -275,8 +285,27 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
                     saveCalculationForId(context, calculatorId, "GST & VAT", "/gst_vat_calculator")
-                    // TODO: Navigate to actual calculator screen
+                    // Navigate to GST Calculator screen when id is "19"
+                    if (calculatorId == "19") {
+                        navController.navigate(Screen.GSTCalculator.createRoute())
+                    }
+                    // Navigate to VAT Calculator screen when id is "20"
+                    else if (calculatorId == "20") {
+                        navController.navigate(Screen.VATCalculator.createRoute())
+                    }
                 }
+            )
+        }
+        
+        composable(Screen.GSTCalculator.createRoute()) {
+            GSTCalculatorScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+        
+        composable(Screen.VATCalculator.createRoute()) {
+            VATCalculatorScreen(
+                onBackClick = { navController.popBackStack() }
             )
         }
         
