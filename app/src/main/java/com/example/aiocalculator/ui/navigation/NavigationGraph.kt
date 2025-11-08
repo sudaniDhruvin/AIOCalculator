@@ -28,6 +28,7 @@ import com.example.aiocalculator.ui.bank.PPFCalculatorScreen
 import com.example.aiocalculator.ui.bank.RDCalculatorScreen
 import com.example.aiocalculator.ui.bank.FDCalculatorScreen
 import com.example.aiocalculator.ui.loan.CheckEligibilityScreen
+import com.example.aiocalculator.ui.loan.MoratoriumCalculatorScreen
 import com.example.aiocalculator.ui.history.HistoryScreen
 import com.example.aiocalculator.ui.home.HomeScreen
 import com.example.aiocalculator.ui.settings.SettingsScreen
@@ -108,6 +109,10 @@ sealed class Screen(val route: String) {
     }
     
     object CheckEligibility : Screen("check_eligibility") {
+        fun createRoute() = route
+    }
+    
+    object MoratoriumCalculator : Screen("moratorium_calculator") {
         fun createRoute() = route
     }
 }
@@ -300,12 +305,22 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                     if (calculatorId == "14") {
                         navController.navigate(Screen.CheckEligibility.createRoute())
                     }
+                    // Navigate to Moratorium Calculator screen when id is "13"
+                    else if (calculatorId == "13") {
+                        navController.navigate(Screen.MoratoriumCalculator.createRoute())
+                    }
                 }
             )
         }
         
         composable(Screen.CheckEligibility.createRoute()) {
             CheckEligibilityScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+        
+        composable(Screen.MoratoriumCalculator.createRoute()) {
+            MoratoriumCalculatorScreen(
                 onBackClick = { navController.popBackStack() }
             )
         }
