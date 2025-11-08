@@ -12,9 +12,12 @@ import com.example.aiocalculator.ui.calculators.CommonCalculatorCategoryScreen
 import com.example.aiocalculator.ui.emi.AdvanceEMICalculatorScreen
 import com.example.aiocalculator.ui.emi.AdvanceEMIDetailsScreen
 import com.example.aiocalculator.ui.emi.AdvanceEMIResult
+import com.example.aiocalculator.ui.emi.CompareLoansScreen
+import com.example.aiocalculator.ui.emi.CompareLoansTableScreen
 import com.example.aiocalculator.ui.emi.EMICalculatorScreen
 import com.example.aiocalculator.ui.emi.EMIDetailsScreen
 import com.example.aiocalculator.ui.emi.EMIResult
+import com.example.aiocalculator.ui.emi.LoanTableEntry
 import com.example.aiocalculator.ui.emi.QuickCalculatorScreen
 import com.example.aiocalculator.ui.history.HistoryScreen
 import com.example.aiocalculator.ui.home.HomeScreen
@@ -52,6 +55,14 @@ sealed class Screen(val route: String) {
     }
     
     object AdvanceEMIDetails : Screen("advance_emi_details") {
+        fun createRoute() = route
+    }
+    
+    object CompareLoans : Screen("compare_loans") {
+        fun createRoute() = route
+    }
+    
+    object CompareLoansTable : Screen("compare_loans_table") {
         fun createRoute() = route
     }
 }
@@ -125,6 +136,10 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                     else if (calculatorId == "3") {
                         navController.navigate(Screen.AdvanceEMICalculator.createRoute())
                     }
+                    // Navigate to Compare Loans screen when id is "4"
+                    else if (calculatorId == "4") {
+                        navController.navigate(Screen.CompareLoans.createRoute())
+                    }
                 }
             )
         }
@@ -197,6 +212,24 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                     onBackClick = { navController.popBackStack() }
                 )
             }
+        }
+        
+        composable(Screen.CompareLoans.createRoute()) {
+            CompareLoansScreen(
+                onBackClick = { navController.popBackStack() },
+                onCompareMoreClick = { loans ->
+                    navController.currentBackStackEntry?.savedStateHandle?.set("loans", loans)
+                    navController.navigate(Screen.CompareLoansTable.createRoute())
+                }
+            )
+        }
+        
+        composable(Screen.CompareLoansTable.createRoute()) {
+            val loans = navController.previousBackStackEntry?.savedStateHandle?.get<List<LoanTableEntry>>("loans") ?: emptyList()
+            CompareLoansTableScreen(
+                onBackClick = { navController.popBackStack() },
+                initialLoans = loans
+            )
         }
         
         composable(Screen.SIPCalculators.route) {
