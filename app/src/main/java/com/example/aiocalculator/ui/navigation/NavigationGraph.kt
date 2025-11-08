@@ -21,6 +21,7 @@ import com.example.aiocalculator.ui.emi.LoanTableEntry
 import com.example.aiocalculator.ui.emi.QuickCalculatorScreen
 import com.example.aiocalculator.ui.gst.GSTCalculatorScreen
 import com.example.aiocalculator.ui.gst.VATCalculatorScreen
+import com.example.aiocalculator.ui.other.DiscountCalculatorScreen
 import com.example.aiocalculator.ui.history.HistoryScreen
 import com.example.aiocalculator.ui.home.HomeScreen
 import com.example.aiocalculator.ui.settings.SettingsScreen
@@ -73,6 +74,10 @@ sealed class Screen(val route: String) {
     }
     
     object VATCalculator : Screen("vat_calculator") {
+        fun createRoute() = route
+    }
+    
+    object DiscountCalculator : Screen("discount_calculator") {
         fun createRoute() = route
     }
 }
@@ -316,8 +321,17 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
                     saveCalculationForId(context, calculatorId, "Other Calculators", "/other_calculators")
-                    // TODO: Navigate to actual calculator screen
+                    // Navigate to Discount Calculator screen when id is "21"
+                    if (calculatorId == "21") {
+                        navController.navigate(Screen.DiscountCalculator.createRoute())
+                    }
                 }
+            )
+        }
+        
+        composable(Screen.DiscountCalculator.createRoute()) {
+            DiscountCalculatorScreen(
+                onBackClick = { navController.popBackStack() }
             )
         }
     }
