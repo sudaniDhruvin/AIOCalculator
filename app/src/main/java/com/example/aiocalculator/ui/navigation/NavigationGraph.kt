@@ -24,6 +24,7 @@ import com.example.aiocalculator.ui.gst.VATCalculatorScreen
 import com.example.aiocalculator.ui.other.DiscountCalculatorScreen
 import com.example.aiocalculator.ui.other.ChargingTimeCalculatorScreen
 import com.example.aiocalculator.ui.other.CashNoteCounterScreen
+import com.example.aiocalculator.ui.bank.PPFCalculatorScreen
 import com.example.aiocalculator.ui.history.HistoryScreen
 import com.example.aiocalculator.ui.home.HomeScreen
 import com.example.aiocalculator.ui.settings.SettingsScreen
@@ -88,6 +89,10 @@ sealed class Screen(val route: String) {
     }
     
     object CashNoteCounter : Screen("cash_note_counter") {
+        fun createRoute() = route
+    }
+    
+    object PPFCalculator : Screen("ppf_calculator") {
         fun createRoute() = route
     }
 }
@@ -288,8 +293,17 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
                     saveCalculationForId(context, calculatorId, "Bank Calculators", "/bank_calculator")
-                    // TODO: Navigate to actual calculator screen
+                    // Navigate to PPF Calculator screen when id is "17"
+                    if (calculatorId == "17") {
+                        navController.navigate(Screen.PPFCalculator.createRoute())
+                    }
                 }
+            )
+        }
+        
+        composable(Screen.PPFCalculator.createRoute()) {
+            PPFCalculatorScreen(
+                onBackClick = { navController.popBackStack() }
             )
         }
         
