@@ -153,7 +153,8 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
             CalculatorsScreen(
                 onCalculatorClick = { calculatorId ->
                     saveCalculationFromCalculatorsScreen(context, calculatorId)
-                    // TODO: Navigate to actual calculator screen
+                    // Navigate to the appropriate calculator screen based on calculator ID
+                    navigateToCalculatorScreen(navController, calculatorId)
                 }
             )
         }
@@ -470,5 +471,66 @@ private fun saveCalculationFromCalculatorsScreen(
         context = context,
         calculatorId = calculatorId
     )
+}
+
+/**
+ * Navigate to the appropriate calculator screen based on calculator ID
+ */
+private fun navigateToCalculatorScreen(
+    navController: NavHostController,
+    calculatorId: String
+) {
+    when (calculatorId) {
+        // EMI Calculators
+        "1" -> navController.navigate(Screen.EMICalculator.createRoute())
+        "2" -> navController.navigate(Screen.QuickCalculator.createRoute())
+        "3" -> navController.navigate(Screen.AdvanceEMICalculator.createRoute())
+        "4" -> navController.navigate(Screen.CompareLoans.createRoute())
+        
+        // SIP Calculators (IDs 5-10) - Navigate to SIP Calculators category for now
+        // TODO: Add individual SIP calculator screens if they exist
+        "5", "6", "7", "8", "9", "10" -> {
+            // Navigate to SIP Calculators category screen
+            navController.navigate(Screen.SIPCalculators.route)
+        }
+        
+        // Loan Calculators
+        "11" -> {
+            // Pre Payment ROI Change - Navigate to Loan Calculators category for now
+            // TODO: Add Pre Payment ROI Change screen if it exists
+            navController.navigate(Screen.LoanCalculators.route)
+        }
+        "12" -> {
+            // Loan Profile - Navigate to Loan Calculators category for now
+            // TODO: Add Loan Profile screen if it exists
+            navController.navigate(Screen.LoanCalculators.route)
+        }
+        "13" -> navController.navigate(Screen.MoratoriumCalculator.createRoute())
+        "14" -> navController.navigate(Screen.CheckEligibility.createRoute())
+        
+        // Bank Calculators
+        "15" -> navController.navigate(Screen.FDCalculator.createRoute())
+        "16" -> navController.navigate(Screen.RDCalculator.createRoute())
+        "17" -> navController.navigate(Screen.PPFCalculator.createRoute())
+        "18" -> {
+            // Simple Interest - Navigate to Bank Calculators category for now
+            // TODO: Add Simple Interest screen if it exists
+            navController.navigate(Screen.BankCalculators.route)
+        }
+        
+        // GST & VAT Calculators
+        "19" -> navController.navigate(Screen.GSTCalculator.createRoute())
+        "20" -> navController.navigate(Screen.VATCalculator.createRoute())
+        
+        // Other Calculators
+        "21" -> navController.navigate(Screen.DiscountCalculator.createRoute())
+        "22" -> navController.navigate(Screen.CashNoteCounter.createRoute())
+        "23" -> navController.navigate(Screen.ChargingTimeCalculator.createRoute())
+        
+        else -> {
+            // Default: Navigate to Calculators screen if ID not found
+            navController.navigate(Screen.Calculators.route)
+        }
+    }
 }
 
