@@ -26,6 +26,7 @@ import com.example.aiocalculator.ui.other.ChargingTimeCalculatorScreen
 import com.example.aiocalculator.ui.other.CashNoteCounterScreen
 import com.example.aiocalculator.ui.bank.PPFCalculatorScreen
 import com.example.aiocalculator.ui.bank.RDCalculatorScreen
+import com.example.aiocalculator.ui.bank.FDCalculatorScreen
 import com.example.aiocalculator.ui.history.HistoryScreen
 import com.example.aiocalculator.ui.home.HomeScreen
 import com.example.aiocalculator.ui.settings.SettingsScreen
@@ -98,6 +99,10 @@ sealed class Screen(val route: String) {
     }
     
     object RDCalculator : Screen("rd_calculator") {
+        fun createRoute() = route
+    }
+    
+    object FDCalculator : Screen("fd_calculator") {
         fun createRoute() = route
     }
 }
@@ -298,8 +303,12 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
                     saveCalculationForId(context, calculatorId, "Bank Calculators", "/bank_calculator")
+                    // Navigate to FD Calculator screen when id is "15"
+                    if (calculatorId == "15") {
+                        navController.navigate(Screen.FDCalculator.createRoute())
+                    }
                     // Navigate to RD Calculator screen when id is "16"
-                    if (calculatorId == "16") {
+                    else if (calculatorId == "16") {
                         navController.navigate(Screen.RDCalculator.createRoute())
                     }
                     // Navigate to PPF Calculator screen when id is "17"
@@ -318,6 +327,12 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
         
         composable(Screen.RDCalculator.createRoute()) {
             RDCalculatorScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+        
+        composable(Screen.FDCalculator.createRoute()) {
+            FDCalculatorScreen(
                 onBackClick = { navController.popBackStack() }
             )
         }
