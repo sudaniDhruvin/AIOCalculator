@@ -32,6 +32,7 @@ import com.example.aiocalculator.ui.loan.MoratoriumCalculatorScreen
 import com.example.aiocalculator.ui.loan.PrePaymentROIChangeScreen
 import com.example.aiocalculator.ui.bank.SimpleInterestCalculatorScreen
 import com.example.aiocalculator.ui.sip.STPCalculatorScreen
+import com.example.aiocalculator.ui.sip.SWPCalculatorScreen
 import com.example.aiocalculator.ui.history.HistoryScreen
 import com.example.aiocalculator.ui.home.HomeScreen
 import com.example.aiocalculator.ui.settings.SettingsScreen
@@ -128,6 +129,10 @@ sealed class Screen(val route: String) {
     }
     
     object STPCalculator : Screen("stp_calculator") {
+        fun createRoute() = route
+    }
+    
+    object SWPCalculator : Screen("swp_calculator") {
         fun createRoute() = route
     }
 }
@@ -309,12 +314,22 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                     if (calculatorId == "10") {
                         navController.navigate(Screen.STPCalculator.createRoute())
                     }
+                    // Navigate to SWP Calculator screen when id is "9"
+                    else if (calculatorId == "9") {
+                        navController.navigate(Screen.SWPCalculator.createRoute())
+                    }
                 }
             )
         }
         
         composable(Screen.STPCalculator.createRoute()) {
             STPCalculatorScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+        
+        composable(Screen.SWPCalculator.createRoute()) {
+            SWPCalculatorScreen(
                 onBackClick = { navController.popBackStack() }
             )
         }
@@ -532,10 +547,11 @@ private fun navigateToCalculatorScreen(
         "4" -> navController.navigate(Screen.CompareLoans.createRoute())
         
         // SIP Calculators
-        "5", "6", "7", "8", "9" -> {
+        "5", "6", "7", "8" -> {
             // Navigate to SIP Calculators category screen for now
             navController.navigate(Screen.SIPCalculators.route)
         }
+        "9" -> navController.navigate(Screen.SWPCalculator.createRoute())
         "10" -> navController.navigate(Screen.STPCalculator.createRoute())
         
         // Loan Calculators
