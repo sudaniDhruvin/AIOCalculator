@@ -29,6 +29,9 @@ import com.example.aiocalculator.ui.bank.RDCalculatorScreen
 import com.example.aiocalculator.ui.bank.FDCalculatorScreen
 import com.example.aiocalculator.ui.loan.CheckEligibilityScreen
 import com.example.aiocalculator.ui.loan.MoratoriumCalculatorScreen
+import com.example.aiocalculator.ui.loan.PrePaymentROIChangeScreen
+import com.example.aiocalculator.ui.bank.SimpleInterestCalculatorScreen
+import com.example.aiocalculator.ui.sip.STPCalculatorScreen
 import com.example.aiocalculator.ui.history.HistoryScreen
 import com.example.aiocalculator.ui.home.HomeScreen
 import com.example.aiocalculator.ui.settings.SettingsScreen
@@ -113,6 +116,18 @@ sealed class Screen(val route: String) {
     }
     
     object MoratoriumCalculator : Screen("moratorium_calculator") {
+        fun createRoute() = route
+    }
+    
+    object SimpleInterestCalculator : Screen("simple_interest_calculator") {
+        fun createRoute() = route
+    }
+    
+    object PrePaymentROIChange : Screen("pre_payment_roi_change") {
+        fun createRoute() = route
+    }
+    
+    object STPCalculator : Screen("stp_calculator") {
         fun createRoute() = route
     }
 }
@@ -290,8 +305,17 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
                     saveCalculationForId(context, calculatorId, "SIP Calculators", "/sip_calculator")
-                    // TODO: Navigate to actual calculator screen
+                    // Navigate to STP Calculator screen when id is "10"
+                    if (calculatorId == "10") {
+                        navController.navigate(Screen.STPCalculator.createRoute())
+                    }
                 }
+            )
+        }
+        
+        composable(Screen.STPCalculator.createRoute()) {
+            STPCalculatorScreen(
+                onBackClick = { navController.popBackStack() }
             )
         }
         
@@ -310,6 +334,10 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                     else if (calculatorId == "13") {
                         navController.navigate(Screen.MoratoriumCalculator.createRoute())
                     }
+                    // Navigate to Pre Payment ROI Change screen when id is "11"
+                    else if (calculatorId == "11") {
+                        navController.navigate(Screen.PrePaymentROIChange.createRoute())
+                    }
                 }
             )
         }
@@ -322,6 +350,12 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
         
         composable(Screen.MoratoriumCalculator.createRoute()) {
             MoratoriumCalculatorScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+        
+        composable(Screen.PrePaymentROIChange.createRoute()) {
+            PrePaymentROIChangeScreen(
                 onBackClick = { navController.popBackStack() }
             )
         }
@@ -345,6 +379,10 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                     else if (calculatorId == "17") {
                         navController.navigate(Screen.PPFCalculator.createRoute())
                     }
+                    // Navigate to Simple Interest Calculator screen when id is "18"
+                    else if (calculatorId == "18") {
+                        navController.navigate(Screen.SimpleInterestCalculator.createRoute())
+                    }
                 }
             )
         }
@@ -363,6 +401,12 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
         
         composable(Screen.FDCalculator.createRoute()) {
             FDCalculatorScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+        
+        composable(Screen.SimpleInterestCalculator.createRoute()) {
+            SimpleInterestCalculatorScreen(
                 onBackClick = { navController.popBackStack() }
             )
         }
@@ -487,19 +531,15 @@ private fun navigateToCalculatorScreen(
         "3" -> navController.navigate(Screen.AdvanceEMICalculator.createRoute())
         "4" -> navController.navigate(Screen.CompareLoans.createRoute())
         
-        // SIP Calculators (IDs 5-10) - Navigate to SIP Calculators category for now
-        // TODO: Add individual SIP calculator screens if they exist
-        "5", "6", "7", "8", "9", "10" -> {
-            // Navigate to SIP Calculators category screen
+        // SIP Calculators
+        "5", "6", "7", "8", "9" -> {
+            // Navigate to SIP Calculators category screen for now
             navController.navigate(Screen.SIPCalculators.route)
         }
+        "10" -> navController.navigate(Screen.STPCalculator.createRoute())
         
         // Loan Calculators
-        "11" -> {
-            // Pre Payment ROI Change - Navigate to Loan Calculators category for now
-            // TODO: Add Pre Payment ROI Change screen if it exists
-            navController.navigate(Screen.LoanCalculators.route)
-        }
+        "11" -> navController.navigate(Screen.PrePaymentROIChange.createRoute())
         "12" -> {
             // Loan Profile - Navigate to Loan Calculators category for now
             // TODO: Add Loan Profile screen if it exists
@@ -512,11 +552,7 @@ private fun navigateToCalculatorScreen(
         "15" -> navController.navigate(Screen.FDCalculator.createRoute())
         "16" -> navController.navigate(Screen.RDCalculator.createRoute())
         "17" -> navController.navigate(Screen.PPFCalculator.createRoute())
-        "18" -> {
-            // Simple Interest - Navigate to Bank Calculators category for now
-            // TODO: Add Simple Interest screen if it exists
-            navController.navigate(Screen.BankCalculators.route)
-        }
+        "18" -> navController.navigate(Screen.SimpleInterestCalculator.createRoute())
         
         // GST & VAT Calculators
         "19" -> navController.navigate(Screen.GSTCalculator.createRoute())

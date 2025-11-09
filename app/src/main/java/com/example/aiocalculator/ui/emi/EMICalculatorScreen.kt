@@ -53,6 +53,7 @@ fun EMICalculatorScreen(
     var processingFee by rememberSaveable { mutableStateOf("") }
     var showResults by rememberSaveable { mutableStateOf(false) }
     var emiResult by rememberSaveable { mutableStateOf<EMIResult?>(null) }
+    var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -149,6 +150,7 @@ fun EMICalculatorScreen(
                 // Calculate Button
                 Button(
                     onClick = {
+                        errorMessage = null
                         val result = calculateEMI(
                             emiType = emiType,
                             amount = amount,
@@ -161,6 +163,34 @@ fun EMICalculatorScreen(
                         if (result != null) {
                             emiResult = result
                             showResults = true
+                            errorMessage = null
+                        } else {
+                            showResults = false
+                            emiResult = null
+                            // Set error message based on validation
+                            errorMessage = when {
+                                amount.isBlank() || amount.toDoubleOrNull() == null || amount.toDoubleOrNull()!! <= 0 -> 
+                                    "Please enter a valid loan amount"
+                                interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 -> 
+                                    "Please enter a valid interest rate"
+                                emiType == "EMI" && (period.isBlank() || period.toDoubleOrNull() == null || period.toDoubleOrNull()!! <= 0) -> 
+                                    "Please enter a valid period"
+                                emiType == "Loan Tenure" && (emi.isBlank() || emi.toDoubleOrNull() == null || emi.toDoubleOrNull()!! <= 0) -> 
+                                    "Please enter a valid EMI amount"
+                                emiType == "Loan Tenure" -> {
+                                    val principal = amount.toDoubleOrNull() ?: 0.0
+                                    val rate = interestRate.toDoubleOrNull() ?: 0.0
+                                    val emiValue = emi.toDoubleOrNull() ?: 0.0
+                                    val monthlyRate = rate / (12 * 100)
+                                    val minimumEMI = principal * monthlyRate
+                                    if (emiValue <= minimumEMI) {
+                                        "EMI amount is too low. Minimum EMI required: ${String.format("%,.2f", minimumEMI)}"
+                                    } else {
+                                        "Please check all input values"
+                                    }
+                                }
+                                else -> "Please check all input values"
+                            }
                         }
                         onCalculateClick()
                     },
@@ -191,6 +221,7 @@ fun EMICalculatorScreen(
                         periodTypeString = PeriodType.YEARS.name
                         showResults = false
                         emiResult = null
+                        errorMessage = null
                     },
                     modifier = Modifier
                         .weight(1f)
@@ -209,6 +240,25 @@ fun EMICalculatorScreen(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF333333)
+                    )
+                }
+            }
+
+            // Error Message Section
+            errorMessage?.let { error ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFFFEBEE)
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    Text(
+                        text = error,
+                        fontSize = 14.sp,
+                        color = Color(0xFFC62828),
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }
@@ -381,16 +431,33 @@ fun calculateEMI(
             )
         } else if (emiType == "Loan Tenure") {
             val emiValue = emi.toDoubleOrNull() ?: return null
+            
+            // Validate EMI value
+            if (emiValue <= 0) return null
+            
             val monthlyRate = rate / (12 * 100)
 
             val months = if (monthlyRate > 0) {
-                ceil(
-                    -ln(1 - (principal * monthlyRate) / emiValue) /
-                            ln(1 + monthlyRate)
-                ).toInt()
+                // Validate that EMI is sufficient to cover interest
+                val minimumEMI = principal * monthlyRate
+                if (emiValue <= minimumEMI) {
+                    // EMI is too low to pay off the loan, return null
+                    return null
+                }
+                
+                // Calculate tenure using formula: n = -ln(1 - (P × r) / EMI) / ln(1 + r)
+                val tenureMonths = -ln(1 - (principal * monthlyRate) / emiValue) / ln(1 + monthlyRate)
+                
+                // Round up to nearest integer (ceiling)
+                ceil(tenureMonths).toInt()
             } else {
-                (principal / emiValue).toInt()
+                // If interest rate is 0, tenure is simply principal / EMI
+                val tenureMonths = principal / emiValue
+                ceil(tenureMonths).toInt()
             }
+            
+            // Ensure months is at least 1
+            if (months < 1) return null
 
             val totalPayment = emiValue * months
             val totalInterest = totalPayment - principal
