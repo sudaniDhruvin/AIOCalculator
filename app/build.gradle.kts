@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.aiocalculator"
+    namespace = "com.belbytes.calculators"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.aiocalculator"
+        applicationId = "com.belbytes.calculators"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -67,6 +67,16 @@ dependencies {
     
     // ViewModel for Compose
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    
+    // AdMob SDK
+    implementation("com.google.android.gms:play-services-ads:24.0.0")
+    
+    // Shimmer effect for loading states
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
+    
+    // CardView for native ad layouts
+    implementation("androidx.cardview:cardview:1.0.0")
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
