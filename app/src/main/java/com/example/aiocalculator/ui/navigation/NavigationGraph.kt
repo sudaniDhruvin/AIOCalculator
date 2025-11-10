@@ -33,6 +33,7 @@ import com.example.aiocalculator.ui.loan.PrePaymentROIChangeScreen
 import com.example.aiocalculator.ui.bank.SimpleInterestCalculatorScreen
 import com.example.aiocalculator.ui.sip.STPCalculatorScreen
 import com.example.aiocalculator.ui.sip.SWPCalculatorScreen
+import com.example.aiocalculator.ui.sip.CompareSIPScreen
 import com.example.aiocalculator.ui.history.HistoryScreen
 import com.example.aiocalculator.ui.home.HomeScreen
 import com.example.aiocalculator.ui.settings.SettingsScreen
@@ -133,6 +134,10 @@ sealed class Screen(val route: String) {
     }
     
     object SWPCalculator : Screen("swp_calculator") {
+        fun createRoute() = route
+    }
+    
+    object CompareSIP : Screen("compare_sip") {
         fun createRoute() = route
     }
 }
@@ -310,13 +315,17 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
                     saveCalculationForId(context, calculatorId, "SIP Calculators", "/sip_calculator")
-                    // Navigate to STP Calculator screen when id is "10"
-                    if (calculatorId == "10") {
-                        navController.navigate(Screen.STPCalculator.createRoute())
+                    // Navigate to Compare SIP screen when id is "8"
+                    if (calculatorId == "8") {
+                        navController.navigate(Screen.CompareSIP.createRoute())
                     }
                     // Navigate to SWP Calculator screen when id is "9"
                     else if (calculatorId == "9") {
                         navController.navigate(Screen.SWPCalculator.createRoute())
+                    }
+                    // Navigate to STP Calculator screen when id is "10"
+                    else if (calculatorId == "10") {
+                        navController.navigate(Screen.STPCalculator.createRoute())
                     }
                 }
             )
@@ -330,6 +339,12 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
         
         composable(Screen.SWPCalculator.createRoute()) {
             SWPCalculatorScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+        
+        composable(Screen.CompareSIP.createRoute()) {
+            CompareSIPScreen(
                 onBackClick = { navController.popBackStack() }
             )
         }
@@ -547,10 +562,11 @@ private fun navigateToCalculatorScreen(
         "4" -> navController.navigate(Screen.CompareLoans.createRoute())
         
         // SIP Calculators
-        "5", "6", "7", "8" -> {
+        "5", "6", "7" -> {
             // Navigate to SIP Calculators category screen for now
             navController.navigate(Screen.SIPCalculators.route)
         }
+        "8" -> navController.navigate(Screen.CompareSIP.createRoute())
         "9" -> navController.navigate(Screen.SWPCalculator.createRoute())
         "10" -> navController.navigate(Screen.STPCalculator.createRoute())
         
