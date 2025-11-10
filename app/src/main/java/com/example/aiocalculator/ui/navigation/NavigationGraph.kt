@@ -36,6 +36,7 @@ import com.example.aiocalculator.ui.sip.SWPCalculatorScreen
 import com.example.aiocalculator.ui.sip.CompareSIPScreen
 import com.example.aiocalculator.ui.sip.AdvanceSIPCalculatorScreen
 import com.example.aiocalculator.ui.sip.QuickSIPCalculatorScreen
+import com.example.aiocalculator.ui.sip.SIPCalculatorScreen
 import com.example.aiocalculator.ui.history.HistoryScreen
 import com.example.aiocalculator.ui.home.HomeScreen
 import com.example.aiocalculator.ui.settings.SettingsScreen
@@ -148,6 +149,10 @@ sealed class Screen(val route: String) {
     }
     
     object QuickSIPCalculator : Screen("quick_sip_calculator") {
+        fun createRoute() = route
+    }
+    
+    object SIPCalculator : Screen("sip_calculator_main") {
         fun createRoute() = route
     }
 }
@@ -325,8 +330,12 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
                     saveCalculationForId(context, calculatorId, "SIP Calculators", "/sip_calculator")
+                    // Navigate to SIP Calculator screen when id is "5"
+                    if (calculatorId == "5") {
+                        navController.navigate(Screen.SIPCalculator.createRoute())
+                    }
                     // Navigate to Quick SIP Calculator screen when id is "6"
-                    if (calculatorId == "6") {
+                    else if (calculatorId == "6") {
                         navController.navigate(Screen.QuickSIPCalculator.createRoute())
                     }
                     // Navigate to Advance SIP Calculator screen when id is "7"
@@ -375,6 +384,12 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
         
         composable(Screen.QuickSIPCalculator.createRoute()) {
             QuickSIPCalculatorScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+        
+        composable(Screen.SIPCalculator.createRoute()) {
+            SIPCalculatorScreen(
                 onBackClick = { navController.popBackStack() }
             )
         }
@@ -592,10 +607,7 @@ private fun navigateToCalculatorScreen(
         "4" -> navController.navigate(Screen.CompareLoans.createRoute())
         
         // SIP Calculators
-        "5" -> {
-            // Navigate to SIP Calculators category screen for now
-            navController.navigate(Screen.SIPCalculators.route)
-        }
+        "5" -> navController.navigate(Screen.SIPCalculator.createRoute())
         "6" -> navController.navigate(Screen.QuickSIPCalculator.createRoute())
         "7" -> navController.navigate(Screen.AdvanceSIPCalculator.createRoute())
         "8" -> navController.navigate(Screen.CompareSIP.createRoute())
