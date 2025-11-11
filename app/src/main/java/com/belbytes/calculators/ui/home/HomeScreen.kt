@@ -138,11 +138,12 @@ fun HeaderSection() {
             .fillMaxWidth()
             .height(145.dp)
             .background(Color(0xFF2196F3)) // Blue color
+            .statusBarsPadding()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 20.dp).padding(top = 20.dp),
+                .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.Center
         ) {
             Text(

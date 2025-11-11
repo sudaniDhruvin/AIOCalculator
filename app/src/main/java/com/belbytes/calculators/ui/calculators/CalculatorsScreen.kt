@@ -79,17 +79,16 @@ fun HeaderSection() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
+            .height(110.dp)
             .background(Color(0xFF2196F3))
+            .statusBarsPadding()
     ) {
         Text(
             text = "Calculators",
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(top = 20.dp),
+            modifier = Modifier.align(Alignment.Center),
             textAlign = TextAlign.Center
         )
     }

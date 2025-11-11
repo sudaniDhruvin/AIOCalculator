@@ -419,15 +419,16 @@ fun AdvanceEMIHeader(onBackClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
+            .height(110.dp)
             .background(Color(0xFF2079EC))
+            .statusBarsPadding()
     ) {
         IconButton(
             onClick = onBackClick,
             modifier = Modifier
-                .size(48.dp)
                 .align(Alignment.CenterStart)
-                .padding(start = 8.dp, top = 20.dp)
+                .padding(start = 8.dp)
+                .size(48.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
@@ -442,9 +443,7 @@ fun AdvanceEMIHeader(onBackClick: () -> Unit) {
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(top = 20.dp),
+            modifier = Modifier.align(Alignment.Center),
             textAlign = TextAlign.Center
         )
     }
