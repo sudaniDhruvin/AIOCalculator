@@ -146,7 +146,7 @@ fun SimpleInterestCalculatorScreen(
                         text = "Period",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
-                        color = Color.Black,
+                        color = Color.Gray,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Row(
@@ -161,7 +161,7 @@ fun SimpleInterestCalculatorScreen(
                                 placeholder = {
                                     Text(
                                         text = "Years",
-                                        color = Color.Black,
+                                        color = Color.Gray,
                                         fontSize = 14.sp
                                     )
                                 },
@@ -185,7 +185,7 @@ fun SimpleInterestCalculatorScreen(
                                 placeholder = {
                                     Text(
                                         text = "Months",
-                                        color = Color.Black,
+                                        color = Color.Gray,
                                         fontSize = 14.sp
                                     )
                                 },
@@ -209,7 +209,7 @@ fun SimpleInterestCalculatorScreen(
                                 placeholder = {
                                     Text(
                                         text = "Days",
-                                        color = Color.Black,
+                                        color = Color.Gray,
                                         fontSize = 14.sp
                                     )
                                 },
@@ -253,7 +253,7 @@ fun SimpleInterestCalculatorScreen(
                     text = "Interest Type",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color.Black,
+                    color = Color.Gray,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Row(
@@ -569,7 +569,7 @@ fun SimpleInterestInputField(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = Color.Black,
+                    color = Color.Gray,
                     fontSize = 14.sp
                 )
             },
@@ -632,7 +632,7 @@ fun SimpleInterestDateField(
                 placeholder = {
                     Text(
                         text = "Select date",
-                        color = Color.Black,
+                        color = Color.Gray,
                         fontSize = 14.sp
                     )
                 },

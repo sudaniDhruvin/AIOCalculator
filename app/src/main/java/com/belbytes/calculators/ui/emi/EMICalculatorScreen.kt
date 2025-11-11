@@ -756,7 +756,7 @@ fun EMIInputField(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = Color.Black,
+                    color = Color.Gray,
                     fontSize = 14.sp
                 )
             },

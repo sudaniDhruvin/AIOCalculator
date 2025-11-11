@@ -110,7 +110,7 @@ fun FDCalculatorScreen(
                             placeholder = {
                                 Text(
                                     text = "Ex: 1",
-                                    color = Color.Black,
+                                    color = Color.Gray,
                                     fontSize = 14.sp
                                 )
                             },
@@ -144,7 +144,7 @@ fun FDCalculatorScreen(
                             placeholder = {
                                 Text(
                                     text = "Ex: 6",
-                                    color = Color.Black,
+                                    color = Color.Gray,
                                     fontSize = 14.sp
                                 )
                             },
@@ -178,7 +178,7 @@ fun FDCalculatorScreen(
                             placeholder = {
                                 Text(
                                     text = "Ex: 30",
-                                    color = Color.Black,
+                                    color = Color.Gray,
                                     fontSize = 14.sp
                                 )
                             },
@@ -434,7 +434,7 @@ fun FDInputField(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = Color.Black,
+                    color = Color.Gray,
                     fontSize = 14.sp
                 )
             },

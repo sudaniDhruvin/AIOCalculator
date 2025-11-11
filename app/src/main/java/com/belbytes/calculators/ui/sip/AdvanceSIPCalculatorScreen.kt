@@ -145,7 +145,7 @@ fun AdvanceSIPCalculatorScreen(
                         text = "Step Up",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
-                        color = Color.Black,
+                        color = Color.Gray,
                         modifier = Modifier.weight(1f)
                     )
                     Switch(
@@ -167,7 +167,7 @@ fun AdvanceSIPCalculatorScreen(
                         placeholder = {
                             Text(
                                 text = "Ex: 6",
-                                color = Color.Black,
+                                color = Color.Gray,
                                 fontSize = 14.sp
                             )
                         },
@@ -467,7 +467,7 @@ fun AdvanceSIPInputField(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = Color.Black,
+                    color = Color.Gray,
                     fontSize = 14.sp
                 )
             },
@@ -527,7 +527,7 @@ fun AdvanceSIPInputFieldWithToggle(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = Color.Black,
+                    color = Color.Gray,
                     fontSize = 14.sp
                 )
             },
