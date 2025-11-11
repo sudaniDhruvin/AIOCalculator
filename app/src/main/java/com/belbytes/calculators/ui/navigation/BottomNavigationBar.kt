@@ -1,5 +1,6 @@
 package com.belbytes.calculators.ui.navigation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -13,12 +14,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.belbytes.calculators.R
 import com.belbytes.calculators.data.BottomNavItem
 import com.belbytes.calculators.data.DataRepository
 import com.belbytes.calculators.ui.navigation.Screen
@@ -46,9 +50,10 @@ fun BottomNavigationBar(
             val isSelected = item.route == currentRoute
             NavigationBarItem(
                 icon = {
-                    Icon(
-                        imageVector = getIconForNavItem(item.iconName),
+                    NavIcon(
+                        iconName = item.iconName,
                         contentDescription = item.label,
+                        isSelected = isSelected,
                         modifier = Modifier.size(24.dp)
                     )
                 },
@@ -86,11 +91,46 @@ fun BottomNavigationBar(
 }
 
 @Composable
+fun NavIcon(
+    iconName: String,
+    contentDescription: String,
+    isSelected: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val iconColor = if (isSelected) Color(0xFF2196F3) else Color(0xFF757575)
+    
+    when (iconName) {
+        "ic_nav_calculators" -> {
+            Image(
+                painter = painterResource(id = R.drawable.calculators),
+                contentDescription = contentDescription,
+                modifier = modifier,
+                colorFilter = ColorFilter.tint(iconColor)
+            )
+        }
+        "ic_nav_history" -> {
+            Image(
+                painter = painterResource(id = R.drawable.history),
+                contentDescription = contentDescription,
+                modifier = modifier,
+                colorFilter = ColorFilter.tint(iconColor)
+            )
+        }
+        else -> {
+            Icon(
+                imageVector = getIconForNavItem(iconName),
+                contentDescription = contentDescription,
+                modifier = modifier,
+                tint = iconColor
+            )
+        }
+    }
+}
+
+@Composable
 fun getIconForNavItem(iconName: String): ImageVector {
     return when (iconName) {
         "ic_nav_home" -> Icons.Default.Home
-        "ic_nav_calculators" -> Icons.Default.Add // Grid icon for calculators
-        "ic_nav_history" -> Icons.Default.ShoppingCart // Clock with arrow for history
         "ic_nav_settings" -> Icons.Default.Settings
         else -> Icons.Default.Home
     }
