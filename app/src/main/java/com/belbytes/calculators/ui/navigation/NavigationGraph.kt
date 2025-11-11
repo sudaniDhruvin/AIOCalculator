@@ -215,22 +215,7 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
                     saveCalculationForId(context, calculatorId, "EMI Calculators", "/emi_calculator")
-                    // Navigate to EMI Calculator screen when id is "1"
-                    if (calculatorId == "1") {
-                        navController.navigate(Screen.EMICalculator.createRoute())
-                    }
-                    // Navigate to Quick Calculator screen when id is "2"
-                    else if (calculatorId == "2") {
-                        navController.navigate(Screen.QuickCalculator.createRoute())
-                    }
-                    // Navigate to Advance EMI Calculator screen when id is "3"
-                    else if (calculatorId == "3") {
-                        navController.navigate(Screen.AdvanceEMICalculator.createRoute())
-                    }
-                    // Navigate to Compare Loans screen when id is "4"
-                    else if (calculatorId == "4") {
-                        navController.navigate(Screen.CompareLoans.createRoute())
-                    }
+                    navigateToCalculatorScreen(navController, calculatorId)
                 }
             )
         }
@@ -330,30 +315,7 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
                     saveCalculationForId(context, calculatorId, "SIP Calculators", "/sip_calculator")
-                    // Navigate to SIP Calculator screen when id is "5"
-                    if (calculatorId == "5") {
-                        navController.navigate(Screen.SIPCalculator.createRoute())
-                    }
-                    // Navigate to Quick SIP Calculator screen when id is "6"
-                    else if (calculatorId == "6") {
-                        navController.navigate(Screen.QuickSIPCalculator.createRoute())
-                    }
-                    // Navigate to Advance SIP Calculator screen when id is "7"
-                    else if (calculatorId == "7") {
-                        navController.navigate(Screen.AdvanceSIPCalculator.createRoute())
-                    }
-                    // Navigate to Compare SIP screen when id is "8"
-                    else if (calculatorId == "8") {
-                        navController.navigate(Screen.CompareSIP.createRoute())
-                    }
-                    // Navigate to SWP Calculator screen when id is "9"
-                    else if (calculatorId == "9") {
-                        navController.navigate(Screen.SWPCalculator.createRoute())
-                    }
-                    // Navigate to STP Calculator screen when id is "10"
-                    else if (calculatorId == "10") {
-                        navController.navigate(Screen.STPCalculator.createRoute())
-                    }
+                    navigateToCalculatorScreen(navController, calculatorId)
                 }
             )
         }
@@ -401,18 +363,7 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
                     saveCalculationForId(context, calculatorId, "Loan Calculators", "/loan_calculator")
-                    // Navigate to Check Eligibility screen when id is "14"
-                    if (calculatorId == "14") {
-                        navController.navigate(Screen.CheckEligibility.createRoute())
-                    }
-                    // Navigate to Moratorium Calculator screen when id is "13"
-                    else if (calculatorId == "13") {
-                        navController.navigate(Screen.MoratoriumCalculator.createRoute())
-                    }
-                    // Navigate to Pre Payment ROI Change screen when id is "11"
-                    else if (calculatorId == "11") {
-                        navController.navigate(Screen.PrePaymentROIChange.createRoute())
-                    }
+                    navigateToCalculatorScreen(navController, calculatorId)
                 }
             )
         }
@@ -442,22 +393,7 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
                     saveCalculationForId(context, calculatorId, "Bank Calculators", "/bank_calculator")
-                    // Navigate to FD Calculator screen when id is "15"
-                    if (calculatorId == "15") {
-                        navController.navigate(Screen.FDCalculator.createRoute())
-                    }
-                    // Navigate to RD Calculator screen when id is "16"
-                    else if (calculatorId == "16") {
-                        navController.navigate(Screen.RDCalculator.createRoute())
-                    }
-                    // Navigate to PPF Calculator screen when id is "17"
-                    else if (calculatorId == "17") {
-                        navController.navigate(Screen.PPFCalculator.createRoute())
-                    }
-                    // Navigate to Simple Interest Calculator screen when id is "18"
-                    else if (calculatorId == "18") {
-                        navController.navigate(Screen.SimpleInterestCalculator.createRoute())
-                    }
+                    navigateToCalculatorScreen(navController, calculatorId)
                 }
             )
         }
@@ -493,14 +429,7 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
                     saveCalculationForId(context, calculatorId, "GST & VAT", "/gst_vat_calculator")
-                    // Navigate to GST Calculator screen when id is "19"
-                    if (calculatorId == "19") {
-                        navController.navigate(Screen.GSTCalculator.createRoute())
-                    }
-                    // Navigate to VAT Calculator screen when id is "20"
-                    else if (calculatorId == "20") {
-                        navController.navigate(Screen.VATCalculator.createRoute())
-                    }
+                    navigateToCalculatorScreen(navController, calculatorId)
                 }
             )
         }
@@ -524,18 +453,7 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                 onBackClick = { navController.popBackStack() },
                 onCalculatorClick = { calculatorId ->
                     saveCalculationForId(context, calculatorId, "Other Calculators", "/other_calculators")
-                    // Navigate to Discount Calculator screen when id is "21"
-                    if (calculatorId == "21") {
-                        navController.navigate(Screen.DiscountCalculator.createRoute())
-                    }
-                    // Navigate to Cash Note Counter screen when id is "22"
-                    else if (calculatorId == "22") {
-                        navController.navigate(Screen.CashNoteCounter.createRoute())
-                    }
-                    // Navigate to Charging Time Calculator screen when id is "23"
-                    else if (calculatorId == "23") {
-                        navController.navigate(Screen.ChargingTimeCalculator.createRoute())
-                    }
+                    navigateToCalculatorScreen(navController, calculatorId)
                 }
             )
         }
