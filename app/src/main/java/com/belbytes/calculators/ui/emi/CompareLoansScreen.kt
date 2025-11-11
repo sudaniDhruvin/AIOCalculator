@@ -450,7 +450,7 @@ fun CompareLoansInputField(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = Color.Gray,
+                    color = Color.Black,
                     fontSize = 14.sp
                 )
             },
@@ -460,7 +460,9 @@ fun CompareLoansInputField(
                 unfocusedContainerColor = Color(0xFFF5F5F5),
                 focusedContainerColor = Color(0xFFF5F5F5),
                 unfocusedBorderColor = Color.Transparent,
-                focusedBorderColor = Color.Transparent
+                focusedBorderColor = Color.Transparent,
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black
             ),
             singleLine = true
         )

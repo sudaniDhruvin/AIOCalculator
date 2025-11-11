@@ -159,7 +159,7 @@ fun SimpleInterestCalculatorScreen(
                                 placeholder = {
                                     Text(
                                         text = "Years",
-                                        color = Color.Gray,
+                                        color = Color.Black,
                                         fontSize = 14.sp
                                     )
                                 },
@@ -183,7 +183,7 @@ fun SimpleInterestCalculatorScreen(
                                 placeholder = {
                                     Text(
                                         text = "Months",
-                                        color = Color.Gray,
+                                        color = Color.Black,
                                         fontSize = 14.sp
                                     )
                                 },
@@ -207,7 +207,7 @@ fun SimpleInterestCalculatorScreen(
                                 placeholder = {
                                     Text(
                                         text = "Days",
-                                        color = Color.Gray,
+                                        color = Color.Black,
                                         fontSize = 14.sp
                                     )
                                 },
@@ -567,7 +567,7 @@ fun SimpleInterestInputField(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = Color.Gray,
+                    color = Color.Black,
                     fontSize = 14.sp
                 )
             },
@@ -577,7 +577,9 @@ fun SimpleInterestInputField(
                 unfocusedContainerColor = Color(0xFFF5F5F5),
                 focusedContainerColor = Color(0xFFF5F5F5),
                 unfocusedBorderColor = Color.Transparent,
-                focusedBorderColor = Color.Transparent
+                focusedBorderColor = Color.Transparent,
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black
             ),
             singleLine = true
         )
@@ -627,7 +629,7 @@ fun SimpleInterestDateField(
                 placeholder = {
                     Text(
                         text = "Select date",
-                        color = Color.Gray,
+                        color = Color.Black,
                         fontSize = 14.sp
                     )
                 },

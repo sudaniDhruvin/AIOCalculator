@@ -108,7 +108,7 @@ fun FDCalculatorScreen(
                             placeholder = {
                                 Text(
                                     text = "Ex: 1",
-                                    color = Color.Gray,
+                                    color = Color.Black,
                                     fontSize = 14.sp
                                 )
                             },
@@ -118,7 +118,9 @@ fun FDCalculatorScreen(
                                 unfocusedContainerColor = Color(0xFFF5F5F5),
                                 focusedContainerColor = Color(0xFFF5F5F5),
                                 unfocusedBorderColor = Color.Transparent,
-                                focusedBorderColor = Color.Transparent
+                                focusedBorderColor = Color.Transparent,
+                                focusedTextColor = Color.Black,
+                                unfocusedTextColor = Color.Black
                             ),
                             singleLine = true
                         )
@@ -139,7 +141,7 @@ fun FDCalculatorScreen(
                             placeholder = {
                                 Text(
                                     text = "Ex: 6",
-                                    color = Color.Gray,
+                                    color = Color.Black,
                                     fontSize = 14.sp
                                 )
                             },
@@ -149,7 +151,9 @@ fun FDCalculatorScreen(
                                 unfocusedContainerColor = Color(0xFFF5F5F5),
                                 focusedContainerColor = Color(0xFFF5F5F5),
                                 unfocusedBorderColor = Color.Transparent,
-                                focusedBorderColor = Color.Transparent
+                                focusedBorderColor = Color.Transparent,
+                                focusedTextColor = Color.Black,
+                                unfocusedTextColor = Color.Black
                             ),
                             singleLine = true
                         )
@@ -170,7 +174,7 @@ fun FDCalculatorScreen(
                             placeholder = {
                                 Text(
                                     text = "Ex: 30",
-                                    color = Color.Gray,
+                                    color = Color.Black,
                                     fontSize = 14.sp
                                 )
                             },
@@ -180,7 +184,9 @@ fun FDCalculatorScreen(
                                 unfocusedContainerColor = Color(0xFFF5F5F5),
                                 focusedContainerColor = Color(0xFFF5F5F5),
                                 unfocusedBorderColor = Color.Transparent,
-                                focusedBorderColor = Color.Transparent
+                                focusedBorderColor = Color.Transparent,
+                                focusedTextColor = Color.Black,
+                                unfocusedTextColor = Color.Black
                             ),
                             singleLine = true
                         )
@@ -423,7 +429,7 @@ fun FDInputField(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = Color.Gray,
+                    color = Color.Black,
                     fontSize = 14.sp
                 )
             },
@@ -433,7 +439,9 @@ fun FDInputField(
                 unfocusedContainerColor = Color(0xFFF5F5F5),
                 focusedContainerColor = Color(0xFFF5F5F5),
                 unfocusedBorderColor = Color.Transparent,
-                focusedBorderColor = Color.Transparent
+                focusedBorderColor = Color.Transparent,
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black
             ),
             singleLine = true
         )

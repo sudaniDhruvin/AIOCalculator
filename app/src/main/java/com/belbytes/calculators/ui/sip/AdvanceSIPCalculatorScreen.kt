@@ -165,7 +165,7 @@ fun AdvanceSIPCalculatorScreen(
                         placeholder = {
                             Text(
                                 text = "Ex: 6",
-                                color = Color.Gray,
+                                color = Color.Black,
                                 fontSize = 14.sp
                             )
                         },
@@ -465,7 +465,7 @@ fun AdvanceSIPInputField(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = Color.Gray,
+                    color = Color.Black,
                     fontSize = 14.sp
                 )
             },
@@ -475,7 +475,9 @@ fun AdvanceSIPInputField(
                 unfocusedContainerColor = Color(0xFFF5F5F5),
                 focusedContainerColor = Color(0xFFF5F5F5),
                 unfocusedBorderColor = Color.Transparent,
-                focusedBorderColor = Color.Transparent
+                focusedBorderColor = Color.Transparent,
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black
             ),
             singleLine = true
         )
@@ -522,7 +524,7 @@ fun AdvanceSIPInputFieldWithToggle(
             placeholder = {
                 Text(
                     text = placeholder,
-                    color = Color.Gray,
+                    color = Color.Black,
                     fontSize = 14.sp
                 )
             },
@@ -532,7 +534,9 @@ fun AdvanceSIPInputFieldWithToggle(
                 unfocusedContainerColor = Color(0xFFF5F5F5),
                 focusedContainerColor = Color(0xFFF5F5F5),
                 unfocusedBorderColor = Color.Transparent,
-                focusedBorderColor = Color.Transparent
+                focusedBorderColor = Color.Transparent,
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black
             ),
             singleLine = true,
             enabled = enabled
