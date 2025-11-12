@@ -328,7 +328,7 @@ fun GSTRadioButton(
         modifier = Modifier
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         RadioButton(
             selected = selected,
