@@ -18,6 +18,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -72,6 +73,16 @@ fun SIPCalculatorScreen(
     var sipResult by rememberSaveable { mutableStateOf<SIPCalculatorResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
+    val scrollState = rememberScrollState()
+    
+    // Scroll to end when results are shown
+    LaunchedEffect(showResults) {
+        if (showResults) {
+            delay(100) // Small delay to ensure content is rendered
+            scrollState.animateScrollTo(scrollState.maxValue)
+        }
+    }
+    
     // Sync selectedTab with pager state
     LaunchedEffect(pagerState.currentPage) {
         selectedTab = tabs[pagerState.currentPage]
@@ -91,6 +102,7 @@ fun SIPCalculatorScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(scrollState)
                 .imePadding()
                 .padding(horizontal = 16.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)

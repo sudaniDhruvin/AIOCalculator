@@ -20,6 +20,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -88,6 +89,15 @@ fun SimpleInterestCalculatorScreen(
     
     val tabs = listOf("Duration", "Date")
     val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
+    val scrollState = rememberScrollState()
+    
+    // Scroll to end when results are shown
+    LaunchedEffect(showResults) {
+        if (showResults) {
+            delay(100) // Small delay to ensure content is rendered
+            scrollState.animateScrollTo(scrollState.maxValue)
+        }
+    }
     
     // Sync selectedTab with pager state
     LaunchedEffect(pagerState.currentPage) {
@@ -105,7 +115,13 @@ fun SimpleInterestCalculatorScreen(
         // Header
         SimpleInterestCalculatorHeader(onBackClick = onBackClick)
 
-        // Tabs
+        // Scrollable content wrapper
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+        ) {
+            // Tabs
         val scope = rememberCoroutineScope()
         Row(
             modifier = Modifier
@@ -532,6 +548,7 @@ fun SimpleInterestCalculatorScreen(
                     }
                 }
             }
+        }
         }
     }
 }

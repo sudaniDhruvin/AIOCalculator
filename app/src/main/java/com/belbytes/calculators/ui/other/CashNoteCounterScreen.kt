@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,6 +47,16 @@ fun CashNoteCounterScreen(
     var showResults by rememberSaveable { mutableStateOf(false) }
     var totalAmount by rememberSaveable { mutableStateOf(0.0) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
+    
+    val scrollState = rememberScrollState()
+    
+    // Scroll to end when results are shown
+    LaunchedEffect(showResults) {
+        if (showResults) {
+            delay(100) // Small delay to ensure content is rendered
+            scrollState.animateScrollTo(scrollState.maxValue)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -59,7 +70,7 @@ fun CashNoteCounterScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .imePadding()
                 .padding(horizontal = 16.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
