@@ -5,6 +5,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -13,6 +16,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,6 +60,8 @@ data class ROIChangeResult(
 fun PrePaymentROIChangeScreen(
     onBackClick: () -> Unit
 ) {
+    val tabs = listOf("Pre Payment", "ROI Change")
+    val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
     var selectedTab by rememberSaveable { mutableStateOf("Pre Payment") }
     
     // Common fields
@@ -73,6 +79,15 @@ fun PrePaymentROIChangeScreen(
     var prePaymentResult by rememberSaveable { mutableStateOf<PrePaymentResult?>(null) }
     var roiChangeResult by rememberSaveable { mutableStateOf<ROIChangeResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
+    
+    // Sync selectedTab with pager state
+    LaunchedEffect(pagerState.currentPage) {
+        selectedTab = tabs[pagerState.currentPage]
+        showResults = false
+        prePaymentResult = null
+        roiChangeResult = null
+        errorMessage = null
+    }
 
     Column(
         modifier = Modifier
@@ -83,160 +98,150 @@ fun PrePaymentROIChangeScreen(
         PrePaymentROIChangeHeader(onBackClick = onBackClick)
 
         // Tabs
+        val scope = rememberCoroutineScope()
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(0.dp)
         ) {
-            // Pre Payment Tab
-            TabButton(
-                text = "Pre Payment",
-                selected = selectedTab == "Pre Payment",
-                onClick = { 
-                    selectedTab = "Pre Payment"
-                    showResults = false
-                    prePaymentResult = null
-                    roiChangeResult = null
-                    errorMessage = null
-                },
-                modifier = Modifier.weight(1f)
-            )
-            
-            // ROI Change Tab
-            TabButton(
-                text = "ROI Change",
-                selected = selectedTab == "ROI Change",
-                onClick = { 
-                    selectedTab = "ROI Change"
-                    showResults = false
-                    prePaymentResult = null
-                    roiChangeResult = null
-                    errorMessage = null
-                },
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        // Form Content
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .imePadding()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            // Outstanding Amount Input
-            PrePaymentROIInputField(
-                label = "Outstanding Amount",
-                placeholder = "Ex: 1,00,000",
-                value = outstandingAmount,
-                onValueChange = { outstandingAmount = it }
-            )
-
-            // Current Rate % Input
-            PrePaymentROIInputField(
-                label = "Current Rate %",
-                placeholder = "Ex: 12%",
-                value = currentRate,
-                onValueChange = { currentRate = it }
-            )
-
-            // Current EMI Input
-            PrePaymentROIInputField(
-                label = "Current EMI",
-                placeholder = "Ex: 1000",
-                value = currentEMI,
-                onValueChange = { currentEMI = it }
-            )
-
-            // Conditional Fields based on Tab
-            if (selectedTab == "Pre Payment") {
-                // Pre Payment Amount Input
-                PrePaymentROIInputField(
-                    label = "Pre Payment Amount",
-                    placeholder = "Ex: 10%",
-                    value = prePaymentAmount,
-                    onValueChange = { prePaymentAmount = it }
-                )
-            } else {
-                // Revised Rate % Input
-                PrePaymentROIInputField(
-                    label = "Revised Rate %",
-                    placeholder = "Ex: 10%",
-                    value = revisedRate,
-                    onValueChange = { revisedRate = it }
-                )
-            }
-
-            // Action Buttons
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Calculate Button
-                Button(
-                    onClick = {
-                        errorMessage = null
-                        if (selectedTab == "Pre Payment") {
-                            val result = calculatePrePayment(
-                                outstandingAmount = outstandingAmount,
-                                currentRate = currentRate,
-                                currentEMI = currentEMI,
-                                prePaymentAmount = prePaymentAmount
-                            )
-                            if (result != null) {
-                                prePaymentResult = result
-                                roiChangeResult = null
-                                showResults = true
-                                errorMessage = null
-                            } else {
-                                showResults = false
-                                prePaymentResult = null
-                                errorMessage = when {
-                                    outstandingAmount.isBlank() || outstandingAmount.toDoubleOrNull() == null || outstandingAmount.toDoubleOrNull()!! <= 0 ->
-                                        "Please enter a valid outstanding amount"
-                                    currentRate.isBlank() || currentRate.toDoubleOrNull() == null || currentRate.toDoubleOrNull()!! <= 0 ->
-                                        "Please enter a valid current rate"
-                                    currentEMI.isBlank() || currentEMI.toDoubleOrNull() == null || currentEMI.toDoubleOrNull()!! <= 0 ->
-                                        "Please enter a valid current EMI"
-                                    prePaymentAmount.isBlank() || prePaymentAmount.toDoubleOrNull() == null || prePaymentAmount.toDoubleOrNull()!! <= 0 ->
-                                        "Please enter a valid pre payment amount"
-                                    else -> "Please check all input values"
-                                }
-                            }
-                        } else {
-                            val result = calculateROIChange(
-                                outstandingAmount = outstandingAmount,
-                                currentRate = currentRate,
-                                currentEMI = currentEMI,
-                                revisedRate = revisedRate
-                            )
-                            if (result != null) {
-                                roiChangeResult = result
-                                prePaymentResult = null
-                                showResults = true
-                                errorMessage = null
-                            } else {
-                                showResults = false
-                                roiChangeResult = null
-                                errorMessage = when {
-                                    outstandingAmount.isBlank() || outstandingAmount.toDoubleOrNull() == null || outstandingAmount.toDoubleOrNull()!! <= 0 ->
-                                        "Please enter a valid outstanding amount"
-                                    currentRate.isBlank() || currentRate.toDoubleOrNull() == null || currentRate.toDoubleOrNull()!! <= 0 ->
-                                        "Please enter a valid current rate"
-                                    currentEMI.isBlank() || currentEMI.toDoubleOrNull() == null || currentEMI.toDoubleOrNull()!! <= 0 ->
-                                        "Please enter a valid current EMI"
-                                    revisedRate.isBlank() || revisedRate.toDoubleOrNull() == null ->
-                                        "Please enter a valid revised rate"
-                                    else -> "Please check all input values"
-                                }
-                            }
+            tabs.forEachIndexed { index, tab ->
+                TabButton(
+                    text = tab,
+                    selected = selectedTab == tab,
+                    onClick = { 
+                        scope.launch {
+                            pagerState.animateScrollToPage(index)
                         }
                     },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+
+        // Swipeable content
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxWidth()
+        ) { page ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .imePadding()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                // Outstanding Amount Input
+                PrePaymentROIInputField(
+                    label = "Outstanding Amount",
+                    placeholder = "Ex: 1,00,000",
+                    value = outstandingAmount,
+                    onValueChange = { outstandingAmount = it }
+                )
+
+                // Current Rate % Input
+                PrePaymentROIInputField(
+                    label = "Current Rate %",
+                    placeholder = "Ex: 12%",
+                    value = currentRate,
+                    onValueChange = { currentRate = it }
+                )
+
+                // Current EMI Input
+                PrePaymentROIInputField(
+                    label = "Current EMI",
+                    placeholder = "Ex: 1000",
+                    value = currentEMI,
+                    onValueChange = { currentEMI = it }
+                )
+
+                // Conditional Fields based on Tab
+                if (tabs[page] == "Pre Payment") {
+                    // Pre Payment Amount Input
+                    PrePaymentROIInputField(
+                        label = "Pre Payment Amount",
+                        placeholder = "Ex: 10%",
+                        value = prePaymentAmount,
+                        onValueChange = { prePaymentAmount = it }
+                    )
+                } else {
+                    // Revised Rate % Input
+                    PrePaymentROIInputField(
+                        label = "Revised Rate %",
+                        placeholder = "Ex: 10%",
+                        value = revisedRate,
+                        onValueChange = { revisedRate = it }
+                    )
+                }
+
+                // Action Buttons
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    // Calculate Button
+                    Button(
+                        onClick = {
+                            errorMessage = null
+                            if (selectedTab == "Pre Payment") {
+                                val result = calculatePrePayment(
+                                    outstandingAmount = outstandingAmount,
+                                    currentRate = currentRate,
+                                    currentEMI = currentEMI,
+                                    prePaymentAmount = prePaymentAmount
+                                )
+                                if (result != null) {
+                                    prePaymentResult = result
+                                    roiChangeResult = null
+                                    showResults = true
+                                    errorMessage = null
+                                } else {
+                                    showResults = false
+                                    prePaymentResult = null
+                                    errorMessage = when {
+                                        outstandingAmount.isBlank() || outstandingAmount.toDoubleOrNull() == null || outstandingAmount.toDoubleOrNull()!! <= 0 ->
+                                            "Please enter a valid outstanding amount"
+                                        currentRate.isBlank() || currentRate.toDoubleOrNull() == null || currentRate.toDoubleOrNull()!! <= 0 ->
+                                            "Please enter a valid current rate"
+                                        currentEMI.isBlank() || currentEMI.toDoubleOrNull() == null || currentEMI.toDoubleOrNull()!! <= 0 ->
+                                            "Please enter a valid current EMI"
+                                        prePaymentAmount.isBlank() || prePaymentAmount.toDoubleOrNull() == null || prePaymentAmount.toDoubleOrNull()!! <= 0 ->
+                                            "Please enter a valid pre payment amount"
+                                        else -> "Please check all input values"
+                                    }
+                                }
+                            } else {
+                                val result = calculateROIChange(
+                                    outstandingAmount = outstandingAmount,
+                                    currentRate = currentRate,
+                                    currentEMI = currentEMI,
+                                    revisedRate = revisedRate
+                                )
+                                if (result != null) {
+                                    roiChangeResult = result
+                                    prePaymentResult = null
+                                    showResults = true
+                                    errorMessage = null
+                                } else {
+                                    showResults = false
+                                    roiChangeResult = null
+                                    errorMessage = when {
+                                        outstandingAmount.isBlank() || outstandingAmount.toDoubleOrNull() == null || outstandingAmount.toDoubleOrNull()!! <= 0 ->
+                                            "Please enter a valid outstanding amount"
+                                        currentRate.isBlank() || currentRate.toDoubleOrNull() == null || currentRate.toDoubleOrNull()!! <= 0 ->
+                                            "Please enter a valid current rate"
+                                        currentEMI.isBlank() || currentEMI.toDoubleOrNull() == null || currentEMI.toDoubleOrNull()!! <= 0 ->
+                                            "Please enter a valid current EMI"
+                                        revisedRate.isBlank() || revisedRate.toDoubleOrNull() == null ->
+                                            "Please enter a valid revised rate"
+                                        else -> "Please check all input values"
+                                    }
+                                }
+                            }
+                        },
                     modifier = Modifier
                         .weight(1f)
                         .height(50.dp),
@@ -286,30 +291,31 @@ fun PrePaymentROIChangeScreen(
                     )
                 }
             }
+        }
 
-            // Error Message Section
-            errorMessage?.let { error ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFFFEBEE)
-                    ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                ) {
-                    Text(
-                        text = error,
-                        fontSize = 14.sp,
-                        color = Color(0xFFC62828),
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
+        // Error Message Section
+        errorMessage?.let { error ->
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(8.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFFFFEBEE)
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Text(
+                    text = error,
+                    fontSize = 14.sp,
+                    color = Color(0xFFC62828),
+                    modifier = Modifier.padding(16.dp)
+                )
             }
+        }
 
-            // Results Section
-            AnimatedVisibility(
-                visible = showResults && (prePaymentResult != null || roiChangeResult != null),
-                enter = expandVertically(
+        // Results Section
+        AnimatedVisibility(
+            visible = showResults && (prePaymentResult != null || roiChangeResult != null),
+            enter = expandVertically(
                     animationSpec = tween(300),
                     expandFrom = Alignment.Top
                 ) + fadeIn(

@@ -619,7 +619,8 @@ fun AdvanceSIPDonutChart(
 
     AndroidView(
         factory = { context ->
-            MPAndroidPieChart(context).apply {
+            try {
+                MPAndroidPieChart(context).apply {
                 setUsePercentValues(false)
                 description.isEnabled = false
                 setExtraOffsets(5f, 10f, 5f, 5f)
@@ -651,7 +652,21 @@ fun AdvanceSIPDonutChart(
                 setTransparentCircleAlpha(110)
                 setHoleRadius(58f)
                 setTransparentCircleRadius(61f)
-                invalidate()
+                
+                // Animate only if attached to window
+                post {
+                    try {
+                        if (isAttachedToWindow && parent != null) {
+                            invalidate()
+                        }
+                    } catch (e: Exception) {
+                        // Ignore exceptions during invalidation
+                    }
+                }
+            }
+            } catch (e: Exception) {
+                // Return a basic chart if initialization fails
+                MPAndroidPieChart(context)
             }
         },
         modifier = Modifier

@@ -6,6 +6,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -14,6 +17,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,6 +48,8 @@ data class SIPCalculatorResult(
 fun SIPCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val tabs = listOf("SIP", "Lumpsum", "Plan")
+    val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
     var selectedTab by rememberSaveable { mutableStateOf("SIP") }
     var resultTab by rememberSaveable { mutableStateOf<String?>(null) } // Track which tab the result belongs to
     
@@ -66,6 +72,15 @@ fun SIPCalculatorScreen(
     var sipResult by rememberSaveable { mutableStateOf<SIPCalculatorResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
+    // Sync selectedTab with pager state
+    LaunchedEffect(pagerState.currentPage) {
+        selectedTab = tabs[pagerState.currentPage]
+        showResults = false
+        sipResult = null
+        resultTab = null
+        errorMessage = null
+    }
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -76,7 +91,6 @@ fun SIPCalculatorScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
                 .imePadding()
                 .padding(horizontal = 16.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
@@ -89,85 +103,97 @@ fun SIPCalculatorScreen(
             )
             
             // Tabs
+            val scope = rememberCoroutineScope()
             SIPCalculatorTabs(
                 selectedTab = selectedTab,
-                onTabChange = { newTab ->
-                    selectedTab = newTab
-                    // Clear results when switching tabs
-                    showResults = false
-                    sipResult = null
-                    resultTab = null
-                    errorMessage = null
+                pagerState = pagerState,
+                onTabChange = { index ->
+                    scope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
                 }
             )
             
-            // Input fields based on selected tab
-            when (selectedTab) {
-                "SIP" -> {
-                    SIPCalculatorInputField(
-                        label = "Monthly Investment",
-                        placeholder = "Ex: 1000",
-                        value = monthlyInvestmentSIP,
-                        onValueChange = { monthlyInvestmentSIP = it }
-                    )
-                    
-                    SIPCalculatorInputField(
-                        label = "Exp. Return Rate (%)",
-                        placeholder = "Ex: 12",
-                        value = expReturnRateSIP,
-                        onValueChange = { expReturnRateSIP = it }
-                    )
-                    
-                    SIPCalculatorInputField(
-                        label = "Period (Years)",
-                        placeholder = "Ex: 10",
-                        value = periodYearsSIP,
-                        onValueChange = { periodYearsSIP = it }
-                    )
-                }
-                "Lumpsum" -> {
-                    SIPCalculatorInputField(
-                        label = "Total Investment",
-                        placeholder = "Ex: 1000",
-                        value = totalInvestmentLumpsum,
-                        onValueChange = { totalInvestmentLumpsum = it }
-                    )
-                    
-                    SIPCalculatorInputField(
-                        label = "Exp. Return Rate (%)",
-                        placeholder = "Ex: 12",
-                        value = expReturnRateLumpsum,
-                        onValueChange = { expReturnRateLumpsum = it }
-                    )
-                    
-                    SIPCalculatorInputField(
-                        label = "Period (Years)",
-                        placeholder = "Ex: 10",
-                        value = periodYearsLumpsum,
-                        onValueChange = { periodYearsLumpsum = it }
-                    )
-                }
-                "Plan" -> {
-                    SIPCalculatorInputField(
-                        label = "Target Investment",
-                        placeholder = "Ex: 1000",
-                        value = targetAmountPlan,
-                        onValueChange = { targetAmountPlan = it }
-                    )
-                    
-                    SIPCalculatorInputField(
-                        label = "Exp. Return Rate (%)",
-                        placeholder = "Ex: 12",
-                        value = expReturnRatePlan,
-                        onValueChange = { expReturnRatePlan = it }
-                    )
-                    
-                    SIPCalculatorInputField(
-                        label = "Period (Years)",
-                        placeholder = "Ex: 10",
-                        value = periodYearsPlan,
-                        onValueChange = { periodYearsPlan = it }
-                    )
+            // Swipeable content
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth()
+            ) { page ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    // Input fields based on selected tab
+                    when (tabs[page]) {
+                        "SIP" -> {
+                            SIPCalculatorInputField(
+                                label = "Monthly Investment",
+                                placeholder = "Ex: 1000",
+                                value = monthlyInvestmentSIP,
+                                onValueChange = { monthlyInvestmentSIP = it }
+                            )
+                            
+                            SIPCalculatorInputField(
+                                label = "Exp. Return Rate (%)",
+                                placeholder = "Ex: 12",
+                                value = expReturnRateSIP,
+                                onValueChange = { expReturnRateSIP = it }
+                            )
+                            
+                            SIPCalculatorInputField(
+                                label = "Period (Years)",
+                                placeholder = "Ex: 10",
+                                value = periodYearsSIP,
+                                onValueChange = { periodYearsSIP = it }
+                            )
+                        }
+                        "Lumpsum" -> {
+                            SIPCalculatorInputField(
+                                label = "Total Investment",
+                                placeholder = "Ex: 1000",
+                                value = totalInvestmentLumpsum,
+                                onValueChange = { totalInvestmentLumpsum = it }
+                            )
+                            
+                            SIPCalculatorInputField(
+                                label = "Exp. Return Rate (%)",
+                                placeholder = "Ex: 12",
+                                value = expReturnRateLumpsum,
+                                onValueChange = { expReturnRateLumpsum = it }
+                            )
+                            
+                            SIPCalculatorInputField(
+                                label = "Period (Years)",
+                                placeholder = "Ex: 10",
+                                value = periodYearsLumpsum,
+                                onValueChange = { periodYearsLumpsum = it }
+                            )
+                        }
+                        "Plan" -> {
+                            SIPCalculatorInputField(
+                                label = "Target Investment",
+                                placeholder = "Ex: 1000",
+                                value = targetAmountPlan,
+                                onValueChange = { targetAmountPlan = it }
+                            )
+                            
+                            SIPCalculatorInputField(
+                                label = "Exp. Return Rate (%)",
+                                placeholder = "Ex: 12",
+                                value = expReturnRatePlan,
+                                onValueChange = { expReturnRatePlan = it }
+                            )
+                            
+                            SIPCalculatorInputField(
+                                label = "Period (Years)",
+                                placeholder = "Ex: 10",
+                                value = periodYearsPlan,
+                                onValueChange = { periodYearsPlan = it }
+                            )
+                        }
+                    }
                 }
             }
             
@@ -457,8 +483,10 @@ fun SIPCalculatorHeader(onBackClick: () -> Unit) {
 @Composable
 fun SIPCalculatorTabs(
     selectedTab: String,
-    onTabChange: (String) -> Unit
+    pagerState: PagerState,
+    onTabChange: (Int) -> Unit
 ) {
+    val tabs = listOf("SIP", "Lumpsum", "Plan")
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -466,26 +494,14 @@ fun SIPCalculatorTabs(
             .padding(4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        SIPCalculatorTabButton(
-            text = "SIP",
-            isSelected = selectedTab == "SIP",
-            onClick = { onTabChange("SIP") },
-            modifier = Modifier.weight(1f)
-        )
-        
-        SIPCalculatorTabButton(
-            text = "Lumpsum",
-            isSelected = selectedTab == "Lumpsum",
-            onClick = { onTabChange("Lumpsum") },
-            modifier = Modifier.weight(1f)
-        )
-        
-        SIPCalculatorTabButton(
-            text = "Plan",
-            isSelected = selectedTab == "Plan",
-            onClick = { onTabChange("Plan") },
-            modifier = Modifier.weight(1f)
-        )
+        tabs.forEachIndexed { index, tab ->
+            SIPCalculatorTabButton(
+                text = tab,
+                isSelected = selectedTab == tab,
+                onClick = { onTabChange(index) },
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }
 
@@ -599,39 +615,50 @@ fun SIPCalculatorDonutChart(
     
     AndroidView(
         factory = { ctx ->
-            MPAndroidPieChart(ctx).apply {
-                description.isEnabled = false
-                setUsePercentValues(false)
-                setDrawEntryLabels(true)
-                setEntryLabelTextSize(14f)
-                setEntryLabelColor(android.graphics.Color.WHITE)
-                setCenterText("")
-                setDrawCenterText(false)
-                setHoleRadius(58f)
-                setTransparentCircleRadius(61f)
-                rotationAngle = -90f
-                setRotationEnabled(false)
-                legend.isEnabled = false
+            try {
+                MPAndroidPieChart(ctx).apply {
+                    description.isEnabled = false
+                    setUsePercentValues(false)
+                    setDrawEntryLabels(true)
+                    setEntryLabelTextSize(14f)
+                    setEntryLabelColor(android.graphics.Color.WHITE)
+                    setCenterText("")
+                    setDrawCenterText(false)
+                    setHoleRadius(58f)
+                    setTransparentCircleRadius(61f)
+                    rotationAngle = -90f
+                    setRotationEnabled(false)
+                    legend.isEnabled = false
+                }
+            } catch (e: Exception) {
+                // Return a basic chart if initialization fails
+                MPAndroidPieChart(ctx)
             }
         },
         update = { chart ->
-            val entries = mutableListOf<PieEntry>()
-            entries.add(PieEntry(investmentPercentage, "$investmentPercentRounded"))
-            entries.add(PieEntry(returnsPercentage, "$returnsPercentRounded"))
-            
-            val dataSet = PieDataSet(entries, "").apply {
-                colors = listOf(
-                    android.graphics.Color.parseColor("#3F6EE4"),
-                    android.graphics.Color.parseColor("#00AF52")
-                )
-                setDrawValues(false)
-                valueTextColor = android.graphics.Color.WHITE
-                valueTextSize = 14f
+            try {
+                if (chart.isAttachedToWindow && chart.parent != null) {
+                    val entries = mutableListOf<PieEntry>()
+                    entries.add(PieEntry(investmentPercentage, "$investmentPercentRounded"))
+                    entries.add(PieEntry(returnsPercentage, "$returnsPercentRounded"))
+                    
+                    val dataSet = PieDataSet(entries, "").apply {
+                        colors = listOf(
+                            android.graphics.Color.parseColor("#3F6EE4"),
+                            android.graphics.Color.parseColor("#00AF52")
+                        )
+                        setDrawValues(false)
+                        valueTextColor = android.graphics.Color.WHITE
+                        valueTextSize = 14f
+                    }
+                    
+                    chart.data = PieData(dataSet)
+                    chart.animateY(1000)
+                    chart.invalidate()
+                }
+            } catch (e: Exception) {
+                // Ignore exceptions during chart updates to prevent crashes
             }
-            
-            chart.data = PieData(dataSet)
-            chart.animateY(1000)
-            chart.invalidate()
         },
         modifier = modifier
     )

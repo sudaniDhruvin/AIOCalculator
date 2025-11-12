@@ -604,7 +604,8 @@ fun AdvanceEMIPieChart(
 
     AndroidView(
         factory = { ctx ->
-            MPAndroidPieChart(ctx).apply {
+            try {
+                MPAndroidPieChart(ctx).apply {
                 description.isEnabled = false
                 setUsePercentValues(false)
                 setDrawEntryLabels(true)
@@ -653,35 +654,55 @@ fun AdvanceEMIPieChart(
                 }
 
                 data = PieData(dataSet)
-                invalidate()
+                
+                // Animate only if attached to window
+                post {
+                    try {
+                        if (isAttachedToWindow && parent != null) {
+                            invalidate()
+                        }
+                    } catch (e: Exception) {
+                        // Ignore exceptions during invalidation
+                    }
+                }
+            }
+            } catch (e: Exception) {
+                // Return a basic chart if initialization fails
+                MPAndroidPieChart(ctx)
             }
         },
         update = { chart ->
-            val entries = mutableListOf<PieEntry>()
-            entries.add(PieEntry(principalPercentage, "Principal"))
-            entries.add(PieEntry(interestPercentage, "Interest"))
+            try {
+                if (chart.isAttachedToWindow && chart.parent != null) {
+                    val entries = mutableListOf<PieEntry>()
+                    entries.add(PieEntry(principalPercentage, "Principal"))
+                    entries.add(PieEntry(interestPercentage, "Interest"))
 
-            val dataSet = PieDataSet(entries, "").apply {
-                colors = listOf(
-                    android.graphics.Color.parseColor("#3F6EE4"),
-                    android.graphics.Color.parseColor("#00AF52")
-                )
-                valueTextSize = 14f
-                valueTextColor = android.graphics.Color.WHITE
-                valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
-                    override fun getFormattedValue(value: Float): String {
-                        return String.format("%.0f", value)
+                    val dataSet = PieDataSet(entries, "").apply {
+                        colors = listOf(
+                            android.graphics.Color.parseColor("#3F6EE4"),
+                            android.graphics.Color.parseColor("#00AF52")
+                        )
+                        valueTextSize = 14f
+                        valueTextColor = android.graphics.Color.WHITE
+                        valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
+                            override fun getFormattedValue(value: Float): String {
+                                return String.format("%.0f", value)
+                            }
+                        }
+                        setDrawValues(true)
+                        setYValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
+                        setXValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
+                        setSliceSpace(2f)
                     }
-                }
-                setDrawValues(true)
-                setYValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
-                setXValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
-                setSliceSpace(2f)
-            }
 
-            chart.data = PieData(dataSet)
-            chart.animateY(1000)
-            chart.invalidate()
+                    chart.data = PieData(dataSet)
+                    chart.animateY(1000)
+                    chart.invalidate()
+                }
+            } catch (e: Exception) {
+                // Ignore exceptions during chart updates to prevent crashes
+            }
         },
         modifier = modifier
     )

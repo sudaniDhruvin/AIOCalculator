@@ -533,63 +533,78 @@ fun PieChart(
 
     AndroidView(
         factory = { ctx ->
-            MPAndroidPieChart(ctx).apply {
-                // Configure chart appearance - Donut chart
-                description.isEnabled = false
-                setUsePercentValues(false) // Use actual percentage values
-                setDrawEntryLabels(true)
-                setEntryLabelTextSize(12f)
-                setEntryLabelColor(android.graphics.Color.WHITE)
-                setCenterText("")
-                setDrawCenterText(false)
-                setHoleRadius(50f) // Make it a donut chart (50% hole radius)
-                setTransparentCircleRadius(0f)
-                rotationAngle = -90f // Start from top
-                setRotationEnabled(false)
-                animateY(1000)
-                
-                // Configure legend
-                legend.isEnabled = true
-                legend.verticalAlignment = com.github.mikephil.charting.components.Legend.LegendVerticalAlignment.CENTER
-                legend.horizontalAlignment = com.github.mikephil.charting.components.Legend.LegendHorizontalAlignment.RIGHT
-                legend.orientation = com.github.mikephil.charting.components.Legend.LegendOrientation.VERTICAL
-                legend.setDrawInside(false)
-                legend.xEntrySpace = 10f
-                legend.yEntrySpace = 12f
-                legend.textSize = 14f
-                legend.textColor = android.graphics.Color.BLACK
-                legend.form = com.github.mikephil.charting.components.Legend.LegendForm.CIRCLE
-                legend.formSize = 12f
-                legend.formToTextSpace = 8f
+            try {
+                MPAndroidPieChart(ctx).apply {
+                    // Configure chart appearance - Donut chart
+                    description.isEnabled = false
+                    setUsePercentValues(false) // Use actual percentage values
+                    setDrawEntryLabels(true)
+                    setEntryLabelTextSize(12f)
+                    setEntryLabelColor(android.graphics.Color.WHITE)
+                    setCenterText("")
+                    setDrawCenterText(false)
+                    setHoleRadius(50f) // Make it a donut chart (50% hole radius)
+                    setTransparentCircleRadius(0f)
+                    rotationAngle = -90f // Start from top
+                    setRotationEnabled(false)
+                    
+                    // Configure legend
+                    legend.isEnabled = true
+                    legend.verticalAlignment = com.github.mikephil.charting.components.Legend.LegendVerticalAlignment.CENTER
+                    legend.horizontalAlignment = com.github.mikephil.charting.components.Legend.LegendHorizontalAlignment.RIGHT
+                    legend.orientation = com.github.mikephil.charting.components.Legend.LegendOrientation.VERTICAL
+                    legend.setDrawInside(false)
+                    legend.xEntrySpace = 10f
+                    legend.yEntrySpace = 12f
+                    legend.textSize = 14f
+                    legend.textColor = android.graphics.Color.BLACK
+                    legend.form = com.github.mikephil.charting.components.Legend.LegendForm.CIRCLE
+                    legend.formSize = 12f
+                    legend.formToTextSpace = 8f
 
-                // Create data entries with labels
-                val entries = mutableListOf<PieEntry>()
-                entries.add(PieEntry(principalPercentage, "Principal"))
-                entries.add(PieEntry(interestPercentage, "Interest"))
-                
-                // Create dataset
-                val dataSet = PieDataSet(entries, "").apply {
-                    colors = listOf(
-                        android.graphics.Color.parseColor("#3F6EE4"), // Blue for Principal
-                        android.graphics.Color.parseColor("#00AF52")  // Green for Interest
-                    )
-                    valueTextSize = 14f
-                    valueTextColor = android.graphics.Color.WHITE
-                    valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
-                        override fun getFormattedValue(value: Float): String {
-                            return String.format("%.2f", value)
+                    // Create data entries with labels
+                    val entries = mutableListOf<PieEntry>()
+                    entries.add(PieEntry(principalPercentage, "Principal"))
+                    entries.add(PieEntry(interestPercentage, "Interest"))
+                    
+                    // Create dataset
+                    val dataSet = PieDataSet(entries, "").apply {
+                        colors = listOf(
+                            android.graphics.Color.parseColor("#3F6EE4"), // Blue for Principal
+                            android.graphics.Color.parseColor("#00AF52")  // Green for Interest
+                        )
+                        valueTextSize = 14f
+                        valueTextColor = android.graphics.Color.WHITE
+                        valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
+                            override fun getFormattedValue(value: Float): String {
+                                return String.format("%.2f", value)
+                            }
+                        }
+                        setDrawValues(true)
+                        // Show values and labels inside segments
+                        setYValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
+                        setXValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
+                        setSliceSpace(2f) // Add spacing between segments (exploded effect)
+                    }
+                    
+                    // Set data
+                    data = PieData(dataSet)
+                    
+                    // Animate only if attached to window
+                    post {
+                        try {
+                            if (isAttachedToWindow && parent != null) {
+                                animateY(1000)
+                                invalidate()
+                            }
+                        } catch (e: Exception) {
+                            // Ignore exceptions during animation
                         }
                     }
-                    setDrawValues(true)
-                    // Show values and labels inside segments
-                    setYValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
-                    setXValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
-                    setSliceSpace(2f) // Add spacing between segments (exploded effect)
                 }
-                
-                // Set data
-                data = PieData(dataSet)
-                invalidate()
+            } catch (e: Exception) {
+                // Return a basic chart if initialization fails
+                MPAndroidPieChart(ctx)
             }
         },
         modifier = modifier

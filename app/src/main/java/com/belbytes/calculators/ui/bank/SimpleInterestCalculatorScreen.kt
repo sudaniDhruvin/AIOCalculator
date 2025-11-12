@@ -7,6 +7,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -16,6 +19,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -81,6 +85,17 @@ fun SimpleInterestCalculatorScreen(
     var showResults by rememberSaveable { mutableStateOf(false) }
     var result by rememberSaveable { mutableStateOf<SimpleInterestResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
+    
+    val tabs = listOf("Duration", "Date")
+    val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
+    
+    // Sync selectedTab with pager state
+    LaunchedEffect(pagerState.currentPage) {
+        selectedTab = tabs[pagerState.currentPage]
+        showResults = false
+        result = null
+        errorMessage = null
+    }
 
     Column(
         modifier = Modifier
@@ -91,69 +106,71 @@ fun SimpleInterestCalculatorScreen(
         SimpleInterestCalculatorHeader(onBackClick = onBackClick)
 
         // Tabs
+        val scope = rememberCoroutineScope()
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(0.dp)
         ) {
-            // Duration Tab
-            TabButton(
-                text = "Duration",
-                selected = selectedTab == "Duration",
-                onClick = { selectedTab = "Duration" },
-                modifier = Modifier.weight(1f)
-            )
-            
-            // Date Tab
-            TabButton(
-                text = "Date",
-                selected = selectedTab == "Date",
-                onClick = { selectedTab = "Date" },
-                modifier = Modifier.weight(1f)
-            )
+            tabs.forEachIndexed { index, tab ->
+                TabButton(
+                    text = tab,
+                    selected = selectedTab == tab,
+                    onClick = { 
+                        scope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
 
-        // Form Content
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .imePadding()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            // Amount Input
-            SimpleInterestInputField(
-                label = "Amount",
-                placeholder = "Ex: 1,00,000",
-                value = amount,
-                onValueChange = { amount = it }
-            )
+        // Swipeable content
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxWidth()
+        ) { page ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .imePadding()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                // Amount Input
+                SimpleInterestInputField(
+                    label = "Amount",
+                    placeholder = "Ex: 1,00,000",
+                    value = amount,
+                    onValueChange = { amount = it }
+                )
 
-            // Interest Input
-            SimpleInterestInputField(
-                label = "Interest",
-                placeholder = "Ex: 7.5%",
-                value = interestRate,
-                onValueChange = { interestRate = it }
-            )
+                // Interest Input
+                SimpleInterestInputField(
+                    label = "Interest",
+                    placeholder = "Ex: 7.5%",
+                    value = interestRate,
+                    onValueChange = { interestRate = it }
+                )
 
-            // Conditional Fields based on Tab
-            if (selectedTab == "Duration") {
-                // Period Inputs in One Row
-                Column {
-                    Text(
-                        text = "Period",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.Gray,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
+                // Conditional Fields based on Tab
+                if (tabs[page] == "Duration") {
+                    // Period Inputs in One Row
+                    Column {
+                        Text(
+                            text = "Period",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color.Gray,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
                         // Years Input
                         Column(modifier = Modifier.weight(1f)) {
                             OutlinedTextField(
@@ -236,149 +253,149 @@ fun SimpleInterestCalculatorScreen(
                             )
                         }
                     }
-                }
-            } else {
-                // Date Inputs
-                val context = LocalContext.current
-                
-                // From Date
-                SimpleInterestDateField(
-                    label = "From Date",
-                    date = fromDate,
-                    onDateSelected = { fromDate = it },
-                    context = context
-                )
-                
-                // To Date
-                SimpleInterestDateField(
-                    label = "To Date",
-                    date = toDate,
-                    onDateSelected = { toDate = it },
-                    context = context
-                )
-            }
-
-            // Interest Type Radio Buttons
-            Column {
-                Text(
-                    text = "Interest Type",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(24.dp)
-                ) {
-                    SimpleInterestRadioButton(
-                        label = "Simple",
-                        selected = interestType == InterestType.SIMPLE,
-                        onClick = { interestTypeString = InterestType.SIMPLE.name }
+                    }
+                } else {
+                    // Date Inputs
+                    val context = LocalContext.current
+                    
+                    // From Date
+                    SimpleInterestDateField(
+                        label = "From Date",
+                        date = fromDate,
+                        onDateSelected = { fromDate = it },
+                        context = context
                     )
-                    SimpleInterestRadioButton(
-                        label = "Compound",
-                        selected = interestType == InterestType.COMPOUND,
-                        onClick = { interestTypeString = InterestType.COMPOUND.name }
+                    
+                    // To Date
+                    SimpleInterestDateField(
+                        label = "To Date",
+                        date = toDate,
+                        onDateSelected = { toDate = it },
+                        context = context
                     )
                 }
-            }
 
-            // Compounding Frequency Dropdown (only shown when Compound is selected)
-            AnimatedVisibility(
-                visible = interestType == InterestType.COMPOUND,
-                enter = expandVertically(
-                    animationSpec = tween(300),
-                    expandFrom = Alignment.Top
-                ) + fadeIn(
-                    animationSpec = tween(300)
-                ),
-                exit = shrinkVertically(
-                    animationSpec = tween(300),
-                    shrinkTowards = Alignment.Top
-                ) + fadeOut(
-                    animationSpec = tween(300)
-                )
-            ) {
-                SimpleInterestCompoundingDropdown(
-                    label = "Compounded",
-                    value = compoundingFrequency,
-                    onValueChange = { compoundingFrequency = it }
-                )
-            }
-
-            // Action Buttons
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Calculate Button
-                Button(
-                    onClick = {
-                        errorMessage = null
-                        val calculationResult = calculateSimpleInterest(
-                            selectedTab = selectedTab,
-                            amount = amount,
-                            interestRate = interestRate,
-                            years = years,
-                            months = months,
-                            days = days,
-                            fromDate = fromDate,
-                            toDate = toDate,
-                            interestType = interestType,
-                            compoundingFrequency = compoundingFrequency
+                // Interest Type Radio Buttons
+                Column {
+                    Text(
+                        text = "Interest Type",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(24.dp)
+                    ) {
+                        SimpleInterestRadioButton(
+                            label = "Simple",
+                            selected = interestType == InterestType.SIMPLE,
+                            onClick = { interestTypeString = InterestType.SIMPLE.name }
                         )
-                        if (calculationResult != null) {
-                            result = calculationResult
-                            showResults = true
+                        SimpleInterestRadioButton(
+                            label = "Compound",
+                            selected = interestType == InterestType.COMPOUND,
+                            onClick = { interestTypeString = InterestType.COMPOUND.name }
+                        )
+                    }
+                }
+
+                // Compounding Frequency Dropdown (only shown when Compound is selected)
+                AnimatedVisibility(
+                    visible = interestType == InterestType.COMPOUND,
+                    enter = expandVertically(
+                        animationSpec = tween(300),
+                        expandFrom = Alignment.Top
+                    ) + fadeIn(
+                        animationSpec = tween(300)
+                    ),
+                    exit = shrinkVertically(
+                        animationSpec = tween(300),
+                        shrinkTowards = Alignment.Top
+                    ) + fadeOut(
+                        animationSpec = tween(300)
+                    )
+                ) {
+                    SimpleInterestCompoundingDropdown(
+                        label = "Compounded",
+                        value = compoundingFrequency,
+                        onValueChange = { compoundingFrequency = it }
+                    )
+                }
+
+                // Action Buttons
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    // Calculate Button
+                    Button(
+                        onClick = {
                             errorMessage = null
-                        } else {
-                            showResults = false
-                            result = null
-                            errorMessage = when {
-                                amount.isBlank() || amount.toDoubleOrNull() == null || amount.toDoubleOrNull()!! <= 0 ->
-                                    "Please enter a valid amount"
-                                interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 ->
-                                    "Please enter a valid interest rate"
-                                selectedTab == "Duration" && years.isBlank() && months.isBlank() && days.isBlank() ->
-                                    "Please enter at least one period value"
-                                selectedTab == "Duration" && months.isNotBlank() -> {
-                                    val monthsValue = months.toDoubleOrNull()
-                                    when {
-                                        monthsValue == null -> "Please enter a valid number of months"
-                                        monthsValue < 0 -> "Months cannot be negative"
-                                        monthsValue > 12 -> "Months cannot exceed 12"
-                                        else -> null
-                                    } ?: ""
-                                }
-                                selectedTab == "Duration" && days.isNotBlank() -> {
-                                    val daysValue = days.toDoubleOrNull()
-                                    when {
-                                        daysValue == null -> "Please enter a valid number of days"
-                                        daysValue < 0 -> "Days cannot be negative"
-                                        daysValue > 31 -> "Days cannot exceed 31"
-                                        else -> null
-                                    } ?: ""
-                                }
-                                selectedTab == "Date" && (fromDate == null || toDate == null) ->
-                                    "Please select both from and to dates"
-                                selectedTab == "Date" && fromDate != null && toDate != null && fromDate!!.after(toDate) ->
-                                    "From date must be before or equal to to date"
-                                else -> {
-                                    // Check for invalid month/day values
-                                    val monthsValue = months.toDoubleOrNull()
-                                    val daysValue = days.toDoubleOrNull()
-                                    when {
-                                        monthsValue != null && monthsValue > 12 -> "Months cannot exceed 12"
-                                        daysValue != null && daysValue > 31 -> "Days cannot exceed 31"
-                                        else -> "Please check all input values"
+                            val calculationResult = calculateSimpleInterest(
+                                selectedTab = selectedTab,
+                                amount = amount,
+                                interestRate = interestRate,
+                                years = years,
+                                months = months,
+                                days = days,
+                                fromDate = fromDate,
+                                toDate = toDate,
+                                interestType = interestType,
+                                compoundingFrequency = compoundingFrequency
+                            )
+                            if (calculationResult != null) {
+                                result = calculationResult
+                                showResults = true
+                                errorMessage = null
+                            } else {
+                                showResults = false
+                                result = null
+                                errorMessage = when {
+                                    amount.isBlank() || amount.toDoubleOrNull() == null || amount.toDoubleOrNull()!! <= 0 ->
+                                        "Please enter a valid amount"
+                                    interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 ->
+                                        "Please enter a valid interest rate"
+                                    selectedTab == "Duration" && years.isBlank() && months.isBlank() && days.isBlank() ->
+                                        "Please enter at least one period value"
+                                    selectedTab == "Duration" && months.isNotBlank() -> {
+                                        val monthsValue = months.toDoubleOrNull()
+                                        when {
+                                            monthsValue == null -> "Please enter a valid number of months"
+                                            monthsValue < 0 -> "Months cannot be negative"
+                                            monthsValue > 12 -> "Months cannot exceed 12"
+                                            else -> null
+                                        } ?: ""
+                                    }
+                                    selectedTab == "Duration" && days.isNotBlank() -> {
+                                        val daysValue = days.toDoubleOrNull()
+                                        when {
+                                            daysValue == null -> "Please enter a valid number of days"
+                                            daysValue < 0 -> "Days cannot be negative"
+                                            daysValue > 31 -> "Days cannot exceed 31"
+                                            else -> null
+                                        } ?: ""
+                                    }
+                                    selectedTab == "Date" && (fromDate == null || toDate == null) ->
+                                        "Please select both from and to dates"
+                                    selectedTab == "Date" && fromDate != null && toDate != null && fromDate!!.after(toDate) ->
+                                        "From date must be before or equal to to date"
+                                    else -> {
+                                        // Check for invalid month/day values
+                                        val monthsValue = months.toDoubleOrNull()
+                                        val daysValue = days.toDoubleOrNull()
+                                        when {
+                                            monthsValue != null && monthsValue > 12 -> "Months cannot exceed 12"
+                                            daysValue != null && daysValue > 31 -> "Days cannot exceed 31"
+                                            else -> "Please check all input values"
+                                        }
                                     }
                                 }
                             }
-                        }
-                    },
+                        },
                     modifier = Modifier
                         .weight(1f)
                         .height(50.dp),
@@ -431,30 +448,31 @@ fun SimpleInterestCalculatorScreen(
                     )
                 }
             }
+        }
 
-            // Error Message Section
-            errorMessage?.let { error ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFFFEBEE)
-                    ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                ) {
-                    Text(
-                        text = error,
-                        fontSize = 14.sp,
-                        color = Color(0xFFC62828),
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
+        // Error Message Section
+        errorMessage?.let { error ->
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(8.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFFFFEBEE)
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Text(
+                    text = error,
+                    fontSize = 14.sp,
+                    color = Color(0xFFC62828),
+                    modifier = Modifier.padding(16.dp)
+                )
             }
+        }
 
-            // Results Section
-            AnimatedVisibility(
-                visible = showResults && result != null,
-                enter = expandVertically(
+        // Results Section
+        AnimatedVisibility(
+            visible = showResults && result != null,
+            enter = expandVertically(
                     animationSpec = tween(300),
                     expandFrom = Alignment.Top
                 ) + fadeIn(

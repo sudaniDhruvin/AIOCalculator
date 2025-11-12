@@ -3,6 +3,9 @@ package com.belbytes.calculators.ui.sip
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -43,6 +47,8 @@ data class QuickSIPResult(
 fun QuickSIPCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val tabs = listOf("SIP", "Lumpsum", "Plan")
+    val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
     var selectedTab by rememberSaveable { mutableStateOf("SIP") }
     
     // SIP Tab inputs
@@ -59,6 +65,11 @@ fun QuickSIPCalculatorScreen(
     var targetAmountPlan by rememberSaveable { mutableStateOf(1000f) } // Already at 500 increment
     var expReturnRatePlan by rememberSaveable { mutableStateOf(6f) }
     var periodYearsPlan by rememberSaveable { mutableStateOf(8f) }
+    
+    // Sync selectedTab with pager state
+    LaunchedEffect(pagerState.currentPage) {
+        selectedTab = tabs[pagerState.currentPage]
+    }
     
     val sipResult = remember(
         monthlyInvestmentSIP, expReturnRateSIP, periodYearsSIP,
@@ -96,108 +107,126 @@ fun QuickSIPCalculatorScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
                 .imePadding()
                 .padding(horizontal = 16.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             // Tabs
+            val scope = rememberCoroutineScope()
             QuickSIPTabs(
                 selectedTab = selectedTab,
-                onTabChange = { selectedTab = it }
+                pagerState = pagerState,
+                onTabChange = { index ->
+                    scope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
+                }
             )
             
-            // Input fields based on selected tab
-            when (selectedTab) {
-                "SIP" -> {
-                    QuickSIPSliderInputField(
-                        label = "Monthly Investment",
-                        value = monthlyInvestmentSIP,
-                        onValueChange = { monthlyInvestmentSIP = it },
-                        valueRange = 1000f..100000f,
-                        formatValue = { formatCurrency(it.toDouble()) },
-                        step = 500f
-                    )
-                    
-                    QuickSIPSliderInputField(
-                        label = "Exp. Return Rate (%)",
-                        value = expReturnRateSIP,
-                        onValueChange = { expReturnRateSIP = it },
-                        valueRange = 1f..30f,
-                        formatValue = { String.format("%.0f %%", it) }
-                    )
-                    
-                    QuickSIPSliderInputField(
-                        label = "Period (Years)",
-                        value = periodYearsSIP,
-                        onValueChange = { periodYearsSIP = it },
-                        valueRange = 1f..50f,
-                        formatValue = {
-                            val years = it.toInt()
-                            val months = (it * 12).toInt()
-                            "$years Yr - $months months"
+            // Swipeable content
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth()
+            ) { page ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    // Input fields based on selected tab
+                    when (tabs[page]) {
+                        "SIP" -> {
+                            QuickSIPSliderInputField(
+                                label = "Monthly Investment",
+                                value = monthlyInvestmentSIP,
+                                onValueChange = { monthlyInvestmentSIP = it },
+                                valueRange = 1000f..100000f,
+                                formatValue = { formatCurrency(it.toDouble()) },
+                                step = 500f
+                            )
+                            
+                            QuickSIPSliderInputField(
+                                label = "Exp. Return Rate (%)",
+                                value = expReturnRateSIP,
+                                onValueChange = { expReturnRateSIP = it },
+                                valueRange = 1f..30f,
+                                formatValue = { String.format("%.0f %%", it) }
+                            )
+                            
+                            QuickSIPSliderInputField(
+                                label = "Period (Years)",
+                                value = periodYearsSIP,
+                                onValueChange = { periodYearsSIP = it },
+                                valueRange = 1f..50f,
+                                formatValue = {
+                                    val years = it.toInt()
+                                    val months = (it * 12).toInt()
+                                    "$years Yr - $months months"
+                                }
+                            )
                         }
-                    )
-                }
-                "Lumpsum" -> {
-                    QuickSIPSliderInputField(
-                        label = "Total Investment",
-                        value = totalInvestmentLumpsum,
-                        onValueChange = { totalInvestmentLumpsum = it },
-                        valueRange = 1000f..100000f,
-                        formatValue = { formatCurrency(it.toDouble()) },
-                        step = 500f
-                    )
-                    
-                    QuickSIPSliderInputField(
-                        label = "Exp. Return Rate (%)",
-                        value = expReturnRateLumpsum,
-                        onValueChange = { expReturnRateLumpsum = it },
-                        valueRange = 1f..30f,
-                        formatValue = { String.format("%.0f %%", it) }
-                    )
-                    
-                    QuickSIPSliderInputField(
-                        label = "Period (Years)",
-                        value = periodYearsLumpsum,
-                        onValueChange = { periodYearsLumpsum = it },
-                        valueRange = 1f..50f,
-                        formatValue = {
-                            val years = it.toInt()
-                            val months = (it * 12).toInt()
-                            "$years Yr - $months months"
+                        "Lumpsum" -> {
+                            QuickSIPSliderInputField(
+                                label = "Total Investment",
+                                value = totalInvestmentLumpsum,
+                                onValueChange = { totalInvestmentLumpsum = it },
+                                valueRange = 1000f..100000f,
+                                formatValue = { formatCurrency(it.toDouble()) },
+                                step = 500f
+                            )
+                            
+                            QuickSIPSliderInputField(
+                                label = "Exp. Return Rate (%)",
+                                value = expReturnRateLumpsum,
+                                onValueChange = { expReturnRateLumpsum = it },
+                                valueRange = 1f..30f,
+                                formatValue = { String.format("%.0f %%", it) }
+                            )
+                            
+                            QuickSIPSliderInputField(
+                                label = "Period (Years)",
+                                value = periodYearsLumpsum,
+                                onValueChange = { periodYearsLumpsum = it },
+                                valueRange = 1f..50f,
+                                formatValue = {
+                                    val years = it.toInt()
+                                    val months = (it * 12).toInt()
+                                    "$years Yr - $months months"
+                                }
+                            )
                         }
-                    )
-                }
-                "Plan" -> {
-                    QuickSIPSliderInputField(
-                        label = "Target Amount",
-                        value = targetAmountPlan,
-                        onValueChange = { targetAmountPlan = it },
-                        valueRange = 1000f..100000f,
-                        formatValue = { formatCurrency(it.toDouble()) },
-                        step = 500f
-                    )
-                    
-                    QuickSIPSliderInputField(
-                        label = "Exp. Return Rate (%)",
-                        value = expReturnRatePlan,
-                        onValueChange = { expReturnRatePlan = it },
-                        valueRange = 1f..30f,
-                        formatValue = { String.format("%.0f %%", it) }
-                    )
-                    
-                    QuickSIPSliderInputField(
-                        label = "Period (Years)",
-                        value = periodYearsPlan,
-                        onValueChange = { periodYearsPlan = it },
-                        valueRange = 1f..50f,
-                        formatValue = {
-                            val years = it.toInt()
-                            val months = (it * 12).toInt()
-                            "$years Yr - $months months"
+                        "Plan" -> {
+                            QuickSIPSliderInputField(
+                                label = "Target Amount",
+                                value = targetAmountPlan,
+                                onValueChange = { targetAmountPlan = it },
+                                valueRange = 1000f..100000f,
+                                formatValue = { formatCurrency(it.toDouble()) },
+                                step = 500f
+                            )
+                            
+                            QuickSIPSliderInputField(
+                                label = "Exp. Return Rate (%)",
+                                value = expReturnRatePlan,
+                                onValueChange = { expReturnRatePlan = it },
+                                valueRange = 1f..30f,
+                                formatValue = { String.format("%.0f %%", it) }
+                            )
+                            
+                            QuickSIPSliderInputField(
+                                label = "Period (Years)",
+                                value = periodYearsPlan,
+                                onValueChange = { periodYearsPlan = it },
+                                valueRange = 1f..50f,
+                                formatValue = {
+                                    val years = it.toInt()
+                                    val months = (it * 12).toInt()
+                                    "$years Yr - $months months"
+                                }
+                            )
                         }
-                    )
+                    }
                 }
             }
             
@@ -250,8 +279,10 @@ fun QuickSIPCalculatorHeader(onBackClick: () -> Unit) {
 @Composable
 fun QuickSIPTabs(
     selectedTab: String,
-    onTabChange: (String) -> Unit
+    pagerState: PagerState,
+    onTabChange: (Int) -> Unit
 ) {
+    val tabs = listOf("SIP", "Lumpsum", "Plan")
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -259,26 +290,14 @@ fun QuickSIPTabs(
             .padding(4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        QuickSIPTabButton(
-            text = "SIP",
-            isSelected = selectedTab == "SIP",
-            onClick = { onTabChange("SIP") },
-            modifier = Modifier.weight(1f)
-        )
-        
-        QuickSIPTabButton(
-            text = "Lumpsum",
-            isSelected = selectedTab == "Lumpsum",
-            onClick = { onTabChange("Lumpsum") },
-            modifier = Modifier.weight(1f)
-        )
-        
-        QuickSIPTabButton(
-            text = "Plan",
-            isSelected = selectedTab == "Plan",
-            onClick = { onTabChange("Plan") },
-            modifier = Modifier.weight(1f)
-        )
+        tabs.forEachIndexed { index, tab ->
+            QuickSIPTabButton(
+                text = tab,
+                isSelected = selectedTab == tab,
+                onClick = { onTabChange(index) },
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }
 
@@ -525,39 +544,50 @@ fun QuickSIPDonutChart(
     
     AndroidView(
         factory = { ctx ->
-            MPAndroidPieChart(ctx).apply {
-                description.isEnabled = false
-                setUsePercentValues(false)
-                setDrawEntryLabels(true)
-                setEntryLabelTextSize(14f)
-                setEntryLabelColor(android.graphics.Color.WHITE)
-                setCenterText("")
-                setDrawCenterText(false)
-                setHoleRadius(58f)
-                setTransparentCircleRadius(61f)
-                rotationAngle = -90f
-                setRotationEnabled(false)
-                legend.isEnabled = false
+            try {
+                MPAndroidPieChart(ctx).apply {
+                    description.isEnabled = false
+                    setUsePercentValues(false)
+                    setDrawEntryLabels(true)
+                    setEntryLabelTextSize(14f)
+                    setEntryLabelColor(android.graphics.Color.WHITE)
+                    setCenterText("")
+                    setDrawCenterText(false)
+                    setHoleRadius(58f)
+                    setTransparentCircleRadius(61f)
+                    rotationAngle = -90f
+                    setRotationEnabled(false)
+                    legend.isEnabled = false
+                }
+            } catch (e: Exception) {
+                // Return a basic chart if initialization fails
+                MPAndroidPieChart(ctx)
             }
         },
         update = { chart ->
-            val entries = mutableListOf<PieEntry>()
-            entries.add(PieEntry(investmentPercentage, "$investmentPercentRounded"))
-            entries.add(PieEntry(returnsPercentage, "$returnsPercentRounded"))
-            
-            val dataSet = PieDataSet(entries, "").apply {
-                colors = listOf(
-                    android.graphics.Color.parseColor("#3F6EE4"),
-                    android.graphics.Color.parseColor("#00AF52")
-                )
-                setDrawValues(false)
-                valueTextColor = android.graphics.Color.WHITE
-                valueTextSize = 14f
+            try {
+                if (chart.isAttachedToWindow && chart.parent != null) {
+                    val entries = mutableListOf<PieEntry>()
+                    entries.add(PieEntry(investmentPercentage, "$investmentPercentRounded"))
+                    entries.add(PieEntry(returnsPercentage, "$returnsPercentRounded"))
+                    
+                    val dataSet = PieDataSet(entries, "").apply {
+                        colors = listOf(
+                            android.graphics.Color.parseColor("#3F6EE4"),
+                            android.graphics.Color.parseColor("#00AF52")
+                        )
+                        setDrawValues(false)
+                        valueTextColor = android.graphics.Color.WHITE
+                        valueTextSize = 14f
+                    }
+                    
+                    chart.data = PieData(dataSet)
+                    chart.animateY(1000)
+                    chart.invalidate()
+                }
+            } catch (e: Exception) {
+                // Ignore exceptions during chart updates to prevent crashes
             }
-            
-            chart.data = PieData(dataSet)
-            chart.animateY(1000)
-            chart.invalidate()
         },
         modifier = modifier
     )

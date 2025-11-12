@@ -3,6 +3,9 @@ package com.belbytes.calculators.ui.emi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -40,6 +44,8 @@ import kotlin.math.roundToInt
 fun QuickCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val categories = listOf("EMI", "Amount")
+    val pagerState = rememberPagerState(initialPage = 0) { categories.size }
     var selectedCategory by rememberSaveable { mutableStateOf("EMI") }
     
     var amountEMI by rememberSaveable { mutableStateOf(100000f) }
@@ -49,6 +55,11 @@ fun QuickCalculatorScreen(
     var amountAmount by rememberSaveable { mutableStateOf(100000f) }
     var interestRateAmount by rememberSaveable { mutableStateOf(1.0f) }
     var monthlyEMI by rememberSaveable { mutableStateOf(1000f) }
+    
+    // Sync selectedCategory with pager state
+    LaunchedEffect(pagerState.currentPage) {
+        selectedCategory = categories[pagerState.currentPage]
+    }
     
     val emiResult = remember(amountEMI, interestRateEMI, periodYearsEMI, amountAmount, interestRateAmount, monthlyEMI, selectedCategory) {
         if (selectedCategory == "EMI") {
@@ -68,7 +79,6 @@ fun QuickCalculatorScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
                 .imePadding()
                 .padding(horizontal = 16.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
@@ -80,65 +90,85 @@ fun QuickCalculatorScreen(
                     .padding(bottom = 8.dp)
             )
             
+            val scope = rememberCoroutineScope()
             CategoryToggle(
                 selectedCategory = selectedCategory,
-                onCategoryChange = { selectedCategory = it }
+                pagerState = pagerState,
+                onCategoryChange = { index ->
+                    scope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
+                }
             )
             
-            if (selectedCategory == "EMI") {
-                SliderInputField(
-                    label = "Amount",
-                    value = amountEMI,
-                    onValueChange = { amountEMI = it },
-                    valueRange = 100000f..10000000f,
-                    formatValue = { formatCurrency(it.toDouble()) }
-                )
-                
-                SliderInputField(
-                    label = "Interest (%)",
-                    value = interestRateEMI,
-                    onValueChange = { interestRateEMI = it },
-                    valueRange = 1.0f..30.0f,
-                    formatValue = { String.format("%.1f %%", it) }
-                )
-                
-                SliderInputField(
-                    label = "Period (Years)",
-                    value = periodYearsEMI,
-                    onValueChange = { periodYearsEMI = it },
-                    valueRange = 1f..100f,
-                    formatValue = { 
-                        val years = it.toInt()
-                        val months = (it * 12).toInt()
-                        "$years Yr - $months months"
+            // Swipeable content
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth()
+            ) { page ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    if (categories[page] == "EMI") {
+                        SliderInputField(
+                            label = "Amount",
+                            value = amountEMI,
+                            onValueChange = { amountEMI = it },
+                            valueRange = 100000f..10000000f,
+                            formatValue = { formatCurrency(it.toDouble()) }
+                        )
+                        
+                        SliderInputField(
+                            label = "Interest (%)",
+                            value = interestRateEMI,
+                            onValueChange = { interestRateEMI = it },
+                            valueRange = 1.0f..30.0f,
+                            formatValue = { String.format("%.1f %%", it) }
+                        )
+                        
+                        SliderInputField(
+                            label = "Period (Years)",
+                            value = periodYearsEMI,
+                            onValueChange = { periodYearsEMI = it },
+                            valueRange = 1f..100f,
+                            formatValue = { 
+                                val years = it.toInt()
+                                val months = (it * 12).toInt()
+                                "$years Yr - $months months"
+                            }
+                        )
+                    } else {
+                        SliderInputField(
+                            label = "Amount",
+                            value = amountAmount,
+                            onValueChange = { amountAmount = it },
+                            valueRange = 100000f..10000000f,
+                            formatValue = { formatCurrency(it.toDouble()) }
+                        )
+                        
+                        SliderInputField(
+                            label = "Interest (%)",
+                            value = interestRateAmount,
+                            onValueChange = { interestRateAmount = it },
+                            valueRange = 1.0f..30.0f,
+                            formatValue = { String.format("%.1f %%", it) }
+                        )
+                        
+                        SliderInputField(
+                            label = "Monthly EMI",
+                            value = monthlyEMI,
+                            onValueChange = { monthlyEMI = it },
+                            valueRange = 1000f..100000f,
+                            formatValue = { formatCurrency(it.toDouble()) }
+                        )
                     }
-                )
-            } else {
-                SliderInputField(
-                    label = "Amount",
-                    value = amountAmount,
-                    onValueChange = { amountAmount = it },
-                    valueRange = 100000f..10000000f,
-                    formatValue = { formatCurrency(it.toDouble()) }
-                )
-                
-                SliderInputField(
-                    label = "Interest (%)",
-                    value = interestRateAmount,
-                    onValueChange = { interestRateAmount = it },
-                    valueRange = 1.0f..30.0f,
-                    formatValue = { String.format("%.1f %%", it) }
-                )
-                
-                SliderInputField(
-                    label = "Monthly EMI",
-                    value = monthlyEMI,
-                    onValueChange = { monthlyEMI = it },
-                    valueRange = 1000f..100000f,
-                    formatValue = { formatCurrency(it.toDouble()) }
-                )
+                }
             }
             
+            // Results Section
             if (emiResult != null) {
                 ResultsSection(
                     emiResult = emiResult,
@@ -194,8 +224,10 @@ fun QuickCalculatorHeader(onBackClick: () -> Unit) {
 @Composable
 fun CategoryToggle(
     selectedCategory: String,
-    onCategoryChange: (String) -> Unit
+    pagerState: PagerState,
+    onCategoryChange: (Int) -> Unit
 ) {
+    val categories = listOf("EMI", "Amount")
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -203,19 +235,14 @@ fun CategoryToggle(
             .padding(4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        CategoryButton(
-            text = "EMI",
-            isSelected = selectedCategory == "EMI",
-            onClick = { onCategoryChange("EMI") },
-            modifier = Modifier.weight(1f)
-        )
-        
-        CategoryButton(
-            text = "Amount",
-            isSelected = selectedCategory == "Amount",
-            onClick = { onCategoryChange("Amount") },
-            modifier = Modifier.weight(1f)
-        )
+        categories.forEachIndexed { index, category ->
+            CategoryButton(
+                text = category,
+                isSelected = selectedCategory == category,
+                onClick = { onCategoryChange(index) },
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }
 
@@ -427,49 +454,60 @@ fun QuickPieChart(
     
     AndroidView(
         factory = { ctx ->
-            MPAndroidPieChart(ctx).apply {
-                description.isEnabled = false
-                setUsePercentValues(false)
-                setDrawEntryLabels(true)
-                setEntryLabelTextSize(12f)
-                setEntryLabelColor(android.graphics.Color.WHITE)
-                setCenterText("")
-                setDrawCenterText(false)
-                setHoleRadius(50f)
-                setTransparentCircleRadius(0f)
-                rotationAngle = -90f
-                setRotationEnabled(false)
-                
-                legend.isEnabled = false
+            try {
+                MPAndroidPieChart(ctx).apply {
+                    description.isEnabled = false
+                    setUsePercentValues(false)
+                    setDrawEntryLabels(true)
+                    setEntryLabelTextSize(12f)
+                    setEntryLabelColor(android.graphics.Color.WHITE)
+                    setCenterText("")
+                    setDrawCenterText(false)
+                    setHoleRadius(50f)
+                    setTransparentCircleRadius(0f)
+                    rotationAngle = -90f
+                    setRotationEnabled(false)
+                    
+                    legend.isEnabled = false
+                }
+            } catch (e: Exception) {
+                // Return a basic chart if initialization fails
+                MPAndroidPieChart(ctx)
             }
         },
         update = { chart ->
-            // Update chart data when principal or interest changes
-            val entries = mutableListOf<PieEntry>()
-            entries.add(PieEntry(principalPercentage, "Principal"))
-            entries.add(PieEntry(interestPercentage, "Interest"))
-            
-            val dataSet = PieDataSet(entries, "").apply {
-                colors = listOf(
-                    android.graphics.Color.parseColor("#3F6EE4"),
-                    android.graphics.Color.parseColor("#00AF52")
-                )
-                valueTextSize = 14f
-                valueTextColor = android.graphics.Color.WHITE
-                valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
-                    override fun getFormattedValue(value: Float): String {
-                        return String.format("%.0f", value)
+            try {
+                if (chart.isAttachedToWindow && chart.parent != null) {
+                    // Update chart data when principal or interest changes
+                    val entries = mutableListOf<PieEntry>()
+                    entries.add(PieEntry(principalPercentage, "Principal"))
+                    entries.add(PieEntry(interestPercentage, "Interest"))
+                    
+                    val dataSet = PieDataSet(entries, "").apply {
+                        colors = listOf(
+                            android.graphics.Color.parseColor("#3F6EE4"),
+                            android.graphics.Color.parseColor("#00AF52")
+                        )
+                        valueTextSize = 14f
+                        valueTextColor = android.graphics.Color.WHITE
+                        valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
+                            override fun getFormattedValue(value: Float): String {
+                                return String.format("%.0f", value)
+                            }
+                        }
+                        setDrawValues(true)
+                        setYValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
+                        setXValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
+                        setSliceSpace(2f)
                     }
+                    
+                    chart.data = PieData(dataSet)
+                    chart.animateY(1000)
+                    chart.invalidate()
                 }
-                setDrawValues(true)
-                setYValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
-                setXValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
-                setSliceSpace(2f)
+            } catch (e: Exception) {
+                // Ignore exceptions during chart updates to prevent crashes
             }
-            
-            chart.data = PieData(dataSet)
-            chart.animateY(1000)
-            chart.invalidate()
         },
         modifier = modifier
     )
