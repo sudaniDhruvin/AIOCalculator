@@ -153,9 +153,9 @@ fun AdvanceSIPCalculatorScreen(
                         checked = stepUpEnabled,
                         onCheckedChange = { stepUpEnabled = it },
                         colors = SwitchDefaults.colors(
-                            checkedThumbColor = Color.Black,
-                            checkedTrackColor = Color(0xFF424242),
-                            uncheckedThumbColor = Color(0xFF9E9E9E),
+                            checkedThumbColor = Color.White,
+                            checkedTrackColor = Color(0xFF2196F3),
+                            uncheckedThumbColor = Color.White,
                             uncheckedTrackColor = Color(0xFFE0E0E0)
                         )
                     )
@@ -514,9 +514,9 @@ fun AdvanceSIPInputFieldWithToggle(
                 checked = enabled,
                 onCheckedChange = onToggleChange,
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = Color.Black,
-                    checkedTrackColor = Color(0xFF424242),
-                    uncheckedThumbColor = Color(0xFF9E9E9E),
+                    checkedThumbColor = Color.White,
+                    checkedTrackColor = Color(0xFF2196F3),
+                    uncheckedThumbColor = Color.White,
                     uncheckedTrackColor = Color(0xFFE0E0E0)
                 )
             )
