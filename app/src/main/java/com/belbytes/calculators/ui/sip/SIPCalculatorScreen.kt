@@ -270,7 +270,7 @@ fun SIPCalculatorScreen(
                         .weight(1f)
                         .height(50.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF2079EC)
+                        containerColor = Color(0xFF2196F3)
                     ),
                     shape = RoundedCornerShape(8.dp)
                 ) {
@@ -451,7 +451,7 @@ fun SIPCalculatorHeader(onBackClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(110.dp)
-            .background(Color(0xFF2079EC))
+            .background(Color(0xFF2196F3))
             .statusBarsPadding()
     ) {
         IconButton(
@@ -516,7 +516,7 @@ fun SIPCalculatorTabButton(
         onClick = onClick,
         modifier = modifier.height(40.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) Color(0xFF2079EC) else Color(0xFFEEEEEE)
+            containerColor = if (isSelected) Color(0xFF2196F3) else Color(0xFFEEEEEE)
         ),
         shape = RoundedCornerShape(6.dp),
         elevation = ButtonDefaults.buttonElevation(

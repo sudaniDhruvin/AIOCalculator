@@ -201,7 +201,7 @@ fun EMICalculatorScreen(
                         .weight(1f)
                         .height(50.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF2079EC)
+                        containerColor = Color(0xFF2196F3)
                     ),
                     shape = RoundedCornerShape(8.dp)
                 ) {
@@ -359,7 +359,7 @@ fun EMICalculatorScreen(
                                 .fillMaxWidth()
                                 .padding(top = 25.dp, start = 28.dp, end = 28.dp, bottom = 35.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF2079EC)
+                                containerColor = Color(0xFF2196F3)
                             ),
                             shape = RoundedCornerShape(8.dp)
                         ) {

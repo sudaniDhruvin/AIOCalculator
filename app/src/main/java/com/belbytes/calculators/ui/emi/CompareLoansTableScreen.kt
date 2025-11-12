@@ -91,7 +91,7 @@ fun CompareLoansTableScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(
-                                    Color(0xFF2079EC),
+                                    Color(0xFF2196F3),
                                     shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
                                 )
                                 .padding(vertical = 14.dp, horizontal = 12.dp),
@@ -149,7 +149,7 @@ fun CompareLoansTableScreen(
                     .padding(horizontal = 24.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF2079EC)
+                    containerColor = Color(0xFF2196F3)
                 ),
             ) {
                 Icon(
@@ -371,7 +371,7 @@ fun AddLoanDialog(
                             .height(50.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF2079EC)
+                            containerColor = Color(0xFF2196F3)
                         ),
                         elevation = ButtonDefaults.buttonElevation(
                             defaultElevation = 0.dp,
@@ -502,7 +502,7 @@ fun CompareLoansTableHeader(onBackClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(110.dp)
-            .background(Color(0xFF2079EC))
+            .background(Color(0xFF2196F3))
             .statusBarsPadding()
     ) {
         IconButton(

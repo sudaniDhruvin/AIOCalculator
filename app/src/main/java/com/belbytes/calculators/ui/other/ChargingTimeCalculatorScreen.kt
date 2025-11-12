@@ -115,7 +115,7 @@ fun ChargingTimeCalculatorScreen(
                         .weight(1f)
                         .height(50.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF4257B2)
+                        containerColor = Color(0xFF2196F3)
                     ),
                     shape = RoundedCornerShape(8.dp)
                 ) {
@@ -140,7 +140,7 @@ fun ChargingTimeCalculatorScreen(
                         .weight(1f)
                         .height(50.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFE0E0E0)
+                        containerColor = Color(0xFFEBEBEB)
                     ),
                     shape = RoundedCornerShape(8.dp)
                 ) {
@@ -234,7 +234,7 @@ fun ChargingTimeCalculatorHeader(onBackClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(110.dp)
-            .background(Color(0xFF4257B2))
+            .background(Color(0xFF2196F3))
             .statusBarsPadding()
     ) {
         IconButton(

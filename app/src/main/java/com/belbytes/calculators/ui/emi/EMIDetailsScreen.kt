@@ -98,7 +98,7 @@ fun EMIDetailsScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color(0xFF2079EC), RoundedCornerShape(8.dp))
+                            .background(Color(0xFF2196F3), RoundedCornerShape(8.dp))
                             .padding(12.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -142,7 +142,7 @@ fun EMIDetailsHeader(onBackClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(110.dp)
-            .background(Color(0xFF2079EC))
+            .background(Color(0xFF2196F3))
             .statusBarsPadding()
     ) {
         IconButton(

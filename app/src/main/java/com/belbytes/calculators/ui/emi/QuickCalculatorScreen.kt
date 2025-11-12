@@ -257,7 +257,7 @@ fun CategoryButton(
         onClick = onClick,
         modifier = modifier.height(40.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) Color(0xFF2079EC) else Color(0xFFEEEEEE)
+            containerColor = if (isSelected) Color(0xFF2196F3) else Color(0xFFEEEEEE)
         ),
         shape = RoundedCornerShape(6.dp),
         elevation = ButtonDefaults.buttonElevation(

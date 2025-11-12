@@ -87,7 +87,7 @@ fun CompareSIPScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(Color(0xFF2079EC))
+                                .background(Color(0xFF2196F3))
                                 .padding(vertical = 14.dp, horizontal = 12.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
@@ -145,7 +145,7 @@ fun CompareSIPScreen(
                         .height(55.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF2079EC)
+                        containerColor = Color(0xFF2196F3)
                     ),
                 ) {
                     Icon(
@@ -369,7 +369,7 @@ fun AddSIPDialog(
                             .height(50.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF2079EC)
+                            containerColor = Color(0xFF2196F3)
                         ),
                         elevation = ButtonDefaults.buttonElevation(
                             defaultElevation = 0.dp,
@@ -436,7 +436,7 @@ fun CompareSIPHeader(onBackClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(110.dp)
-            .background(Color(0xFF2079EC))
+            .background(Color(0xFF2196F3))
             .statusBarsPadding()
     ) {
         IconButton(

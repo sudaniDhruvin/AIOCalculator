@@ -144,7 +144,7 @@ fun SWPCalculatorScreen(
                         .weight(1f)
                         .height(50.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF2079EC)
+                        containerColor = Color(0xFF2196F3)
                     ),
                     shape = RoundedCornerShape(8.dp)
                 ) {
@@ -280,7 +280,7 @@ fun SWPCalculatorHeader(onBackClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(110.dp)
-            .background(Color(0xFF2079EC))
+            .background(Color(0xFF2196F3))
             .statusBarsPadding()
     ) {
         IconButton(

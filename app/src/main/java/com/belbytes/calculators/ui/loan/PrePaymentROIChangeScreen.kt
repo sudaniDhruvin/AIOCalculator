@@ -246,7 +246,7 @@ fun PrePaymentROIChangeScreen(
                         .weight(1f)
                         .height(50.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF2079EC)
+                        containerColor = Color(0xFF2196F3)
                     ),
                     shape = RoundedCornerShape(8.dp)
                 ) {
@@ -397,7 +397,7 @@ fun PrePaymentROIChangeHeader(onBackClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(110.dp)
-            .background(Color(0xFF2079EC))
+            .background(Color(0xFF2196F3))
             .statusBarsPadding()
     ) {
         IconButton(
@@ -442,7 +442,7 @@ fun TabButton(
             text = text,
             fontSize = 16.sp,
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-            color = if (selected) Color(0xFF2079EC) else Color(0xFF757575),
+            color = if (selected) Color(0xFF2196F3) else Color(0xFF757575),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 12.dp),
@@ -453,7 +453,7 @@ fun TabButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(2.dp)
-                    .background(Color(0xFF2079EC))
+                    .background(Color(0xFF2196F3))
             )
         }
     }

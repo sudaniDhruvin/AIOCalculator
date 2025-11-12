@@ -252,7 +252,7 @@ fun CompareLoansScreen(
                         .height(50.dp),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF2079EC)
+                        containerColor = Color(0xFF2196F3)
                     ),
                     elevation = ButtonDefaults.buttonElevation(
                         defaultElevation = 0.dp,
@@ -436,7 +436,7 @@ fun CompareLoansScreen(
                         .padding(top = 16.dp).padding(horizontal = 20.dp),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF2079EC)
+                        containerColor = Color(0xFF2196F3)
                     ),
                 ) {
                     Text(
@@ -464,7 +464,7 @@ fun CompareLoansHeader(onBackClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(110.dp)
-            .background(Color(0xFF2079EC))
+            .background(Color(0xFF2196F3))
             .statusBarsPadding()
     ) {
         IconButton(
@@ -625,7 +625,7 @@ fun CompareResultCard(
                 text = "Difference : ${formatCurrencyWithDecimal(difference)}",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Normal,
-                color = Color(0xFF2079EC),
+                color = Color(0xFF2196F3),
                 textAlign = TextAlign.Center
             )
         }
