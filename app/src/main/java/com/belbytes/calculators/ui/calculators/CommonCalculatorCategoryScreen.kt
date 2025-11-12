@@ -187,7 +187,7 @@ fun CalculatorCategoryCard(
         ) {
             Box(
                 modifier = Modifier
-                    .size(56.dp)
+                    .size(46.dp)
                     .background(
                         color = iconColor,
                         shape = RoundedCornerShape(12.dp)
