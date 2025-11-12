@@ -63,12 +63,25 @@ data class FeaturedTool(
 
 data class RecentCalculation(
     val id: String,
+    @SerializedName("calculatorId") val calculatorId: String = "",
     @SerializedName("calculatorType") val calculatorType: String,
     val date: String,
     @SerializedName("iconName") val iconName: String,
     @SerializedName("detailsRoute") val detailsRoute: String,
     val color: String
-)
+) {
+    /**
+     * Get effective calculator ID, extracting from detailsRoute if calculatorId is not set
+     */
+    fun getEffectiveCalculatorId(): String {
+        return if (calculatorId.isNotEmpty()) {
+            calculatorId
+        } else {
+            // Extract calculator ID from detailsRoute format: "/category/details/calculatorId"
+            detailsRoute.split("/").lastOrNull() ?: ""
+        }
+    }
+}
 
 data class BottomNavItem(
     val id: String,

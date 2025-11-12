@@ -171,8 +171,9 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
                         "/other_calculators" -> navController.navigate(Screen.OtherCalculators.route)
                     }
                 },
-                onRecentCalculationClick = { route ->
-                    // Handle navigation to calculation details
+                onRecentCalculationClick = { calculatorId ->
+                    // Navigate to the specific calculator screen (sub-category)
+                    navigateToCalculatorScreen(navController, calculatorId)
                 },
                 onViewAllFeatured = {
                     navController.navigate(Screen.Calculators.route)

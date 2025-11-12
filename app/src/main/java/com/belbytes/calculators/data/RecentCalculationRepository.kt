@@ -80,6 +80,7 @@ private fun RecentCalculationEntity.toRecentCalculation(): RecentCalculation {
     
     return RecentCalculation(
         id = this.id.toString(),
+        calculatorId = this.calculatorId,
         calculatorType = this.calculatorType,
         date = date,
         iconName = this.iconName,

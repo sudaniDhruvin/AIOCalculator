@@ -385,7 +385,7 @@ fun RecentCalculationsSection(
                 calculations.forEach { calculation ->
                     RecentCalculationCard(
                         calculation = calculation,
-                        onClick = { onCalculationClick(calculation.detailsRoute) }
+                        onClick = { onCalculationClick(calculation.getEffectiveCalculatorId()) }
                     )
                 }
             }
