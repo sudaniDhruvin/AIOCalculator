@@ -153,8 +153,7 @@ fun CalculatorCard(
 ) {
     Card(
         modifier = modifier
-            .width(80.dp)
-            .height(80.dp)
+            .aspectRatio(1f)
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -163,7 +162,7 @@ fun CalculatorCard(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp),
+                .padding(horizontal = 6.dp, vertical = 6.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -181,10 +180,11 @@ fun CalculatorCard(
                 fontWeight = FontWeight.Normal,
                 color = Color.Black,
                 textAlign = TextAlign.Center,
-                lineHeight = 14.sp,
+                lineHeight = 13.sp,
                 modifier = Modifier.fillMaxWidth(),
-                maxLines = 3,
-                overflow = TextOverflow.Visible
+                maxLines = 2,
+                overflow = TextOverflow.Visible,
+                minLines = 1
             )
         }
     }

@@ -181,7 +181,7 @@ fun CalculatorCategoryCard(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp),
+                .padding(horizontal = 6.dp, vertical = 6.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -201,7 +201,7 @@ fun CalculatorCategoryCard(
                 )
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             
             Text(
                 text = calculator.name,
@@ -210,9 +210,12 @@ fun CalculatorCategoryCard(
                 color = Color.Black,
                 textAlign = TextAlign.Center,
                 lineHeight = 16.sp,
-                modifier = Modifier.fillMaxWidth(),
-                maxLines = 3,
-                overflow = TextOverflow.Visible
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 6.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Visible,
+                minLines = 1
             )
         }
     }
