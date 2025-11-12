@@ -45,6 +45,7 @@ fun CashNoteCounterScreen(
     
     var showResults by rememberSaveable { mutableStateOf(false) }
     var totalAmount by rememberSaveable { mutableStateOf(0.0) }
+    var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -144,12 +145,24 @@ fun CashNoteCounterScreen(
                 // Calculate Button
                 Button(
                     onClick = {
-                        val result = calculateCashTotal(
-                            note2000, note500, note200, note100, note50,
-                            note20, note10, note5, note2, note1
-                        )
-                        totalAmount = result
-                        showResults = true
+                        errorMessage = null
+                        // Validate that all note counts are valid numbers (if entered)
+                        val notes = listOf(note2000, note500, note200, note100, note50, note20, note10, note5, note2, note1)
+                        val hasInvalidNote = notes.any { it.isNotBlank() && (it.toIntOrNull() == null || it.toIntOrNull()!! < 0) }
+                        
+                        if (hasInvalidNote) {
+                            errorMessage = "Please enter valid note counts"
+                            showResults = false
+                            totalAmount = 0.0
+                        } else {
+                            val result = calculateCashTotal(
+                                note2000, note500, note200, note100, note50,
+                                note20, note10, note5, note2, note1
+                            )
+                            totalAmount = result
+                            showResults = true
+                            errorMessage = null
+                        }
                     },
                     modifier = Modifier
                         .weight(1f)
@@ -182,6 +195,7 @@ fun CashNoteCounterScreen(
                         note1 = ""
                         showResults = false
                         totalAmount = 0.0
+                        errorMessage = null
                     },
                     modifier = Modifier
                         .weight(1f)

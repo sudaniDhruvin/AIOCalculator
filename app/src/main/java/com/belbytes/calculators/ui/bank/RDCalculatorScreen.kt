@@ -54,6 +54,7 @@ fun RDCalculatorScreen(
     }
     var showResults by rememberSaveable { mutableStateOf(false) }
     var rdResult by rememberSaveable { mutableStateOf<RDResult?>(null) }
+    var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -123,15 +124,40 @@ fun RDCalculatorScreen(
                 // Calculate Button
                 Button(
                     onClick = {
-                        val result = calculateRD(
-                            monthlyAmount,
-                            interestRate,
-                            period,
-                            periodType
-                        )
-                        if (result != null) {
-                            rdResult = result
-                            showResults = true
+                        errorMessage = null
+                        when {
+                            monthlyAmount.isBlank() || monthlyAmount.toDoubleOrNull() == null || monthlyAmount.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid monthly amount"
+                                showResults = false
+                                rdResult = null
+                            }
+                            interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid interest rate"
+                                showResults = false
+                                rdResult = null
+                            }
+                            period.isBlank() || period.toDoubleOrNull() == null || period.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid period"
+                                showResults = false
+                                rdResult = null
+                            }
+                            else -> {
+                                val result = calculateRD(
+                                    monthlyAmount,
+                                    interestRate,
+                                    period,
+                                    periodType
+                                )
+                                if (result != null) {
+                                    rdResult = result
+                                    showResults = true
+                                    errorMessage = null
+                                } else {
+                                    errorMessage = "Please check all input values"
+                                    showResults = false
+                                    rdResult = null
+                                }
+                            }
                         }
                     },
                     modifier = Modifier
@@ -159,6 +185,7 @@ fun RDCalculatorScreen(
                         periodTypeString = PeriodType.MONTHS.name
                         showResults = false
                         rdResult = null
+                        errorMessage = null
                     },
                     modifier = Modifier
                         .weight(1f)
@@ -173,6 +200,25 @@ fun RDCalculatorScreen(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
+                    )
+                }
+            }
+
+            // Error Message Display
+            errorMessage?.let { error ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFFFEBEE)
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    Text(
+                        text = error,
+                        color = Color(0xFFC62828),
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }

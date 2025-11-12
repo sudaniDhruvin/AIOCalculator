@@ -47,6 +47,7 @@ fun PPFCalculatorScreen(
     var period by rememberSaveable { mutableStateOf("15") }
     var showResults by rememberSaveable { mutableStateOf(false) }
     var ppfResult by rememberSaveable { mutableStateOf<PPFResult?>(null) }
+    var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -106,15 +107,40 @@ fun PPFCalculatorScreen(
                 // Calculate Button
                 Button(
                     onClick = {
-                        val result = calculatePPF(
-                            frequency,
-                            investment,
-                            interestRate,
-                            period
-                        )
-                        if (result != null) {
-                            ppfResult = result
-                            showResults = true
+                        errorMessage = null
+                        when {
+                            investment.isBlank() || investment.toDoubleOrNull() == null || investment.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid investment amount"
+                                showResults = false
+                                ppfResult = null
+                            }
+                            interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid interest rate"
+                                showResults = false
+                                ppfResult = null
+                            }
+                            period.isBlank() || period.toDoubleOrNull() == null || period.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid period"
+                                showResults = false
+                                ppfResult = null
+                            }
+                            else -> {
+                                val result = calculatePPF(
+                                    frequency,
+                                    investment,
+                                    interestRate,
+                                    period
+                                )
+                                if (result != null) {
+                                    ppfResult = result
+                                    showResults = true
+                                    errorMessage = null
+                                } else {
+                                    errorMessage = "Please check all input values"
+                                    showResults = false
+                                    ppfResult = null
+                                }
+                            }
                         }
                     },
                     modifier = Modifier
@@ -142,6 +168,7 @@ fun PPFCalculatorScreen(
                         period = "15"
                         showResults = false
                         ppfResult = null
+                        errorMessage = null
                     },
                     modifier = Modifier
                         .weight(1f)
@@ -156,6 +183,25 @@ fun PPFCalculatorScreen(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
+                    )
+                }
+            }
+
+            // Error Message Display
+            errorMessage?.let { error ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFFFEBEE)
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    Text(
+                        text = error,
+                        color = Color(0xFFC62828),
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }

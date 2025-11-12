@@ -183,6 +183,9 @@ fun CompareSIPScreen(
                         expectedReturnRate = ""
                         timePeriod = ""
                         showAddSIPDialog = false
+                    } else {
+                        // This shouldn't happen if validation is correct, but handle it anyway
+                        showAddSIPDialog = false
                     }
                 },
                 onCancel = {
@@ -245,6 +248,7 @@ fun AddSIPDialog(
     onAddToCompare: () -> Unit,
     onCancel: () -> Unit
 ) {
+    var errorMessage by remember { mutableStateOf<String?>(null) }
     Dialog(onDismissRequest = onCancel) {
         Card(
             modifier = Modifier
@@ -293,6 +297,25 @@ fun AddSIPDialog(
                     onValueChange = onTimePeriodChange
                 )
                 
+                // Error Message Display
+                errorMessage?.let { error ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFFFFEBEE)
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Text(
+                            text = error,
+                            color = Color(0xFFC62828),
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                }
+                
                 // Action Buttons
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -323,7 +346,24 @@ fun AddSIPDialog(
 
                     // Add to Compare Button
                     Button(
-                        onClick = onAddToCompare,
+                        onClick = {
+                            errorMessage = null
+                            when {
+                                monthlyInvestment.isBlank() || monthlyInvestment.toDoubleOrNull() == null || monthlyInvestment.toDoubleOrNull()!! <= 0 -> {
+                                    errorMessage = "Please enter a valid monthly investment"
+                                }
+                                expectedReturnRate.isBlank() || expectedReturnRate.toDoubleOrNull() == null || expectedReturnRate.toDoubleOrNull()!! < 0 -> {
+                                    errorMessage = "Please enter a valid expected return rate"
+                                }
+                                timePeriod.isBlank() || timePeriod.toDoubleOrNull() == null || timePeriod.toDoubleOrNull()!! <= 0 -> {
+                                    errorMessage = "Please enter a valid time period"
+                                }
+                                else -> {
+                                    errorMessage = null
+                                    onAddToCompare()
+                                }
+                            }
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .height(50.dp),

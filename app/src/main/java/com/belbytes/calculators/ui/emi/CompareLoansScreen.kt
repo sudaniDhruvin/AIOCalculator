@@ -57,6 +57,7 @@ fun CompareLoansScreen(
     // Results State
     var showResults by rememberSaveable { mutableStateOf(false) }
     var comparisonResult by rememberSaveable { mutableStateOf<LoanComparisonResult?>(null) }
+    var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -191,19 +192,59 @@ fun CompareLoansScreen(
                 // Calculate Button
                 Button(
                     onClick = {
-                        val result = calculateLoanComparison(
-                            loan1Amount = loan1Amount,
-                            loan1InterestRate = loan1InterestRate,
-                            loan1Period = loan1Period,
-                            loan1PeriodType = loan1PeriodType,
-                            loan2Amount = loan2Amount,
-                            loan2InterestRate = loan2InterestRate,
-                            loan2Period = loan2Period,
-                            loan2PeriodType = loan2PeriodType
-                        )
-                        if (result != null) {
-                            comparisonResult = result
-                            showResults = true
+                        errorMessage = null
+                        when {
+                            loan1Amount.isBlank() || loan1Amount.toDoubleOrNull() == null || loan1Amount.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid Loan 1 amount"
+                                showResults = false
+                                comparisonResult = null
+                            }
+                            loan1InterestRate.isBlank() || loan1InterestRate.toDoubleOrNull() == null || loan1InterestRate.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid Loan 1 interest rate"
+                                showResults = false
+                                comparisonResult = null
+                            }
+                            loan1Period.isBlank() || loan1Period.toDoubleOrNull() == null || loan1Period.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid Loan 1 period"
+                                showResults = false
+                                comparisonResult = null
+                            }
+                            loan2Amount.isBlank() || loan2Amount.toDoubleOrNull() == null || loan2Amount.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid Loan 2 amount"
+                                showResults = false
+                                comparisonResult = null
+                            }
+                            loan2InterestRate.isBlank() || loan2InterestRate.toDoubleOrNull() == null || loan2InterestRate.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid Loan 2 interest rate"
+                                showResults = false
+                                comparisonResult = null
+                            }
+                            loan2Period.isBlank() || loan2Period.toDoubleOrNull() == null || loan2Period.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid Loan 2 period"
+                                showResults = false
+                                comparisonResult = null
+                            }
+                            else -> {
+                                val result = calculateLoanComparison(
+                                    loan1Amount = loan1Amount,
+                                    loan1InterestRate = loan1InterestRate,
+                                    loan1Period = loan1Period,
+                                    loan1PeriodType = loan1PeriodType,
+                                    loan2Amount = loan2Amount,
+                                    loan2InterestRate = loan2InterestRate,
+                                    loan2Period = loan2Period,
+                                    loan2PeriodType = loan2PeriodType
+                                )
+                                if (result != null) {
+                                    comparisonResult = result
+                                    showResults = true
+                                    errorMessage = null
+                                } else {
+                                    errorMessage = "Please check all input values"
+                                    showResults = false
+                                    comparisonResult = null
+                                }
+                            }
                         }
                     },
                     modifier = Modifier
@@ -239,6 +280,7 @@ fun CompareLoansScreen(
                         loan2PeriodType = "Years"
                         showResults = false
                         comparisonResult = null
+                        errorMessage = null
                     },
                     modifier = Modifier
                         .weight(1f)
@@ -257,6 +299,25 @@ fun CompareLoansScreen(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF333333)
+                    )
+                }
+            }
+
+            // Error Message Display
+            errorMessage?.let { error ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFFFEBEE)
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    Text(
+                        text = error,
+                        color = Color(0xFFC62828),
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }

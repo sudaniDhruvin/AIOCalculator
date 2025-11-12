@@ -49,6 +49,7 @@ fun FDCalculatorScreen(
     var depositType by rememberSaveable { mutableStateOf("Reinvestment/Cumulative") }
     var showResults by rememberSaveable { mutableStateOf(false) }
     var fdResult by rememberSaveable { mutableStateOf<FDResult?>(null) }
+    var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -141,7 +142,12 @@ fun FDCalculatorScreen(
                         )
                         OutlinedTextField(
                             value = months,
-                            onValueChange = { months = it },
+                            onValueChange = { newValue ->
+                                val numValue = newValue.toDoubleOrNull()
+                                if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 12)) {
+                                    months = newValue
+                                }
+                            },
                             placeholder = {
                                 Text(
                                     text = "Ex: 6",
@@ -175,7 +181,12 @@ fun FDCalculatorScreen(
                         )
                         OutlinedTextField(
                             value = days,
-                            onValueChange = { days = it },
+                            onValueChange = { newValue ->
+                                val numValue = newValue.toDoubleOrNull()
+                                if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 31)) {
+                                    days = newValue
+                                }
+                            },
                             placeholder = {
                                 Text(
                                     text = "Ex: 30",
@@ -217,17 +228,56 @@ fun FDCalculatorScreen(
                 // Calculate Button
                 Button(
                     onClick = {
-                        val result = calculateFD(
-                            depositAmount,
-                            interestRate,
-                            years,
-                            months,
-                            days,
-                            depositType
-                        )
-                        if (result != null) {
-                            fdResult = result
-                            showResults = true
+                        errorMessage = null
+                        // Validate inputs
+                        val monthsValue = months.toDoubleOrNull()
+                        val daysValue = days.toDoubleOrNull()
+                        
+                        when {
+                            depositAmount.isBlank() || depositAmount.toDoubleOrNull() == null || depositAmount.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid deposit amount"
+                                showResults = false
+                                fdResult = null
+                            }
+                            interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid interest rate"
+                                showResults = false
+                                fdResult = null
+                            }
+                            years.isBlank() && months.isBlank() && days.isBlank() -> {
+                                errorMessage = "Please enter at least one period value"
+                                showResults = false
+                                fdResult = null
+                            }
+                            monthsValue != null && monthsValue > 12 -> {
+                                errorMessage = "Months cannot exceed 12"
+                                showResults = false
+                                fdResult = null
+                            }
+                            daysValue != null && daysValue > 31 -> {
+                                errorMessage = "Days cannot exceed 31"
+                                showResults = false
+                                fdResult = null
+                            }
+                            else -> {
+                                val result = calculateFD(
+                                    depositAmount,
+                                    interestRate,
+                                    years,
+                                    months,
+                                    days,
+                                    depositType
+                                )
+                                if (result != null) {
+                                    fdResult = result
+                                    showResults = true
+                                    errorMessage = null
+                                } else {
+                                    errorMessage = "Please check all input values"
+                                    showResults = false
+                                    fdResult = null
+                                }
+                            }
                         }
                     },
                     modifier = Modifier
@@ -257,6 +307,7 @@ fun FDCalculatorScreen(
                         depositType = "Reinvestment/Cumulative"
                         showResults = false
                         fdResult = null
+                        errorMessage = null
                     },
                     modifier = Modifier
                         .weight(1f)
@@ -271,6 +322,25 @@ fun FDCalculatorScreen(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
+                    )
+                }
+            }
+
+            // Error Message Display
+            errorMessage?.let { error ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFFFEBEE)
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    Text(
+                        text = error,
+                        color = Color(0xFFC62828),
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }

@@ -50,6 +50,7 @@ fun AdvanceEMICalculatorScreen(
     var emiType by rememberSaveable { mutableStateOf("EMI In Arrears") } // "EMI In Arrears" or "EMI In Advance"
     var showResults by rememberSaveable { mutableStateOf(false) }
     var emiResult by rememberSaveable { mutableStateOf<AdvanceEMIResult?>(null) }
+    var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -225,20 +226,45 @@ fun AdvanceEMICalculatorScreen(
                 // Calculate Button
                 Button(
                     onClick = {
-                        val result = calculateAdvanceEMI(
-                            amount = amount,
-                            interestRate = interestRate,
-                            interestType = interestType,
-                            period = period,
-                            periodType = periodType,
-                            processingFee = processingFee,
-                            processingFeeType = processingFeeType,
-                            gstOnInterest = gstOnInterest,
-                            emiType = emiType
-                        )
-                        if (result != null) {
-                            emiResult = result
-                            showResults = true
+                        errorMessage = null
+                        when {
+                            amount.isBlank() || amount.toDoubleOrNull() == null || amount.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid loan amount"
+                                showResults = false
+                                emiResult = null
+                            }
+                            interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid interest rate"
+                                showResults = false
+                                emiResult = null
+                            }
+                            period.isBlank() || period.toDoubleOrNull() == null || period.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid period"
+                                showResults = false
+                                emiResult = null
+                            }
+                            else -> {
+                                val result = calculateAdvanceEMI(
+                                    amount = amount,
+                                    interestRate = interestRate,
+                                    interestType = interestType,
+                                    period = period,
+                                    periodType = periodType,
+                                    processingFee = processingFee,
+                                    processingFeeType = processingFeeType,
+                                    gstOnInterest = gstOnInterest,
+                                    emiType = emiType
+                                )
+                                if (result != null) {
+                                    emiResult = result
+                                    showResults = true
+                                    errorMessage = null
+                                } else {
+                                    errorMessage = "Please check all input values"
+                                    showResults = false
+                                    emiResult = null
+                                }
+                            }
                         }
                     },
                     modifier = Modifier
@@ -270,6 +296,7 @@ fun AdvanceEMICalculatorScreen(
                         gstOnInterest = ""
                         emiType = "EMI In Arrears"
                         showResults = false
+                        errorMessage = null
                         emiResult = null
                     },
                     modifier = Modifier
@@ -289,6 +316,25 @@ fun AdvanceEMICalculatorScreen(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF333333)
+                    )
+                }
+            }
+
+            // Error Message Display
+            errorMessage?.let { error ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFFFEBEE)
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    Text(
+                        text = error,
+                        color = Color(0xFFC62828),
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }

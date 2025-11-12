@@ -182,7 +182,12 @@ fun SimpleInterestCalculatorScreen(
                         Column(modifier = Modifier.weight(1f)) {
                             OutlinedTextField(
                                 value = months,
-                                onValueChange = { months = it },
+                                onValueChange = { newValue ->
+                                    val numValue = newValue.toDoubleOrNull()
+                                    if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 12)) {
+                                        months = newValue
+                                    }
+                                },
                                 placeholder = {
                                     Text(
                                         text = "Months",
@@ -206,7 +211,12 @@ fun SimpleInterestCalculatorScreen(
                         Column(modifier = Modifier.weight(1f)) {
                             OutlinedTextField(
                                 value = days,
-                                onValueChange = { days = it },
+                                onValueChange = { newValue ->
+                                    val numValue = newValue.toDoubleOrNull()
+                                    if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 31)) {
+                                        days = newValue
+                                    }
+                                },
                                 placeholder = {
                                     Text(
                                         text = "Days",
@@ -334,11 +344,38 @@ fun SimpleInterestCalculatorScreen(
                                     "Please enter a valid interest rate"
                                 selectedTab == "Duration" && years.isBlank() && months.isBlank() && days.isBlank() ->
                                     "Please enter at least one period value"
+                                selectedTab == "Duration" && months.isNotBlank() -> {
+                                    val monthsValue = months.toDoubleOrNull()
+                                    when {
+                                        monthsValue == null -> "Please enter a valid number of months"
+                                        monthsValue < 0 -> "Months cannot be negative"
+                                        monthsValue > 12 -> "Months cannot exceed 12"
+                                        else -> null
+                                    } ?: ""
+                                }
+                                selectedTab == "Duration" && days.isNotBlank() -> {
+                                    val daysValue = days.toDoubleOrNull()
+                                    when {
+                                        daysValue == null -> "Please enter a valid number of days"
+                                        daysValue < 0 -> "Days cannot be negative"
+                                        daysValue > 31 -> "Days cannot exceed 31"
+                                        else -> null
+                                    } ?: ""
+                                }
                                 selectedTab == "Date" && (fromDate == null || toDate == null) ->
                                     "Please select both from and to dates"
                                 selectedTab == "Date" && fromDate != null && toDate != null && fromDate!!.after(toDate) ->
                                     "From date must be before or equal to to date"
-                                else -> "Please check all input values"
+                                else -> {
+                                    // Check for invalid month/day values
+                                    val monthsValue = months.toDoubleOrNull()
+                                    val daysValue = days.toDoubleOrNull()
+                                    when {
+                                        monthsValue != null && monthsValue > 12 -> "Months cannot exceed 12"
+                                        daysValue != null && daysValue > 31 -> "Days cannot exceed 31"
+                                        else -> "Please check all input values"
+                                    }
+                                }
                             }
                         }
                     },

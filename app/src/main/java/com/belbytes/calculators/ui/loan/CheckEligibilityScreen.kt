@@ -51,6 +51,7 @@ fun CheckEligibilityScreen(
     }
     var showResults by rememberSaveable { mutableStateOf(false) }
     var eligibilityResult by rememberSaveable { mutableStateOf<EligibilityResult?>(null) }
+    var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -135,17 +136,52 @@ fun CheckEligibilityScreen(
                 // Calculate Button
                 Button(
                     onClick = {
-                        val result = calculateEligibility(
-                            grossMonthlyIncome,
-                            foirPercent,
-                            totalMonthlyEMIs,
-                            interestRate,
-                            period,
-                            periodType
-                        )
-                        if (result != null) {
-                            eligibilityResult = result
-                            showResults = true
+                        errorMessage = null
+                        when {
+                            grossMonthlyIncome.isBlank() || grossMonthlyIncome.toDoubleOrNull() == null || grossMonthlyIncome.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid gross monthly income"
+                                showResults = false
+                                eligibilityResult = null
+                            }
+                            foirPercent.isBlank() || foirPercent.toDoubleOrNull() == null || foirPercent.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid FOIR percentage"
+                                showResults = false
+                                eligibilityResult = null
+                            }
+                            totalMonthlyEMIs.isBlank() || totalMonthlyEMIs.toDoubleOrNull() == null || totalMonthlyEMIs.toDoubleOrNull()!! < 0 -> {
+                                errorMessage = "Please enter a valid total monthly EMIs"
+                                showResults = false
+                                eligibilityResult = null
+                            }
+                            interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid interest rate"
+                                showResults = false
+                                eligibilityResult = null
+                            }
+                            period.isBlank() || period.toDoubleOrNull() == null || period.toDoubleOrNull()!! <= 0 -> {
+                                errorMessage = "Please enter a valid period"
+                                showResults = false
+                                eligibilityResult = null
+                            }
+                            else -> {
+                                val result = calculateEligibility(
+                                    grossMonthlyIncome,
+                                    foirPercent,
+                                    totalMonthlyEMIs,
+                                    interestRate,
+                                    period,
+                                    periodType
+                                )
+                                if (result != null) {
+                                    eligibilityResult = result
+                                    showResults = true
+                                    errorMessage = null
+                                } else {
+                                    errorMessage = "Please check all input values"
+                                    showResults = false
+                                    eligibilityResult = null
+                                }
+                            }
                         }
                     },
                     modifier = Modifier
@@ -175,6 +211,7 @@ fun CheckEligibilityScreen(
                         periodTypeString = EligibilityPeriodType.YEARS.name
                         showResults = false
                         eligibilityResult = null
+                        errorMessage = null
                     },
                     modifier = Modifier
                         .weight(1f)
@@ -189,6 +226,25 @@ fun CheckEligibilityScreen(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
+                    )
+                }
+            }
+
+            // Error Message Display
+            errorMessage?.let { error ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFFFEBEE)
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    Text(
+                        text = error,
+                        color = Color(0xFFC62828),
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
             }

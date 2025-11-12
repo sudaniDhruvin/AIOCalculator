@@ -189,6 +189,9 @@ fun CompareLoansTableScreen(
                         period = ""
                         periodType = "Years"
                         showAddLoanDialog = false
+                    } else {
+                        // This shouldn't happen if validation is correct, but handle it anyway
+                        showAddLoanDialog = false
                     }
                 },
                 onCancel = {
@@ -253,6 +256,7 @@ fun AddLoanDialog(
     onAddToCompare: () -> Unit,
     onCancel: () -> Unit
 ) {
+    var errorMessage by remember { mutableStateOf<String?>(null) }
     Dialog(onDismissRequest = onCancel) {
         Card(
             modifier = Modifier
@@ -318,6 +322,25 @@ fun AddLoanDialog(
                     )
                 }
                 
+                // Error Message Display
+                errorMessage?.let { error ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFFFFEBEE)
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Text(
+                            text = error,
+                            color = Color(0xFFC62828),
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                }
+                
                 // Action Buttons
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -325,7 +348,24 @@ fun AddLoanDialog(
                 ) {
                     // Add to Compare Button
                     Button(
-                        onClick = onAddToCompare,
+                        onClick = {
+                            errorMessage = null
+                            when {
+                                amount.isBlank() || amount.toDoubleOrNull() == null || amount.toDoubleOrNull()!! <= 0 -> {
+                                    errorMessage = "Please enter a valid loan amount"
+                                }
+                                interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 -> {
+                                    errorMessage = "Please enter a valid interest rate"
+                                }
+                                period.isBlank() || period.toDoubleOrNull() == null || period.toDoubleOrNull()!! <= 0 -> {
+                                    errorMessage = "Please enter a valid period"
+                                }
+                                else -> {
+                                    errorMessage = null
+                                    onAddToCompare()
+                                }
+                            }
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .height(50.dp),
