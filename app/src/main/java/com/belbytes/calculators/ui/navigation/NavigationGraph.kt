@@ -28,7 +28,6 @@ import com.belbytes.calculators.ui.bank.PPFCalculatorScreen
 import com.belbytes.calculators.ui.bank.RDCalculatorScreen
 import com.belbytes.calculators.ui.bank.FDCalculatorScreen
 import com.belbytes.calculators.ui.loan.CheckEligibilityScreen
-import com.belbytes.calculators.ui.loan.MoratoriumCalculatorScreen
 import com.belbytes.calculators.ui.loan.PrePaymentROIChangeScreen
 import com.belbytes.calculators.ui.bank.SimpleInterestCalculatorScreen
 import com.belbytes.calculators.ui.sip.STPCalculatorScreen
@@ -117,10 +116,6 @@ sealed class Screen(val route: String) {
     }
     
     object CheckEligibility : Screen("check_eligibility") {
-        fun createRoute() = route
-    }
-    
-    object MoratoriumCalculator : Screen("moratorium_calculator") {
         fun createRoute() = route
     }
     
@@ -374,12 +369,6 @@ fun NavigationGraph(navController: NavHostController, startDestination: String =
             )
         }
         
-        composable(Screen.MoratoriumCalculator.createRoute()) {
-            MoratoriumCalculatorScreen(
-                onBackClick = { navController.popBackStack() }
-            )
-        }
-        
         composable(Screen.PrePaymentROIChange.createRoute()) {
             PrePaymentROIChangeScreen(
                 onBackClick = { navController.popBackStack() }
@@ -534,12 +523,6 @@ private fun navigateToCalculatorScreen(
         
         // Loan Calculators
         "11" -> navController.navigate(Screen.PrePaymentROIChange.createRoute())
-        "12" -> {
-            // Loan Profile - Navigate to Loan Calculators category for now
-            // TODO: Add Loan Profile screen if it exists
-            navController.navigate(Screen.LoanCalculators.route)
-        }
-        "13" -> navController.navigate(Screen.MoratoriumCalculator.createRoute())
         "14" -> navController.navigate(Screen.CheckEligibility.createRoute())
         
         // Bank Calculators

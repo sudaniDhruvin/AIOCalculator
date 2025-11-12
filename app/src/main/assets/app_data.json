@@ -92,18 +92,6 @@
           "color": "#00BBD5"
         },
         {
-          "id": "12",
-          "name": "Loan Profile",
-          "iconName": "loan_profile",
-          "color": "#FF9800"
-        },
-        {
-          "id": "13",
-          "name": "Moratorium Calculator",
-          "iconName": "moratorium",
-          "color": "#982AAA"
-        },
-        {
           "id": "14",
           "name": "Check Eligibility",
           "iconName": "check_eligibility",
