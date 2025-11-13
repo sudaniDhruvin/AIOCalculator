@@ -20,6 +20,7 @@ import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.font.FontWeight
@@ -59,6 +60,8 @@ fun CompareLoansScreen(
     var showResults by rememberSaveable { mutableStateOf(false) }
     var comparisonResult by rememberSaveable { mutableStateOf<LoanComparisonResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
+    
+    val keyboardController = LocalSoftwareKeyboardController.current
     
     val scrollState = rememberScrollState()
     
@@ -203,6 +206,7 @@ fun CompareLoansScreen(
                 // Calculate Button
                 Button(
                     onClick = {
+                        keyboardController?.hide() // Hide keyboard when calculate is clicked
                         errorMessage = null
                         when {
                             loan1Amount.isBlank() || loan1Amount.toDoubleOrNull() == null || loan1Amount.toDoubleOrNull()!! <= 0 -> {

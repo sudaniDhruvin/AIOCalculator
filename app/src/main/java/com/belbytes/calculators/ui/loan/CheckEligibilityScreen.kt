@@ -18,6 +18,7 @@ import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.font.FontWeight
@@ -55,6 +56,7 @@ fun CheckEligibilityScreen(
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val scrollState = rememberScrollState()
+    val keyboardController = LocalSoftwareKeyboardController.current
     
     // Scroll to end when results are shown
     LaunchedEffect(showResults) {
@@ -147,6 +149,7 @@ fun CheckEligibilityScreen(
                 // Calculate Button
                 Button(
                     onClick = {
+                        keyboardController?.hide() // Hide keyboard when calculate is clicked
                         errorMessage = null
                         when {
                             grossMonthlyIncome.isBlank() || grossMonthlyIncome.toDoubleOrNull() == null || grossMonthlyIncome.toDoubleOrNull()!! <= 0 -> {
