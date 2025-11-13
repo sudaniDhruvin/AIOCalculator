@@ -5,6 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -71,7 +75,7 @@ fun CompareSIPScreen(
                     .imePadding(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Comparison Table Card
+                // Comparison Table Card with horizontal scrolling
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp, bottomStart = 0.dp, bottomEnd = 0.dp),
@@ -80,50 +84,93 @@ fun CompareSIPScreen(
                     ),
                     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        // Table Header Row with blue background
-                        Row(
+                    if (sips.isEmpty()) {
+                        // Show empty state
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(Color(0xFF2196F3))
-                                .padding(vertical = 14.dp, horizontal = 12.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                                .height(200.dp)
+                                .background(Color.White),
+                            contentAlignment = Alignment.Center
                         ) {
-                            SIPTableHeaderCell("Monthly investment", weight = 1.2f, alignment = TextAlign.Start)
-                            SIPTableHeaderCell("%", weight = 0.8f, alignment = TextAlign.Center)
-                            SIPTableHeaderCell("Period (M)", weight = 1f, alignment = TextAlign.Center)
-                            SIPTableHeaderCell("Invested Amount", weight = 1.2f, alignment = TextAlign.End)
-                            SIPTableHeaderCell("Est. Return", weight = 1.2f, alignment = TextAlign.End)
-                            SIPTableHeaderCell("Total Value", weight = 1.2f, alignment = TextAlign.End)
+                            Text(
+                                text = "No SIP entries yet. Add a SIP to compare.",
+                                fontSize = 14.sp,
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center
+                            )
                         }
-
-                        // Table Data Rows
-                        if (sips.isEmpty()) {
-                            // Show empty state - just header
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(200.dp)
-                                    .background(Color.White),
-                                contentAlignment = Alignment.Center
+                    } else {
+                        // Table with labels in rows and data in horizontally scrollable columns
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            // Fixed label column with proper width for two-line labels
+                            Column(
+                                modifier = Modifier.width(160.dp)
                             ) {
-                                Text(
-                                    text = "No SIP entries yet. Add a SIP to compare.",
-                                    fontSize = 14.sp,
-                                    color = Color.Gray,
-                                    textAlign = TextAlign.Center
+                                // Header cell for label column
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(48.dp)
+                                        .background(Color(0xFF2196F3))
+                                        .padding(horizontal = 12.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "",
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    )
+                                }
+                                
+                                // Label rows with consistent height
+                                val labels = listOf(
+                                    "Monthly investment",
+                                    "%",
+                                    "Period (M)",
+                                    "Invested Amount",
+                                    "Est. Return",
+                                    "Total Value"
                                 )
+                                labels.forEachIndexed { index, label ->
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(48.dp)
+                                            .background(
+                                                if (index % 2 == 0) Color.White else Color(0xFFF5F5F5)
+                                            )
+                                            .padding(horizontal = 12.dp),
+                                        contentAlignment = Alignment.CenterStart
+                                    ) {
+                                        Text(
+                                            text = label,
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = Color.Black,
+                                            maxLines = 2,
+                                            lineHeight = 16.sp
+                                        )
+                                    }
+                                }
                             }
-                        } else {
-                            sips.forEachIndexed { index, entry ->
-                                SIPTableRow(
-                                    entry = entry,
-                                    index = index,
-                                    isLast = index == sips.size - 1
-                                )
+                            
+                            // Horizontally scrollable data columns
+                            LazyRow(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(0.dp)
+                            ) {
+                                itemsIndexed(sips) { index, entry ->
+                                    SIPDataColumn(
+                                        entry = entry, 
+                                        index = index,
+                                        isFirst = index == 0,
+                                        isLast = index == sips.size - 1
+                                    )
+                                }
                             }
                         }
                     }
@@ -376,12 +423,25 @@ fun AddSIPDialog(
                             pressedElevation = 0.dp
                         )
                     ) {
-                        Text(
-                            text = "Add to Compare",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "Add to",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                lineHeight = 18.sp
+                            )
+                            Text(
+                                text = "Compare",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                lineHeight = 18.sp
+                            )
+                        }
                     }
                 }
             }
@@ -479,6 +539,67 @@ fun RowScope.SIPTableHeaderCell(
         modifier = Modifier.weight(weight),
         textAlign = alignment
     )
+}
+
+@Composable
+fun SIPDataColumn(
+    entry: SIPTableEntry,
+    index: Int,
+    isFirst: Boolean = false,
+    isLast: Boolean = false
+) {
+    Column(
+        modifier = Modifier.width(120.dp)
+    ) {
+        // Header cell - no rounded corners, seamless connection, fixed height
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
+                .background(Color(0xFF2196F3))
+                .padding(horizontal = 12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "SIP ${index + 1}",
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+        }
+        
+        // Data cells - all center-aligned with consistent height matching labels
+        val values = listOf(
+            formatCurrencyWithDecimal(entry.monthlyInvestment),
+            String.format("%.2f", entry.expectedReturnRate),
+            String.format("%.2f", entry.periodMonths),
+            formatCurrencyWithDecimal(entry.investedAmount),
+            formatCurrencyWithDecimal(entry.estimatedReturn),
+            formatCurrencyWithDecimal(entry.totalValue)
+        )
+        
+        values.forEachIndexed { cellIndex, value ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .background(
+                        if (cellIndex % 2 == 0) Color.White else Color(0xFFF5F5F5)
+                    )
+                    .padding(horizontal = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = value,
+                    fontSize = 13.sp,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2
+                )
+            }
+        }
+    }
 }
 
 @Composable

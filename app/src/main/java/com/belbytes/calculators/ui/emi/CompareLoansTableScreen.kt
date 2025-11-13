@@ -6,6 +6,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -74,7 +78,7 @@ fun CompareLoansTableScreen(
                     .imePadding(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Comparison Table Card
+                // Comparison Table Card with horizontal scrolling
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp, bottomStart = 0.dp, bottomEnd = 0.dp),
@@ -83,53 +87,92 @@ fun CompareLoansTableScreen(
                     ),
                     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                 ) {
-                    Column(
+                    val displayLoans = if (loans.isEmpty()) {
+                        // Show default loans matching Figma design (4 identical entries)
+                        val defaultLoan = LoanTableEntry(
+                            loanAmount = 100000.0,
+                            interestRate = 12.0,
+                            periodMonths = 72,
+                            monthlyEMI = 7352.80,
+                            totalInterest = 2083.33,
+                            totalPayment = 49264.77
+                        )
+                        List(4) { defaultLoan }
+                    } else {
+                        loans
+                    }
+                    
+                    // Table with labels in rows and data in horizontally scrollable columns
+                    Row(
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        // Table Header Row with rounded top corners
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(
-                                    Color(0xFF2196F3),
-                                    shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
-                                )
-                                .padding(vertical = 14.dp, horizontal = 12.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                        // Fixed label column with proper width for two-line labels
+                        Column(
+                            modifier = Modifier.width(160.dp)
                         ) {
-                            TableHeaderCell("Loan Amount", weight = 1.2f, alignment = TextAlign.Start)
-                            TableHeaderCell("%", weight = 0.8f, alignment = TextAlign.Center)
-                            TableHeaderCell("Period (M)", weight = 1f, alignment = TextAlign.Center)
-                            TableHeaderCell("Monthly EMI", weight = 1.2f, alignment = TextAlign.End)
-                            TableHeaderCell("Total Interest", weight = 1.2f, alignment = TextAlign.End)
-                            TableHeaderCell("Total Payment", weight = 1.2f, alignment = TextAlign.End)
-                        }
-
-                        // Table Data Rows
-                        if (loans.isEmpty()) {
-                            // Show default loans matching Figma design (4 identical rows)
-                            val defaultLoan = LoanTableEntry(
-                                loanAmount = 100000.0,
-                                interestRate = 12.0,
-                                periodMonths = 72,
-                                monthlyEMI = 7352.80,
-                                totalInterest = 2083.33,
-                                totalPayment = 49264.77
-                            )
-                            repeat(4) { index ->
-                                LoanTableRow(
-                                    entry = defaultLoan,
-                                    index = index,
-                                    isLast = index == 3
+                            // Header cell for label column
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp)
+                                    .background(
+                                        Color(0xFF2196F3),
+                                        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 0.dp)
+                                    )
+                                    .padding(horizontal = 12.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
                                 )
                             }
-                        } else {
-                            loans.forEachIndexed { index, entry ->
-                                LoanTableRow(
-                                    entry = entry,
+                            
+                            // Label rows with consistent height
+                            val labels = listOf(
+                                "Loan Amount",
+                                "%",
+                                "Period (M)",
+                                "Monthly EMI",
+                                "Total Interest",
+                                "Total Payment"
+                            )
+                            labels.forEachIndexed { index, label ->
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(48.dp)
+                                        .background(
+                                            if (index % 2 == 0) Color.White else Color(0xFFF5F5F5)
+                                        )
+                                        .padding(horizontal = 12.dp),
+                                    contentAlignment = Alignment.CenterStart
+                                ) {
+                                    Text(
+                                        text = label,
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.Black,
+                                        maxLines = 2,
+                                        lineHeight = 16.sp
+                                    )
+                                }
+                            }
+                        }
+                        
+                        // Horizontally scrollable data columns
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(0.dp)
+                        ) {
+                            itemsIndexed(displayLoans) { index, entry ->
+                                LoanDataColumn(
+                                    entry = entry, 
                                     index = index,
-                                    isLast = index == loans.size - 1
+                                    isFirst = index == 0,
+                                    isLast = index == displayLoans.size - 1
                                 )
                             }
                         }
@@ -384,17 +427,17 @@ fun AddLoanDialog(
                         ) {
                             Text(
                                 text = "Add to",
-                                fontSize = 14.sp,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White,
-                                lineHeight = 16.sp
+                                lineHeight = 18.sp
                             )
                             Text(
                                 text = "Compare",
-                                fontSize = 14.sp,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White,
-                                lineHeight = 16.sp
+                                lineHeight = 18.sp
                             )
                         }
                     }
@@ -545,6 +588,67 @@ fun RowScope.TableHeaderCell(
         modifier = Modifier.weight(weight),
         textAlign = alignment
     )
+}
+
+@Composable
+fun LoanDataColumn(
+    entry: LoanTableEntry,
+    index: Int,
+    isFirst: Boolean = false,
+    isLast: Boolean = false
+) {
+    Column(
+        modifier = Modifier.width(120.dp)
+    ) {
+        // Header cell - no rounded corners, seamless connection, fixed height
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
+                .background(Color(0xFF2196F3))
+                .padding(horizontal = 12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Loan ${index + 1}",
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+        }
+        
+        // Data cells - all center-aligned with consistent height matching labels
+        val values = listOf(
+            formatCurrencyWithDecimal(entry.loanAmount),
+            entry.interestRate.toInt().toString(),
+            entry.periodMonths.toString(),
+            formatCurrencyWithDecimal(entry.monthlyEMI),
+            formatCurrencyWithDecimal(entry.totalInterest),
+            formatCurrencyWithDecimal(entry.totalPayment)
+        )
+        
+        values.forEachIndexed { cellIndex, value ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .background(
+                        if (cellIndex % 2 == 0) Color.White else Color(0xFFF5F5F5)
+                    )
+                    .padding(horizontal = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = value,
+                    fontSize = 13.sp,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2
+                )
+            }
+        }
+    }
 }
 
 @Composable
