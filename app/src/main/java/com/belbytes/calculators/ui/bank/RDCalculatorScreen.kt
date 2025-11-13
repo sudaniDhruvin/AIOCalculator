@@ -489,9 +489,7 @@ fun RDDonutChart(
                 MPAndroidPieChart(ctx).apply {
                 description.isEnabled = false
                 setUsePercentValues(false)
-                setDrawEntryLabels(true)
-                setEntryLabelTextSize(12f)
-                setEntryLabelColor(android.graphics.Color.WHITE)
+                setDrawEntryLabels(false) // Remove labels, show only percentages
                 setCenterText("")
                 setDrawCenterText(false)
                 setHoleRadius(50f) // Make it a donut chart (50% hole radius)
@@ -499,7 +497,15 @@ fun RDDonutChart(
                 rotationAngle = -90f // Start from top
                 setRotationEnabled(false)
                 
-                legend.isEnabled = false // We'll use custom legend
+                legend.isEnabled = true
+                legend.verticalAlignment = com.github.mikephil.charting.components.Legend.LegendVerticalAlignment.CENTER
+                legend.horizontalAlignment = com.github.mikephil.charting.components.Legend.LegendHorizontalAlignment.RIGHT
+                legend.orientation = com.github.mikephil.charting.components.Legend.LegendOrientation.VERTICAL
+                legend.setDrawInside(false)
+                legend.textSize = 14f
+                legend.textColor = android.graphics.Color.BLACK
+                legend.form = com.github.mikephil.charting.components.Legend.LegendForm.CIRCLE
+                legend.formSize = 12f
                 
                 val entries = mutableListOf<PieEntry>()
                 entries.add(PieEntry(investmentPercentage, "Total Investment"))
@@ -514,12 +520,11 @@ fun RDDonutChart(
                     valueTextColor = android.graphics.Color.WHITE
                     valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
                         override fun getFormattedValue(value: Float): String {
-                            return String.format("%.0f", value)
+                            return String.format("%.1f%%", value)
                         }
                     }
                     setDrawValues(true)
                     setYValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
-                    setXValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
                     setSliceSpace(2f)
                 }
 
@@ -547,7 +552,7 @@ fun RDDonutChart(
                     val entries = mutableListOf<PieEntry>()
                     entries.add(PieEntry(investmentPercentage, "Total Investment"))
                     entries.add(PieEntry(interestPercentage, "Total Interest"))
-
+                    
                     val dataSet = PieDataSet(entries, "").apply {
                         colors = listOf(
                             android.graphics.Color.parseColor("#3F6EE4"), // Blue for Investment
@@ -557,12 +562,11 @@ fun RDDonutChart(
                         valueTextColor = android.graphics.Color.WHITE
                         valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
                             override fun getFormattedValue(value: Float): String {
-                                return String.format("%.0f", value)
+                                return String.format("%.1f%%", value)
                             }
                         }
                         setDrawValues(true)
                         setYValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
-                        setXValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
                         setSliceSpace(2f)
                     }
 

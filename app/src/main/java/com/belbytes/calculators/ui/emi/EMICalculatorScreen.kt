@@ -549,9 +549,7 @@ fun PieChart(
                     // Configure chart appearance - Donut chart
                     description.isEnabled = false
                     setUsePercentValues(false) // Use actual percentage values
-                    setDrawEntryLabels(true)
-                    setEntryLabelTextSize(12f)
-                    setEntryLabelColor(android.graphics.Color.WHITE)
+                    setDrawEntryLabels(false) // Remove labels, show only percentages
                     setCenterText("")
                     setDrawCenterText(false)
                     setHoleRadius(50f) // Make it a donut chart (50% hole radius)
@@ -573,7 +571,7 @@ fun PieChart(
                     legend.formSize = 12f
                     legend.formToTextSpace = 8f
 
-                    // Create data entries with labels
+                    // Create data entries with labels for legend (labels won't show in chart segments)
                     val entries = mutableListOf<PieEntry>()
                     entries.add(PieEntry(principalPercentage, "Principal"))
                     entries.add(PieEntry(interestPercentage, "Interest"))
@@ -588,13 +586,12 @@ fun PieChart(
                         valueTextColor = android.graphics.Color.WHITE
                         valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
                             override fun getFormattedValue(value: Float): String {
-                                return String.format("%.2f", value)
+                                return String.format("%.1f%%", value)
                             }
                         }
                         setDrawValues(true)
-                        // Show values and labels inside segments
+                        // Show only percentage values inside segments
                         setYValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
-                        setXValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
                         setSliceSpace(2f) // Add spacing between segments (exploded effect)
                     }
                     

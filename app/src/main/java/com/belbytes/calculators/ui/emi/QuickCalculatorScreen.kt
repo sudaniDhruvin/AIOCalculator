@@ -458,9 +458,7 @@ fun QuickPieChart(
                 MPAndroidPieChart(ctx).apply {
                     description.isEnabled = false
                     setUsePercentValues(false)
-                    setDrawEntryLabels(true)
-                    setEntryLabelTextSize(12f)
-                    setEntryLabelColor(android.graphics.Color.WHITE)
+                    setDrawEntryLabels(false) // Remove labels, show only percentages
                     setCenterText("")
                     setDrawCenterText(false)
                     setHoleRadius(50f)
@@ -468,7 +466,15 @@ fun QuickPieChart(
                     rotationAngle = -90f
                     setRotationEnabled(false)
                     
-                    legend.isEnabled = false
+                    legend.isEnabled = true
+                    legend.verticalAlignment = com.github.mikephil.charting.components.Legend.LegendVerticalAlignment.CENTER
+                    legend.horizontalAlignment = com.github.mikephil.charting.components.Legend.LegendHorizontalAlignment.RIGHT
+                    legend.orientation = com.github.mikephil.charting.components.Legend.LegendOrientation.VERTICAL
+                    legend.setDrawInside(false)
+                    legend.textSize = 14f
+                    legend.textColor = android.graphics.Color.BLACK
+                    legend.form = com.github.mikephil.charting.components.Legend.LegendForm.CIRCLE
+                    legend.formSize = 12f
                 }
             } catch (e: Exception) {
                 // Return a basic chart if initialization fails
@@ -492,12 +498,11 @@ fun QuickPieChart(
                         valueTextColor = android.graphics.Color.WHITE
                         valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
                             override fun getFormattedValue(value: Float): String {
-                                return String.format("%.0f", value)
+                                return String.format("%.1f%%", value)
                             }
                         }
                         setDrawValues(true)
                         setYValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
-                        setXValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
                         setSliceSpace(2f)
                     }
                     

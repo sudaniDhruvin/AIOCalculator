@@ -548,16 +548,22 @@ fun QuickSIPDonutChart(
                 MPAndroidPieChart(ctx).apply {
                     description.isEnabled = false
                     setUsePercentValues(false)
-                    setDrawEntryLabels(true)
-                    setEntryLabelTextSize(14f)
-                    setEntryLabelColor(android.graphics.Color.WHITE)
+                    setDrawEntryLabels(false) // Remove labels, show only percentages
                     setCenterText("")
                     setDrawCenterText(false)
                     setHoleRadius(58f)
                     setTransparentCircleRadius(61f)
                     rotationAngle = -90f
                     setRotationEnabled(false)
-                    legend.isEnabled = false
+                    legend.isEnabled = true
+                    legend.verticalAlignment = com.github.mikephil.charting.components.Legend.LegendVerticalAlignment.CENTER
+                    legend.horizontalAlignment = com.github.mikephil.charting.components.Legend.LegendHorizontalAlignment.RIGHT
+                    legend.orientation = com.github.mikephil.charting.components.Legend.LegendOrientation.VERTICAL
+                    legend.setDrawInside(false)
+                    legend.textSize = 14f
+                    legend.textColor = android.graphics.Color.BLACK
+                    legend.form = com.github.mikephil.charting.components.Legend.LegendForm.CIRCLE
+                    legend.formSize = 12f
                 }
             } catch (e: Exception) {
                 // Return a basic chart if initialization fails
@@ -568,17 +574,23 @@ fun QuickSIPDonutChart(
             try {
                 if (chart.isAttachedToWindow && chart.parent != null) {
                     val entries = mutableListOf<PieEntry>()
-                    entries.add(PieEntry(investmentPercentage, "$investmentPercentRounded"))
-                    entries.add(PieEntry(returnsPercentage, "$returnsPercentRounded"))
+                    entries.add(PieEntry(investmentPercentage, "Total Investment"))
+                    entries.add(PieEntry(returnsPercentage, "Estimated Returns"))
                     
                     val dataSet = PieDataSet(entries, "").apply {
                         colors = listOf(
                             android.graphics.Color.parseColor("#3F6EE4"),
                             android.graphics.Color.parseColor("#00AF52")
                         )
-                        setDrawValues(false)
+                        setDrawValues(true)
                         valueTextColor = android.graphics.Color.WHITE
                         valueTextSize = 14f
+                        valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
+                            override fun getFormattedValue(value: Float): String {
+                                return String.format("%.1f%%", value)
+                            }
+                        }
+                        setYValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
                     }
                     
                     chart.data = PieData(dataSet)

@@ -638,13 +638,22 @@ fun AdvanceSIPDonutChart(
                 dragDecelerationFrictionCoef = 0.95f
                 isRotationEnabled = false
                 isHighlightPerTapEnabled = false
-                setDrawEntryLabels(true)
-                setEntryLabelColor(android.graphics.Color.WHITE)
-                setEntryLabelTextSize(14f)
+                setDrawEntryLabels(false) // Remove labels from chart segments, show only percentages
+                
+                // Configure legend
+                legend.isEnabled = true
+                legend.verticalAlignment = com.github.mikephil.charting.components.Legend.LegendVerticalAlignment.CENTER
+                legend.horizontalAlignment = com.github.mikephil.charting.components.Legend.LegendHorizontalAlignment.RIGHT
+                legend.orientation = com.github.mikephil.charting.components.Legend.LegendOrientation.VERTICAL
+                legend.setDrawInside(false)
+                legend.textSize = 14f
+                legend.textColor = android.graphics.Color.BLACK
+                legend.form = com.github.mikephil.charting.components.Legend.LegendForm.CIRCLE
+                legend.formSize = 12f
                 
                 val entries = listOf(
-                    PieEntry(investmentPercentage, "$investmentPercentRounded Total Investment"),
-                    PieEntry(returnsPercentage, "$returnsPercentRounded Estimated Returns")
+                    PieEntry(investmentPercentage, "Total Investment"),
+                    PieEntry(returnsPercentage, "Estimated Returns")
                 )
                 
                 val dataSet = PieDataSet(entries, "").apply {
@@ -652,9 +661,15 @@ fun AdvanceSIPDonutChart(
                         android.graphics.Color.parseColor("#3F6EE4"), // Blue for Total Investment
                         android.graphics.Color.parseColor("#00AF52")  // Green for Estimated Returns
                     )
-                    setDrawValues(false)
-                    valueTextColor = android.graphics.Color.BLACK
+                    setDrawValues(true)
+                    valueTextColor = android.graphics.Color.WHITE
                     valueTextSize = 14f
+                    valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
+                        override fun getFormattedValue(value: Float): String {
+                            return String.format("%.1f%%", value)
+                        }
+                    }
+                    setYValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
                 }
                 
                 data = PieData(dataSet)
