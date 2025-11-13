@@ -52,7 +52,7 @@ fun CheckEligibilityScreen(
         EligibilityPeriodType.valueOf(periodTypeString)
     }
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var eligibilityResult by rememberSaveable { mutableStateOf<EligibilityResult?>(null) }
+    var eligibilityResult by remember { mutableStateOf<EligibilityResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val scrollState = rememberScrollState()
@@ -152,27 +152,27 @@ fun CheckEligibilityScreen(
                         keyboardController?.hide() // Hide keyboard when calculate is clicked
                         errorMessage = null
                         when {
-                            grossMonthlyIncome.isBlank() || grossMonthlyIncome.toDoubleOrNull() == null || grossMonthlyIncome.toDoubleOrNull()!! <= 0 -> {
+                            grossMonthlyIncome.isBlank() || (grossMonthlyIncome.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid gross monthly income"
                                 showResults = false
                                 eligibilityResult = null
                             }
-                            foirPercent.isBlank() || foirPercent.toDoubleOrNull() == null || foirPercent.toDoubleOrNull()!! <= 0 -> {
+                            foirPercent.isBlank() || (foirPercent.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid FOIR percentage"
                                 showResults = false
                                 eligibilityResult = null
                             }
-                            totalMonthlyEMIs.isBlank() || totalMonthlyEMIs.toDoubleOrNull() == null || totalMonthlyEMIs.toDoubleOrNull()!! < 0 -> {
+                            totalMonthlyEMIs.isBlank() || (totalMonthlyEMIs.toDoubleOrNull() ?: -1.0) < 0 -> {
                                 errorMessage = "Please enter a valid total monthly EMIs"
                                 showResults = false
                                 eligibilityResult = null
                             }
-                            interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 -> {
+                            interestRate.isBlank() || (interestRate.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid interest rate"
                                 showResults = false
                                 eligibilityResult = null
                             }
-                            period.isBlank() || period.toDoubleOrNull() == null || period.toDoubleOrNull()!! <= 0 -> {
+                            period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid period"
                                 showResults = false
                                 eligibilityResult = null

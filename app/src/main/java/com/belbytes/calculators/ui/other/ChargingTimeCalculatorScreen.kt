@@ -41,7 +41,7 @@ fun ChargingTimeCalculatorScreen(
     var batteryCapacity by rememberSaveable { mutableStateOf("") }
     var chargerOutput by rememberSaveable { mutableStateOf("") }
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var chargingTimeResult by rememberSaveable { mutableStateOf<ChargingTimeResult?>(null) }
+    var chargingTimeResult by remember { mutableStateOf<ChargingTimeResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val scrollState = rememberScrollState()
@@ -101,12 +101,12 @@ fun ChargingTimeCalculatorScreen(
                         keyboardController?.hide() // Hide keyboard when calculate is clicked
                         errorMessage = null
                         when {
-                            batteryCapacity.isBlank() || batteryCapacity.toDoubleOrNull() == null || batteryCapacity.toDoubleOrNull()!! <= 0 -> {
+                            batteryCapacity.isBlank() || (batteryCapacity.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid battery capacity"
                                 showResults = false
                                 chargingTimeResult = null
                             }
-                            chargerOutput.isBlank() || chargerOutput.toDoubleOrNull() == null || chargerOutput.toDoubleOrNull()!! <= 0 -> {
+                            chargerOutput.isBlank() || (chargerOutput.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid charger output"
                                 showResults = false
                                 chargingTimeResult = null

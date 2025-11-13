@@ -46,7 +46,7 @@ fun CashNoteCounterScreen(
     var note1 by rememberSaveable { mutableStateOf("") }
     
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var totalAmount by rememberSaveable { mutableStateOf(0.0) }
+    var totalAmount by remember { mutableStateOf(0.0) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val scrollState = rememberScrollState()
@@ -162,7 +162,7 @@ fun CashNoteCounterScreen(
                         errorMessage = null
                         // Validate that all note counts are valid numbers (if entered)
                         val notes = listOf(note2000, note500, note200, note100, note50, note20, note10, note5, note2, note1)
-                        val hasInvalidNote = notes.any { it.isNotBlank() && (it.toIntOrNull() == null || it.toIntOrNull()!! < 0) }
+                        val hasInvalidNote = notes.any { it.isNotBlank() && ((it.toIntOrNull() ?: -1) < 0) }
                         
                         if (hasInvalidNote) {
                             errorMessage = "Please enter valid note counts"

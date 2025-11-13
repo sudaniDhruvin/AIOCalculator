@@ -43,7 +43,7 @@ fun SWPCalculatorScreen(
     var expectedReturnRate by rememberSaveable { mutableStateOf("") }
     var periodYears by rememberSaveable { mutableStateOf("") }
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var swpResult by rememberSaveable { mutableStateOf<SWPResult?>(null) }
+    var swpResult by remember { mutableStateOf<SWPResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val scrollState = rememberScrollState()
@@ -132,13 +132,13 @@ fun SWPCalculatorScreen(
                             showResults = false
                             swpResult = null
                             errorMessage = when {
-                                totalInvestment.isBlank() || totalInvestment.toDoubleOrNull() == null || totalInvestment.toDoubleOrNull()!! <= 0 ->
+                                totalInvestment.isBlank() || (totalInvestment.toDoubleOrNull() ?: -1.0) <= 0 ->
                                     "Please enter a valid total investment"
-                                withdrawalPerMonth.isBlank() || withdrawalPerMonth.toDoubleOrNull() == null || withdrawalPerMonth.toDoubleOrNull()!! <= 0 ->
+                                withdrawalPerMonth.isBlank() || (withdrawalPerMonth.toDoubleOrNull() ?: -1.0) <= 0 ->
                                     "Please enter a valid withdrawal per month"
                                 expectedReturnRate.isBlank() || expectedReturnRate.toDoubleOrNull() == null ->
                                     "Please enter a valid expected return rate"
-                                periodYears.isBlank() || periodYears.toDoubleOrNull() == null || periodYears.toDoubleOrNull()!! <= 0 ->
+                                periodYears.isBlank() || (periodYears.toDoubleOrNull() ?: -1.0) <= 0 ->
                                     "Please enter a valid period in years"
                                 else -> {
                                     val investment = totalInvestment.toDoubleOrNull() ?: 0.0

@@ -55,7 +55,7 @@ fun RDCalculatorScreen(
         PeriodType.valueOf(periodTypeString)
     }
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var rdResult by rememberSaveable { mutableStateOf<RDResult?>(null) }
+    var rdResult by remember { mutableStateOf<RDResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val scrollState = rememberScrollState()
@@ -140,17 +140,17 @@ fun RDCalculatorScreen(
                         keyboardController?.hide() // Hide keyboard when calculate is clicked
                         errorMessage = null
                         when {
-                            monthlyAmount.isBlank() || monthlyAmount.toDoubleOrNull() == null || monthlyAmount.toDoubleOrNull()!! <= 0 -> {
+                            monthlyAmount.isBlank() || (monthlyAmount.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid monthly amount"
                                 showResults = false
                                 rdResult = null
                             }
-                            interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 -> {
+                            interestRate.isBlank() || (interestRate.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid interest rate"
                                 showResults = false
                                 rdResult = null
                             }
-                            period.isBlank() || period.toDoubleOrNull() == null || period.toDoubleOrNull()!! <= 0 -> {
+                            period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid period"
                                 showResults = false
                                 rdResult = null

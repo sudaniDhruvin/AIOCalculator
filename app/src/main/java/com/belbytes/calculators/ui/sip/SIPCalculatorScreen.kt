@@ -71,7 +71,7 @@ fun SIPCalculatorScreen(
     var periodYearsPlan by rememberSaveable { mutableStateOf("") }
     
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var sipResult by rememberSaveable { mutableStateOf<SIPCalculatorResult?>(null) }
+    var sipResult by remember { mutableStateOf<SIPCalculatorResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val scrollState = rememberScrollState()
@@ -251,29 +251,29 @@ fun SIPCalculatorScreen(
                             sipResult = null
                             errorMessage = when (selectedTab) {
                                 "SIP" -> when {
-                                    monthlyInvestmentSIP.isBlank() || monthlyInvestmentSIP.toDoubleOrNull() == null || monthlyInvestmentSIP.toDoubleOrNull()!! <= 0 ->
+                                    monthlyInvestmentSIP.isBlank() || (monthlyInvestmentSIP.toDoubleOrNull() ?: -1.0) <= 0 ->
                                         "Please enter a valid monthly investment"
                                     expReturnRateSIP.isBlank() || expReturnRateSIP.toDoubleOrNull() == null ->
                                         "Please enter a valid expected return rate"
-                                    periodYearsSIP.isBlank() || periodYearsSIP.toDoubleOrNull() == null || periodYearsSIP.toDoubleOrNull()!! <= 0 ->
+                                    periodYearsSIP.isBlank() || (periodYearsSIP.toDoubleOrNull() ?: -1.0) <= 0 ->
                                         "Please enter a valid period in years"
                                     else -> "Please check all input values"
                                 }
                                 "Lumpsum" -> when {
-                                    totalInvestmentLumpsum.isBlank() || totalInvestmentLumpsum.toDoubleOrNull() == null || totalInvestmentLumpsum.toDoubleOrNull()!! <= 0 ->
+                                    totalInvestmentLumpsum.isBlank() || (totalInvestmentLumpsum.toDoubleOrNull() ?: -1.0) <= 0 ->
                                         "Please enter a valid total investment"
                                     expReturnRateLumpsum.isBlank() || expReturnRateLumpsum.toDoubleOrNull() == null ->
                                         "Please enter a valid expected return rate"
-                                    periodYearsLumpsum.isBlank() || periodYearsLumpsum.toDoubleOrNull() == null || periodYearsLumpsum.toDoubleOrNull()!! <= 0 ->
+                                    periodYearsLumpsum.isBlank() || (periodYearsLumpsum.toDoubleOrNull() ?: -1.0) <= 0 ->
                                         "Please enter a valid period in years"
                                     else -> "Please check all input values"
                                 }
                                 "Plan" -> when {
-                                    targetAmountPlan.isBlank() || targetAmountPlan.toDoubleOrNull() == null || targetAmountPlan.toDoubleOrNull()!! <= 0 ->
+                                    targetAmountPlan.isBlank() || (targetAmountPlan.toDoubleOrNull() ?: -1.0) <= 0 ->
                                         "Please enter a valid target amount"
                                     expReturnRatePlan.isBlank() || expReturnRatePlan.toDoubleOrNull() == null ->
                                         "Please enter a valid expected return rate"
-                                    periodYearsPlan.isBlank() || periodYearsPlan.toDoubleOrNull() == null || periodYearsPlan.toDoubleOrNull()!! <= 0 ->
+                                    periodYearsPlan.isBlank() || (periodYearsPlan.toDoubleOrNull() ?: -1.0) <= 0 ->
                                         "Please enter a valid period in years"
                                     else -> "Please check all input values"
                                 }

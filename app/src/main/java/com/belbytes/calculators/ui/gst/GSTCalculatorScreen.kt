@@ -44,7 +44,7 @@ fun GSTCalculatorScreen(
     var gstRate by rememberSaveable { mutableStateOf("") }
     var gstOperation by rememberSaveable { mutableStateOf("Add GST (+)") } // "Add GST (+)" or "Remove GST (-)"
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var gstResult by rememberSaveable { mutableStateOf<GSTResult?>(null) }
+    var gstResult by remember { mutableStateOf<GSTResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val scrollState = rememberScrollState()
@@ -121,12 +121,12 @@ fun GSTCalculatorScreen(
                         keyboardController?.hide() // Hide keyboard when calculate is clicked
                         errorMessage = null
                         when {
-                            initialAmount.isBlank() || initialAmount.toDoubleOrNull() == null || initialAmount.toDoubleOrNull()!! <= 0 -> {
+                            initialAmount.isBlank() || (initialAmount.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid amount"
                                 showResults = false
                                 gstResult = null
                             }
-                            gstRate.isBlank() || gstRate.toDoubleOrNull() == null || gstRate.toDoubleOrNull()!! <= 0 -> {
+                            gstRate.isBlank() || (gstRate.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid GST rate"
                                 showResults = false
                                 gstResult = null

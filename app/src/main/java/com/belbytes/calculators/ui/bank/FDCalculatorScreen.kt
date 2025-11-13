@@ -50,7 +50,7 @@ fun FDCalculatorScreen(
     var days by rememberSaveable { mutableStateOf("") }
     var depositType by rememberSaveable { mutableStateOf("Reinvestment/Cumulative") }
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var fdResult by rememberSaveable { mutableStateOf<FDResult?>(null) }
+    var fdResult by remember { mutableStateOf<FDResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val scrollState = rememberScrollState()
@@ -248,12 +248,12 @@ fun FDCalculatorScreen(
                         val daysValue = days.toDoubleOrNull()
                         
                         when {
-                            depositAmount.isBlank() || depositAmount.toDoubleOrNull() == null || depositAmount.toDoubleOrNull()!! <= 0 -> {
+                            depositAmount.isBlank() || (depositAmount.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid deposit amount"
                                 showResults = false
                                 fdResult = null
                             }
-                            interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 -> {
+                            interestRate.isBlank() || (interestRate.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid interest rate"
                                 showResults = false
                                 fdResult = null

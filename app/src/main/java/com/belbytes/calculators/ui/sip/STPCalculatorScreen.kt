@@ -57,7 +57,7 @@ fun STPCalculatorScreen(
         }
     }
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var stpResult by rememberSaveable { mutableStateOf<STPResult?>(null) }
+    var stpResult by remember { mutableStateOf<STPResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -174,15 +174,15 @@ fun STPCalculatorScreen(
                             showResults = false
                             stpResult = null
                             errorMessage = when {
-                                investmentAmount.isBlank() || investmentAmount.toDoubleOrNull() == null || investmentAmount.toDoubleOrNull()!! <= 0 ->
+                                investmentAmount.isBlank() || (investmentAmount.toDoubleOrNull() ?: -1.0) <= 0 ->
                                     "Please enter a valid investment amount"
-                                stpAmount.isBlank() || stpAmount.toDoubleOrNull() == null || stpAmount.toDoubleOrNull()!! <= 0 ->
+                                stpAmount.isBlank() || (stpAmount.toDoubleOrNull() ?: -1.0) <= 0 ->
                                     "Please enter a valid STP amount"
-                                transferorRate.isBlank() || transferorRate.toDoubleOrNull() == null || transferorRate.toDoubleOrNull()!! <= 0 ->
+                                transferorRate.isBlank() || (transferorRate.toDoubleOrNull() ?: -1.0) <= 0 ->
                                     "Please enter a valid transferor rate"
                                 transfereeRate.isBlank() || transfereeRate.toDoubleOrNull() == null ->
                                     "Please enter a valid transferee rate"
-                                period.isBlank() || period.toDoubleOrNull() == null || period.toDoubleOrNull()!! <= 0 ->
+                                period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0 ->
                                     "Please enter a valid period"
                                 else -> {
                                     val invAmount = investmentAmount.toDoubleOrNull() ?: 0.0

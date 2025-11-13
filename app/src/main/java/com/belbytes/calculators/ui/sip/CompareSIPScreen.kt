@@ -396,13 +396,13 @@ fun AddSIPDialog(
                         onClick = {
                             errorMessage = null
                             when {
-                                monthlyInvestment.isBlank() || monthlyInvestment.toDoubleOrNull() == null || monthlyInvestment.toDoubleOrNull()!! <= 0 -> {
+                                monthlyInvestment.isBlank() || (monthlyInvestment.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                     errorMessage = "Please enter a valid monthly investment"
                                 }
-                                expectedReturnRate.isBlank() || expectedReturnRate.toDoubleOrNull() == null || expectedReturnRate.toDoubleOrNull()!! < 0 -> {
+                                expectedReturnRate.isBlank() || (expectedReturnRate.toDoubleOrNull() ?: -1.0) < 0 -> {
                                     errorMessage = "Please enter a valid expected return rate"
                                 }
-                                timePeriod.isBlank() || timePeriod.toDoubleOrNull() == null || timePeriod.toDoubleOrNull()!! <= 0 -> {
+                                timePeriod.isBlank() || (timePeriod.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                     errorMessage = "Please enter a valid time period"
                                 }
                                 else -> {

@@ -247,15 +247,15 @@ fun AdvanceSIPCalculatorScreen(
                             showResults = false
                             sipResult = null
                             errorMessage = when {
-                                monthlyInvestment.isBlank() || monthlyInvestment.toDoubleOrNull() == null || monthlyInvestment.toDoubleOrNull()!! <= 0 ->
+                                monthlyInvestment.isBlank() || (monthlyInvestment.toDoubleOrNull() ?: -1.0) <= 0 ->
                                     "Please enter a valid monthly investment"
                                 expReturnRate.isBlank() || expReturnRate.toDoubleOrNull() == null ->
                                     "Please enter a valid expected return rate"
-                                period.isBlank() || period.toDoubleOrNull() == null || period.toDoubleOrNull()!! <= 0 ->
+                                period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0 ->
                                     "Please enter a valid period"
-                                initialInvestmentEnabled && (initialInvestment.isBlank() || initialInvestment.toDoubleOrNull() == null || initialInvestment.toDoubleOrNull()!! < 0) ->
+                                initialInvestmentEnabled && (initialInvestment.isBlank() || (initialInvestment.toDoubleOrNull() ?: -1.0) < 0) ->
                                     "Please enter a valid initial investment"
-                                stepUpEnabled && (stepUpValue.isBlank() || stepUpValue.toDoubleOrNull() == null || stepUpValue.toDoubleOrNull()!! < 0) ->
+                                stepUpEnabled && (stepUpValue.isBlank() || (stepUpValue.toDoubleOrNull() ?: -1.0) < 0) ->
                                     "Please enter a valid step-up value"
                                 else -> "Please check all input values"
                             }

@@ -42,7 +42,7 @@ fun DiscountCalculatorScreen(
     var salesTaxPercent by rememberSaveable { mutableStateOf("") }
     var applyDiscount by rememberSaveable { mutableStateOf("After Tax") } // "After Tax" or "Before Tax"
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var discountResult by rememberSaveable { mutableStateOf<DiscountResult?>(null) }
+    var discountResult by remember { mutableStateOf<DiscountResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val scrollState = rememberScrollState()
@@ -127,17 +127,17 @@ fun DiscountCalculatorScreen(
                         keyboardController?.hide() // Hide keyboard when calculate is clicked
                         errorMessage = null
                         when {
-                            amount.isBlank() || amount.toDoubleOrNull() == null || amount.toDoubleOrNull()!! <= 0 -> {
+                            amount.isBlank() || (amount.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid amount"
                                 showResults = false
                                 discountResult = null
                             }
-                            discountPercent.isBlank() || discountPercent.toDoubleOrNull() == null || discountPercent.toDoubleOrNull()!! < 0 -> {
+                            discountPercent.isBlank() || (discountPercent.toDoubleOrNull() ?: -1.0) < 0 -> {
                                 errorMessage = "Please enter a valid discount percentage"
                                 showResults = false
                                 discountResult = null
                             }
-                            salesTaxPercent.isBlank() || salesTaxPercent.toDoubleOrNull() == null || salesTaxPercent.toDoubleOrNull()!! < 0 -> {
+                            salesTaxPercent.isBlank() || (salesTaxPercent.toDoubleOrNull() ?: -1.0) < 0 -> {
                                 errorMessage = "Please enter a valid sales tax percentage"
                                 showResults = false
                                 discountResult = null

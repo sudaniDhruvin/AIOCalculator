@@ -66,7 +66,7 @@ fun MoratoriumCalculatorScreen(
     var moratoriumPeriod by rememberSaveable { mutableStateOf("") }
     var moratoriumOption by rememberSaveable { mutableStateOf("No change in monthly EMI") }
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var moratoriumResult by rememberSaveable { mutableStateOf<MoratoriumResult?>(null) }
+    var moratoriumResult by remember { mutableStateOf<MoratoriumResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -183,13 +183,13 @@ fun MoratoriumCalculatorScreen(
                             moratoriumResult = null
                             // Set error message based on validation
                             errorMessage = when {
-                                loanAmount.isBlank() || loanAmount.toDoubleOrNull() == null || loanAmount.toDoubleOrNull()!! <= 0 -> 
+                                loanAmount.isBlank() || (loanAmount.toDoubleOrNull() ?: -1.0) <= 0 -> 
                                     "Please enter a valid loan amount"
-                                interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 -> 
+                                interestRate.isBlank() || (interestRate.toDoubleOrNull() ?: -1.0) <= 0 -> 
                                     "Please enter a valid interest rate"
-                                period.isBlank() || period.toDoubleOrNull() == null || period.toDoubleOrNull()!! <= 0 -> 
+                                period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0 -> 
                                     "Please enter a valid period"
-                                moratoriumPeriod.isBlank() || moratoriumPeriod.toDoubleOrNull() == null || moratoriumPeriod.toDoubleOrNull()!! <= 0 -> 
+                                moratoriumPeriod.isBlank() || (moratoriumPeriod.toDoubleOrNull() ?: -1.0) <= 0 -> 
                                     "Please enter a valid moratorium period"
                                 else -> {
                                     val periodValue = period.toDoubleOrNull() ?: 0.0

@@ -51,7 +51,7 @@ fun AdvanceEMICalculatorScreen(
     var gstOnInterest by rememberSaveable { mutableStateOf("") }
     var emiType by rememberSaveable { mutableStateOf("EMI In Arrears") } // "EMI In Arrears" or "EMI In Advance"
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var emiResult by rememberSaveable { mutableStateOf<AdvanceEMIResult?>(null) }
+    var emiResult by remember { mutableStateOf<AdvanceEMIResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val scrollState = rememberScrollState()
@@ -242,17 +242,17 @@ fun AdvanceEMICalculatorScreen(
                         keyboardController?.hide() // Hide keyboard when calculate is clicked
                         errorMessage = null
                         when {
-                            amount.isBlank() || amount.toDoubleOrNull() == null || amount.toDoubleOrNull()!! <= 0 -> {
+                            amount.isBlank() || (amount.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid loan amount"
                                 showResults = false
                                 emiResult = null
                             }
-                            interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 -> {
+                            interestRate.isBlank() || (interestRate.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid interest rate"
                                 showResults = false
                                 emiResult = null
                             }
-                            period.isBlank() || period.toDoubleOrNull() == null || period.toDoubleOrNull()!! <= 0 -> {
+                            period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid period"
                                 showResults = false
                                 emiResult = null

@@ -48,7 +48,7 @@ fun PPFCalculatorScreen(
     var interestRate by rememberSaveable { mutableStateOf("") }
     var period by rememberSaveable { mutableStateOf("15") }
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var ppfResult by rememberSaveable { mutableStateOf<PPFResult?>(null) }
+    var ppfResult by remember { mutableStateOf<PPFResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val scrollState = rememberScrollState()
@@ -123,17 +123,17 @@ fun PPFCalculatorScreen(
                         keyboardController?.hide() // Hide keyboard when calculate is clicked
                         errorMessage = null
                         when {
-                            investment.isBlank() || investment.toDoubleOrNull() == null || investment.toDoubleOrNull()!! <= 0 -> {
+                            investment.isBlank() || (investment.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid investment amount"
                                 showResults = false
                                 ppfResult = null
                             }
-                            interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 -> {
+                            interestRate.isBlank() || (interestRate.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid interest rate"
                                 showResults = false
                                 ppfResult = null
                             }
-                            period.isBlank() || period.toDoubleOrNull() == null || period.toDoubleOrNull()!! <= 0 -> {
+                            period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid period"
                                 showResults = false
                                 ppfResult = null

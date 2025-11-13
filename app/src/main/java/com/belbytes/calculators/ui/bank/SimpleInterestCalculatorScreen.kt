@@ -85,7 +85,7 @@ fun SimpleInterestCalculatorScreen(
     var compoundingFrequency by rememberSaveable { mutableStateOf("Monthly") }
     
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var result by rememberSaveable { mutableStateOf<SimpleInterestResult?>(null) }
+    var result by remember { mutableStateOf<SimpleInterestResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val tabs = listOf("Duration", "Date")
@@ -374,9 +374,9 @@ fun SimpleInterestCalculatorScreen(
                                 showResults = false
                                 result = null
                                 errorMessage = when {
-                                    amount.isBlank() || amount.toDoubleOrNull() == null || amount.toDoubleOrNull()!! <= 0 ->
+                                    amount.isBlank() || (amount.toDoubleOrNull() ?: -1.0) <= 0 ->
                                         "Please enter a valid amount"
-                                    interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 ->
+                                    interestRate.isBlank() || (interestRate.toDoubleOrNull() ?: -1.0) <= 0 ->
                                         "Please enter a valid interest rate"
                                     selectedTab == "Duration" && years.isBlank() && months.isBlank() && days.isBlank() ->
                                         "Please enter at least one period value"

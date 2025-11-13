@@ -40,7 +40,7 @@ fun VATCalculatorScreen(
     var vatRate by rememberSaveable { mutableStateOf("") }
     var vatOperation by rememberSaveable { mutableStateOf("Add VAT (+)") } // "Add VAT (+)" or "Remove VAT (-)"
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var vatResult by rememberSaveable { mutableStateOf<VATResult?>(null) }
+    var vatResult by remember { mutableStateOf<VATResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val scrollState = rememberScrollState()
@@ -117,12 +117,12 @@ fun VATCalculatorScreen(
                         keyboardController?.hide() // Hide keyboard when calculate is clicked
                         errorMessage = null
                         when {
-                            initialAmount.isBlank() || initialAmount.toDoubleOrNull() == null || initialAmount.toDoubleOrNull()!! <= 0 -> {
+                            initialAmount.isBlank() || (initialAmount.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid amount"
                                 showResults = false
                                 vatResult = null
                             }
-                            vatRate.isBlank() || vatRate.toDoubleOrNull() == null || vatRate.toDoubleOrNull()!! <= 0 -> {
+                            vatRate.isBlank() || (vatRate.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid VAT rate"
                                 showResults = false
                                 vatResult = null

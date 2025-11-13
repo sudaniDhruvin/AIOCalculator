@@ -78,8 +78,8 @@ fun PrePaymentROIChangeScreen(
     var revisedRate by rememberSaveable { mutableStateOf("") }
     
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var prePaymentResult by rememberSaveable { mutableStateOf<PrePaymentResult?>(null) }
-    var roiChangeResult by rememberSaveable { mutableStateOf<ROIChangeResult?>(null) }
+    var prePaymentResult by remember { mutableStateOf<PrePaymentResult?>(null) }
+    var roiChangeResult by remember { mutableStateOf<ROIChangeResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -223,13 +223,13 @@ fun PrePaymentROIChangeScreen(
                                     showResults = false
                                     prePaymentResult = null
                                     errorMessage = when {
-                                        outstandingAmount.isBlank() || outstandingAmount.toDoubleOrNull() == null || outstandingAmount.toDoubleOrNull()!! <= 0 ->
+                                        outstandingAmount.isBlank() || (outstandingAmount.toDoubleOrNull() ?: -1.0) <= 0 ->
                                             "Please enter a valid outstanding amount"
-                                        currentRate.isBlank() || currentRate.toDoubleOrNull() == null || currentRate.toDoubleOrNull()!! <= 0 ->
+                                        currentRate.isBlank() || (currentRate.toDoubleOrNull() ?: -1.0) <= 0 ->
                                             "Please enter a valid current rate"
-                                        currentEMI.isBlank() || currentEMI.toDoubleOrNull() == null || currentEMI.toDoubleOrNull()!! <= 0 ->
+                                        currentEMI.isBlank() || (currentEMI.toDoubleOrNull() ?: -1.0) <= 0 ->
                                             "Please enter a valid current EMI"
-                                        prePaymentAmount.isBlank() || prePaymentAmount.toDoubleOrNull() == null || prePaymentAmount.toDoubleOrNull()!! <= 0 ->
+                                        prePaymentAmount.isBlank() || (prePaymentAmount.toDoubleOrNull() ?: -1.0) <= 0 ->
                                             "Please enter a valid pre payment amount"
                                         else -> "Please check all input values"
                                     }
@@ -250,11 +250,11 @@ fun PrePaymentROIChangeScreen(
                                     showResults = false
                                     roiChangeResult = null
                                     errorMessage = when {
-                                        outstandingAmount.isBlank() || outstandingAmount.toDoubleOrNull() == null || outstandingAmount.toDoubleOrNull()!! <= 0 ->
+                                        outstandingAmount.isBlank() || (outstandingAmount.toDoubleOrNull() ?: -1.0) <= 0 ->
                                             "Please enter a valid outstanding amount"
-                                        currentRate.isBlank() || currentRate.toDoubleOrNull() == null || currentRate.toDoubleOrNull()!! <= 0 ->
+                                        currentRate.isBlank() || (currentRate.toDoubleOrNull() ?: -1.0) <= 0 ->
                                             "Please enter a valid current rate"
-                                        currentEMI.isBlank() || currentEMI.toDoubleOrNull() == null || currentEMI.toDoubleOrNull()!! <= 0 ->
+                                        currentEMI.isBlank() || (currentEMI.toDoubleOrNull() ?: -1.0) <= 0 ->
                                             "Please enter a valid current EMI"
                                         revisedRate.isBlank() || revisedRate.toDoubleOrNull() == null ->
                                             "Please enter a valid revised rate"

@@ -56,7 +56,7 @@ fun EMICalculatorScreen(
     var emi by rememberSaveable { mutableStateOf("") }
     var processingFee by rememberSaveable { mutableStateOf("") }
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var emiResult by rememberSaveable { mutableStateOf<EMIResult?>(null) }
+    var emiResult by remember { mutableStateOf<EMIResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val scrollState = rememberScrollState()
@@ -186,13 +186,13 @@ fun EMICalculatorScreen(
                             emiResult = null
                             // Set error message based on validation
                             errorMessage = when {
-                                amount.isBlank() || amount.toDoubleOrNull() == null || amount.toDoubleOrNull()!! <= 0 -> 
+                                amount.isBlank() || (amount.toDoubleOrNull() ?: -1.0) <= 0 -> 
                                     "Please enter a valid loan amount"
-                                interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 -> 
+                                interestRate.isBlank() || (interestRate.toDoubleOrNull() ?: -1.0) <= 0 -> 
                                     "Please enter a valid interest rate"
-                                emiType == "EMI" && (period.isBlank() || period.toDoubleOrNull() == null || period.toDoubleOrNull()!! <= 0) -> 
+                                emiType == "EMI" && (period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0) -> 
                                     "Please enter a valid period"
-                                emiType == "Loan Tenure" && (emi.isBlank() || emi.toDoubleOrNull() == null || emi.toDoubleOrNull()!! <= 0) -> 
+                                emiType == "Loan Tenure" && (emi.isBlank() || (emi.toDoubleOrNull() ?: -1.0) <= 0) -> 
                                     "Please enter a valid EMI amount"
                                 emiType == "Loan Tenure" -> {
                                     val principal = amount.toDoubleOrNull() ?: 0.0

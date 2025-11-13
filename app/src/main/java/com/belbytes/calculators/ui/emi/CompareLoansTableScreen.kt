@@ -394,13 +394,13 @@ fun AddLoanDialog(
                         onClick = {
                             errorMessage = null
                             when {
-                                amount.isBlank() || amount.toDoubleOrNull() == null || amount.toDoubleOrNull()!! <= 0 -> {
+                                amount.isBlank() || (amount.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                     errorMessage = "Please enter a valid loan amount"
                                 }
-                                interestRate.isBlank() || interestRate.toDoubleOrNull() == null || interestRate.toDoubleOrNull()!! <= 0 -> {
+                                interestRate.isBlank() || (interestRate.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                     errorMessage = "Please enter a valid interest rate"
                                 }
-                                period.isBlank() || period.toDoubleOrNull() == null || period.toDoubleOrNull()!! <= 0 -> {
+                                period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                     errorMessage = "Please enter a valid period"
                                 }
                                 else -> {

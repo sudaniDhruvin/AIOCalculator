@@ -58,7 +58,7 @@ fun CompareLoansScreen(
 
     // Results State
     var showResults by rememberSaveable { mutableStateOf(false) }
-    var comparisonResult by rememberSaveable { mutableStateOf<LoanComparisonResult?>(null) }
+    var comparisonResult by remember { mutableStateOf<LoanComparisonResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
     
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -209,32 +209,32 @@ fun CompareLoansScreen(
                         keyboardController?.hide() // Hide keyboard when calculate is clicked
                         errorMessage = null
                         when {
-                            loan1Amount.isBlank() || loan1Amount.toDoubleOrNull() == null || loan1Amount.toDoubleOrNull()!! <= 0 -> {
+                            loan1Amount.isBlank() || (loan1Amount.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid Loan 1 amount"
                                 showResults = false
                                 comparisonResult = null
                             }
-                            loan1InterestRate.isBlank() || loan1InterestRate.toDoubleOrNull() == null || loan1InterestRate.toDoubleOrNull()!! <= 0 -> {
+                            loan1InterestRate.isBlank() || (loan1InterestRate.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid Loan 1 interest rate"
                                 showResults = false
                                 comparisonResult = null
                             }
-                            loan1Period.isBlank() || loan1Period.toDoubleOrNull() == null || loan1Period.toDoubleOrNull()!! <= 0 -> {
+                            loan1Period.isBlank() || (loan1Period.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid Loan 1 period"
                                 showResults = false
                                 comparisonResult = null
                             }
-                            loan2Amount.isBlank() || loan2Amount.toDoubleOrNull() == null || loan2Amount.toDoubleOrNull()!! <= 0 -> {
+                            loan2Amount.isBlank() || (loan2Amount.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid Loan 2 amount"
                                 showResults = false
                                 comparisonResult = null
                             }
-                            loan2InterestRate.isBlank() || loan2InterestRate.toDoubleOrNull() == null || loan2InterestRate.toDoubleOrNull()!! <= 0 -> {
+                            loan2InterestRate.isBlank() || (loan2InterestRate.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid Loan 2 interest rate"
                                 showResults = false
                                 comparisonResult = null
                             }
-                            loan2Period.isBlank() || loan2Period.toDoubleOrNull() == null || loan2Period.toDoubleOrNull()!! <= 0 -> {
+                            loan2Period.isBlank() || (loan2Period.toDoubleOrNull() ?: -1.0) <= 0 -> {
                                 errorMessage = "Please enter a valid Loan 2 period"
                                 showResults = false
                                 comparisonResult = null
