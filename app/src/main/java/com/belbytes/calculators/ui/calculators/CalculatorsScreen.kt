@@ -115,7 +115,7 @@ fun CalculatorCategorySection(
         // Calculator Grid - Display calculators in rows of 4
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // Display calculators in rows of 4
             calculatorItems.chunked(4).forEachIndexed { rowIndex, rowItems ->
@@ -138,7 +138,7 @@ fun CalculatorCategorySection(
                 
                 // Add spacing between rows
                 if (rowIndex < calculatorItems.chunked(4).size - 1) {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(2.dp))
                 }
             }
         }
