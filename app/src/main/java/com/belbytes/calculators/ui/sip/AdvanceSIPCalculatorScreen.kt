@@ -112,30 +112,42 @@ fun AdvanceSIPCalculatorScreen(
             )
 
             // Period Input with Radio Buttons
-            Column {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(0.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Period",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Black,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        AdvanceSIPRadioButton(
+                            label = "Years",
+                            selected = isPeriodYears,
+                            onClick = { isPeriodYears = true }
+                        )
+                        AdvanceSIPRadioButton(
+                            label = "Months",
+                            selected = !isPeriodYears,
+                            onClick = { isPeriodYears = false }
+                        )
+                    }
+                }
                 AdvanceSIPInputField(
-                    label = "Period (Years)",
+                    label = "",
                     placeholder = "Ex: 6",
                     value = period,
                     onValueChange = { period = it }
                 )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(24.dp)
-                ) {
-                    AdvanceSIPRadioButton(
-                        label = "Years",
-                        selected = isPeriodYears,
-                        onClick = { isPeriodYears = true }
-                    )
-                    AdvanceSIPRadioButton(
-                        label = "Months",
-                        selected = !isPeriodYears,
-                        onClick = { isPeriodYears = false }
-                    )
-                }
             }
 
             // Inflation Rate Input with Toggle
@@ -573,11 +585,12 @@ fun AdvanceSIPRadioButton(
         modifier = Modifier
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
+        horizontalArrangement = Arrangement.Start
     ) {
         RadioButton(
             selected = selected,
             onClick = onClick,
+            modifier = Modifier.padding(end = 0.dp),
             colors = RadioButtonDefaults.colors(
                 selectedColor = Color(0xFF222222),
                 unselectedColor = Color(0xFF757575)
@@ -587,7 +600,8 @@ fun AdvanceSIPRadioButton(
             text = label,
             fontSize = 14.sp,
             color = Color.Black,
-            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+            modifier = Modifier.padding(start = 0.dp)
         )
     }
 }
