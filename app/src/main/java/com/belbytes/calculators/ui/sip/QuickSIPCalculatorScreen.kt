@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import android.view.View
 import com.github.mikephil.charting.charts.PieChart as MPAndroidPieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -555,15 +556,7 @@ fun QuickSIPDonutChart(
                     setTransparentCircleRadius(61f)
                     rotationAngle = -90f
                     setRotationEnabled(false)
-                    legend.isEnabled = true
-                    legend.verticalAlignment = com.github.mikephil.charting.components.Legend.LegendVerticalAlignment.CENTER
-                    legend.horizontalAlignment = com.github.mikephil.charting.components.Legend.LegendHorizontalAlignment.RIGHT
-                    legend.orientation = com.github.mikephil.charting.components.Legend.LegendOrientation.VERTICAL
-                    legend.setDrawInside(false)
-                    legend.textSize = 14f
-                    legend.textColor = android.graphics.Color.BLACK
-                    legend.form = com.github.mikephil.charting.components.Legend.LegendForm.CIRCLE
-                    legend.formSize = 12f
+                    legend.isEnabled = false // Disable built-in legend since we have custom legend below
                 }
             } catch (e: Exception) {
                 // Return a basic chart if initialization fails
@@ -572,7 +565,8 @@ fun QuickSIPDonutChart(
         },
         update = { chart ->
             try {
-                if (chart.isAttachedToWindow && chart.parent != null) {
+                // Ensure we have valid data
+                if (totalValue > 0 && investmentPercentage >= 0 && returnsPercentage >= 0) {
                     val entries = mutableListOf<PieEntry>()
                     entries.add(PieEntry(investmentPercentage, "Total Investment"))
                     entries.add(PieEntry(returnsPercentage, "Estimated Returns"))
@@ -591,11 +585,26 @@ fun QuickSIPDonutChart(
                             }
                         }
                         setYValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
+                        setSliceSpace(2f) // Add spacing between segments
                     }
                     
                     chart.data = PieData(dataSet)
-                    chart.animateY(1000)
+                    chart.notifyDataSetChanged()
                     chart.invalidate()
+                    
+                    // Ensure chart is visible and properly sized
+                    chart.visibility = View.VISIBLE
+                    
+                    chart.post {
+                        try {
+                            if (chart.data != null && chart.data!!.entryCount > 0) {
+                                chart.animateY(1000)
+                            }
+                        } catch (e: Exception) {
+                            // Fallback: just invalidate if animation fails
+                            chart.invalidate()
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 // Ignore exceptions during chart updates to prevent crashes
