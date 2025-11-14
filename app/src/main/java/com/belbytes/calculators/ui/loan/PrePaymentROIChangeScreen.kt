@@ -146,8 +146,7 @@ fun PrePaymentROIChangeScreen(
         ) { page ->
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth()
                     .imePadding()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
