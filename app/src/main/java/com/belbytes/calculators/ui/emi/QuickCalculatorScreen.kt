@@ -2,6 +2,7 @@ package com.belbytes.calculators.ui.emi
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -23,6 +24,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -81,8 +83,8 @@ fun QuickCalculatorScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .imePadding()
-                .padding(horizontal = 16.dp, vertical = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             // Banner Ad
             BannerAd(
@@ -119,7 +121,8 @@ fun QuickCalculatorScreen(
                             value = amountEMI,
                             onValueChange = { amountEMI = it },
                             valueRange = 100000f..10000000f,
-                            formatValue = { formatCurrency(it.toDouble()) }
+                            formatValue = { formatCurrency(it.toDouble()) },
+                            step = 50000f
                         )
                         
                         SliderInputField(
@@ -147,7 +150,8 @@ fun QuickCalculatorScreen(
                             value = amountAmount,
                             onValueChange = { amountAmount = it },
                             valueRange = 100000f..10000000f,
-                            formatValue = { formatCurrency(it.toDouble()) }
+                            formatValue = { formatCurrency(it.toDouble()) },
+                            step = 50000f
                         )
                         
                         SliderInputField(
@@ -245,18 +249,22 @@ fun CategoryToggle(
     onCategoryChange: (Int) -> Unit
 ) {
     val categories = listOf("EMI", "Amount")
+    val scope = rememberCoroutineScope()
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFF5F5F5), RoundedCornerShape(8.dp))
-            .padding(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(0.dp)
     ) {
         categories.forEachIndexed { index, category ->
             CategoryButton(
                 text = category,
-                isSelected = selectedCategory == category,
-                onClick = { onCategoryChange(index) },
+                selected = selectedCategory == category,
+                onClick = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
+                },
                 modifier = Modifier.weight(1f)
             )
         }
@@ -266,27 +274,33 @@ fun CategoryToggle(
 @Composable
 fun CategoryButton(
     text: String,
-    isSelected: Boolean,
+    selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Button(
-        onClick = onClick,
-        modifier = modifier.height(40.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) Color(0xFF2196F3) else Color(0xFFEEEEEE)
-        ),
-        shape = RoundedCornerShape(6.dp),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = if (isSelected) 2.dp else 0.dp
-        )
+    Column(
+        modifier = modifier
+            .clickable { onClick() }
+            .fillMaxWidth()
     ) {
         Text(
             text = text,
-            color = if (isSelected) Color.White else Color(0xFF222222),
-            fontSize = 14.sp,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+            fontSize = 16.sp,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+            color = if (selected) Color(0xFF2196F3) else Color(0xFF757575),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            textAlign = TextAlign.Center
         )
+        if (selected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp)
+                    .background(Color(0xFF2196F3))
+            )
+        }
     }
 }
 
@@ -297,7 +311,8 @@ fun SliderInputField(
     value: Float,
     onValueChange: (Float) -> Unit,
     valueRange: ClosedFloatingPointRange<Float>,
-    formatValue: (Float) -> String
+    formatValue: (Float) -> String,
+    step: Float? = null
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -359,15 +374,29 @@ fun SliderInputField(
             )
             }
             
+            val steps = step?.let { 
+                ((valueRange.endInclusive - valueRange.start) / it).toInt() - 1
+            }
+            
             Slider(
                 value = value,
                 onValueChange = { newValue ->
                     val minValue = valueRange.start
                     val maxValue = valueRange.endInclusive
                     val clampedValue = newValue.coerceIn(minValue, maxValue)
-                    onValueChange(clampedValue)
+                    
+                    // Snap to step if step is specified
+                    val finalValue = if (step != null && step > 0) {
+                        val steppedValue = ((clampedValue - minValue) / step).roundToInt() * step + minValue
+                        steppedValue.coerceIn(minValue, maxValue)
+                    } else {
+                        clampedValue
+                    }
+                    
+                    onValueChange(finalValue)
                 },
                 valueRange = valueRange,
+                steps = steps ?: 0,
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(0f),
