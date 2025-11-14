@@ -218,7 +218,7 @@ fun SimpleInterestCalculatorScreen(
                                 value = months,
                                 onValueChange = { newValue ->
                                     val numValue = newValue.toDoubleOrNull()
-                                    if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 12)) {
+                                    if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 11)) {
                                         months = newValue
                                     }
                                 },
@@ -247,7 +247,7 @@ fun SimpleInterestCalculatorScreen(
                                 value = days,
                                 onValueChange = { newValue ->
                                     val numValue = newValue.toDoubleOrNull()
-                                    if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 31)) {
+                                    if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 30)) {
                                         days = newValue
                                     }
                                 },
@@ -274,21 +274,35 @@ fun SimpleInterestCalculatorScreen(
                 } else {
                     // Date Inputs
                     val context = LocalContext.current
+                    val currentFromDate = fromDate
+                    val currentToDate = toDate
                     
                     // From Date
                     SimpleInterestDateField(
                         label = "From Date",
                         date = fromDate,
                         onDateSelected = { fromDate = it },
-                        context = context
+                        context = context,
+                        maxDate = currentToDate,
+                        errorMessage = if (currentFromDate != null && currentToDate != null && currentFromDate.after(currentToDate)) {
+                            "From date must be before or equal to to date"
+                        } else null
                     )
                     
                     // To Date
                     SimpleInterestDateField(
                         label = "To Date",
                         date = toDate,
-                        onDateSelected = { toDate = it },
-                        context = context
+                        onDateSelected = { selectedDate ->
+                            if (currentFromDate == null || selectedDate.after(currentFromDate)) {
+                                toDate = selectedDate
+                            }
+                        },
+                        context = context,
+                        minDate = currentFromDate,
+                        errorMessage = if (currentFromDate != null && currentToDate != null && (currentToDate.before(currentFromDate) || currentToDate == currentFromDate)) {
+                            "To date must be after from date"
+                        } else null
                     )
                 }
 
@@ -384,7 +398,7 @@ fun SimpleInterestCalculatorScreen(
                                         when {
                                             monthsValue == null -> "Please enter a valid number of months"
                                             monthsValue < 0 -> "Months cannot be negative"
-                                            monthsValue > 12 -> "Months cannot exceed 12"
+                                            monthsValue > 11 -> "Months cannot exceed 11"
                                             else -> null
                                         } ?: ""
                                     }
@@ -393,7 +407,7 @@ fun SimpleInterestCalculatorScreen(
                                         when {
                                             daysValue == null -> "Please enter a valid number of days"
                                             daysValue < 0 -> "Days cannot be negative"
-                                            daysValue > 31 -> "Days cannot exceed 31"
+                                            daysValue > 30 -> "Days cannot exceed 30"
                                             else -> null
                                         } ?: ""
                                     }
@@ -406,8 +420,8 @@ fun SimpleInterestCalculatorScreen(
                                         val monthsValue = months.toDoubleOrNull()
                                         val daysValue = days.toDoubleOrNull()
                                         when {
-                                            monthsValue != null && monthsValue > 12 -> "Months cannot exceed 12"
-                                            daysValue != null && daysValue > 31 -> "Days cannot exceed 31"
+                                            monthsValue != null && monthsValue > 11 -> "Months cannot exceed 11"
+                                            daysValue != null && daysValue > 30 -> "Days cannot exceed 30"
                                             else -> "Please check all input values"
                                         }
                                     }
@@ -669,9 +683,11 @@ fun SimpleInterestDateField(
     label: String,
     date: Date?,
     onDateSelected: (Date) -> Unit,
-    context: Context
+    context: Context,
+    minDate: Date? = null,
+    maxDate: Date? = null,
+    errorMessage: String? = null
 ) {
-    val calendar = Calendar.getInstance()
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     
     Column {
@@ -686,16 +702,52 @@ fun SimpleInterestDateField(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
+                    val initialCalendar = Calendar.getInstance()
+                    if (date != null) {
+                        initialCalendar.time = date
+                    }
+                    
                     val datePickerDialog = DatePickerDialog(
                         context,
                         { _, year, month, dayOfMonth ->
-                            calendar.set(year, month, dayOfMonth)
-                            onDateSelected(calendar.time)
+                            val selectedCalendar = Calendar.getInstance()
+                            selectedCalendar.set(year, month, dayOfMonth)
+                            val selectedDate = selectedCalendar.time
+                            
+                            // Validate the selected date
+                            val isValid = when {
+                                minDate != null -> {
+                                    // For minDate, check if selected date is strictly after minDate (not equal)
+                                    // The picker already adds 1 day to minDate, so this ensures it's strictly after
+                                    selectedDate.after(minDate)
+                                }
+                                maxDate != null && selectedDate.after(maxDate) -> false
+                                else -> true
+                            }
+                            
+                            if (isValid) {
+                                onDateSelected(selectedDate)
+                            }
                         },
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH)
+                        initialCalendar.get(Calendar.YEAR),
+                        initialCalendar.get(Calendar.MONTH),
+                        initialCalendar.get(Calendar.DAY_OF_MONTH)
                     )
+                    
+                    // Set min and max dates if provided
+                    if (minDate != null) {
+                        val minCalendar = Calendar.getInstance()
+                        minCalendar.time = minDate
+                        // Add one day to prevent selecting the same date
+                        minCalendar.add(Calendar.DAY_OF_MONTH, 1)
+                        datePickerDialog.datePicker.minDate = minCalendar.timeInMillis
+                    }
+                    if (maxDate != null) {
+                        val maxCalendar = Calendar.getInstance()
+                        maxCalendar.time = maxDate
+                        datePickerDialog.datePicker.maxDate = maxCalendar.timeInMillis
+                    }
+                    
                     datePickerDialog.show()
                 }
         ) {
@@ -714,15 +766,25 @@ fun SimpleInterestDateField(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = Color(0xFFF5F5F5),
-                    focusedContainerColor = Color(0xFFF5F5F5),
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent,
-                    disabledContainerColor = Color(0xFFF5F5F5),
-                    disabledBorderColor = Color.Transparent,
+                    unfocusedContainerColor = if (errorMessage != null) Color(0xFFFFEBEE) else Color(0xFFF5F5F5),
+                    focusedContainerColor = if (errorMessage != null) Color(0xFFFFEBEE) else Color(0xFFF5F5F5),
+                    unfocusedBorderColor = if (errorMessage != null) Color(0xFFC62828) else Color.Transparent,
+                    focusedBorderColor = if (errorMessage != null) Color(0xFFC62828) else Color.Transparent,
+                    disabledContainerColor = if (errorMessage != null) Color(0xFFFFEBEE) else Color(0xFFF5F5F5),
+                    disabledBorderColor = if (errorMessage != null) Color(0xFFC62828) else Color.Transparent,
                     disabledTextColor = Color.Black
                 ),
                 singleLine = true
+            )
+        }
+        
+        // Show error message if validation fails
+        errorMessage?.let { error ->
+            Text(
+                text = error,
+                color = Color(0xFFC62828),
+                fontSize = 12.sp,
+                modifier = Modifier.padding(top = 4.dp, start = 4.dp)
             )
         }
     }

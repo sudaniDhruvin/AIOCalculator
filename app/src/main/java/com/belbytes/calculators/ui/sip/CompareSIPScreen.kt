@@ -338,7 +338,7 @@ fun AddSIPDialog(
                 
                 // Time Period Input
                 AddSIPInputField(
-                    label = "Time Period",
+                    label = "Time Period (Monthly)",
                     placeholder = "Ex: 1",
                     value = timePeriod,
                     onValueChange = onTimePeriodChange
