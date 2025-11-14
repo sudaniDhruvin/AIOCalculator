@@ -157,7 +157,7 @@ fun FDCalculatorScreen(
                             value = months,
                             onValueChange = { newValue ->
                                 val numValue = newValue.toDoubleOrNull()
-                                if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 12)) {
+                                if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 11)) {
                                     months = newValue
                                 }
                             },
@@ -196,7 +196,7 @@ fun FDCalculatorScreen(
                             value = days,
                             onValueChange = { newValue ->
                                 val numValue = newValue.toDoubleOrNull()
-                                if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 31)) {
+                                if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 30)) {
                                     days = newValue
                                 }
                             },
