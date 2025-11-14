@@ -65,18 +65,16 @@ fun AdvanceEMICalculatorScreen(
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // Header
-        AdvanceEMIHeader(onBackClick = onBackClick)
-
         // Form Content
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(top = 110.dp) // Space for fixed header
                 .verticalScroll(scrollState)
                 .imePadding()
                 .padding(horizontal = 16.dp, vertical = 24.dp),
@@ -129,7 +127,9 @@ fun AdvanceEMICalculatorScreen(
             }
 
             // Period Input with Radio Buttons
-            Column {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(0.dp)
+            ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -157,7 +157,6 @@ fun AdvanceEMICalculatorScreen(
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
                 AdvanceEMIInputField(
                     label = "",
                     placeholder = "Ex: 10",
@@ -474,6 +473,40 @@ fun AdvanceEMICalculatorScreen(
                 }
             }
         }
+        
+        // Fixed Header Overlay - Absolutely positioned, never affected by keyboard
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(110.dp)
+                .align(Alignment.TopStart)
+                .background(Color(0xFF2196F3))
+                .statusBarsPadding()
+        ) {
+            IconButton(
+                onClick = onBackClick,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = 8.dp)
+                    .size(48.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.White,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+
+            Text(
+                text = "Advance EMI Calculator",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Center),
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
@@ -565,11 +598,12 @@ fun AdvanceEMIRadioButton(
         modifier = Modifier
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
+        horizontalArrangement = Arrangement.Start
     ) {
         RadioButton(
             selected = selected,
             onClick = onClick,
+            modifier = Modifier.padding(end = 0.dp),
             colors = RadioButtonDefaults.colors(
                 selectedColor = Color(0xFF222222),
                 unselectedColor = Color(0xFF757575)
@@ -578,7 +612,8 @@ fun AdvanceEMIRadioButton(
         Text(
             text = label,
             fontSize = 14.sp,
-            color = Color(0xFF222222)
+            color = Color(0xFF222222),
+            modifier = Modifier.padding(start = 0.dp)
         )
     }
 }

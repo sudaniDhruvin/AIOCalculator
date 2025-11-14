@@ -66,18 +66,16 @@ fun CheckEligibilityScreen(
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // Header
-        CheckEligibilityHeader(onBackClick = onBackClick)
-
         // Form Content
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(top = 110.dp) // Space for fixed header
                 .verticalScroll(scrollState)
                 .imePadding()
                 .padding(horizontal = 16.dp, vertical = 24.dp),
@@ -114,28 +112,42 @@ fun CheckEligibilityScreen(
                 onValueChange = { interestRate = it }
             )
 
-            // Period Input
-            EligibilityInputField(
-                label = "Period (Years)",
-                placeholder = "Ex: 6",
-                value = period,
-                onValueChange = { period = it }
-            )
-
-            // Period Type Radio Buttons
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(24.dp)
+            // Period Input with Radio Buttons
+            Column(
+                verticalArrangement = Arrangement.spacedBy(0.dp)
             ) {
-                EligibilityPeriodTypeRadioButton(
-                    label = "Years",
-                    selected = periodType == EligibilityPeriodType.YEARS,
-                    onClick = { periodTypeString = EligibilityPeriodType.YEARS.name }
-                )
-                EligibilityPeriodTypeRadioButton(
-                    label = "Months",
-                    selected = periodType == EligibilityPeriodType.MONTHS,
-                    onClick = { periodTypeString = EligibilityPeriodType.MONTHS.name }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Period",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Black,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        EligibilityPeriodTypeRadioButton(
+                            label = "Years",
+                            selected = periodType == EligibilityPeriodType.YEARS,
+                            onClick = { periodTypeString = EligibilityPeriodType.YEARS.name }
+                        )
+                        EligibilityPeriodTypeRadioButton(
+                            label = "Months",
+                            selected = periodType == EligibilityPeriodType.MONTHS,
+                            onClick = { periodTypeString = EligibilityPeriodType.MONTHS.name }
+                        )
+                    }
+                }
+                EligibilityInputField(
+                    label = "",
+                    placeholder = "Ex: 6",
+                    value = period,
+                    onValueChange = { period = it }
                 )
             }
 
@@ -310,6 +322,40 @@ fun CheckEligibilityScreen(
                 }
             }
         }
+        
+        // Fixed Header Overlay - Absolutely positioned, never affected by keyboard
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(110.dp)
+                .align(Alignment.TopStart)
+                .background(Color(0xFF2196F3))
+                .statusBarsPadding()
+        ) {
+            IconButton(
+                onClick = onBackClick,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = 8.dp)
+                    .size(48.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.White,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+
+            Text(
+                text = "Check Eligibility",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Center),
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
@@ -356,13 +402,15 @@ fun EligibilityInputField(
     onValueChange: (String) -> Unit
 ) {
     Column {
-        Text(
-            text = label,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.Black,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
+        if (label.isNotEmpty()) {
+            Text(
+                text = label,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
@@ -502,11 +550,12 @@ fun EligibilityPeriodTypeRadioButton(
         modifier = Modifier
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
+        horizontalArrangement = Arrangement.Start
     ) {
         RadioButton(
             selected = selected,
             onClick = onClick,
+            modifier = Modifier.padding(end = 0.dp),
             colors = RadioButtonDefaults.colors(
                 selectedColor = Color(0xFF222222),
                 unselectedColor = Color(0xFF757575)
@@ -516,7 +565,8 @@ fun EligibilityPeriodTypeRadioButton(
             text = label,
             fontSize = 14.sp,
             color = Color.Black,
-            fontWeight = FontWeight.Normal
+            fontWeight = FontWeight.Normal,
+            modifier = Modifier.padding(start = 0.dp)
         )
     }
 }

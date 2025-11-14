@@ -73,18 +73,16 @@ fun CompareLoansScreen(
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // Header
-        CompareLoansHeader(onBackClick = onBackClick)
-
         // Form Content
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(top = 110.dp) // Space for fixed header
                 .verticalScroll(scrollState)
                 .imePadding()
                 .padding(horizontal = 16.dp, vertical = 24.dp),
@@ -117,28 +115,42 @@ fun CompareLoansScreen(
                     onValueChange = { loan1InterestRate = it }
                 )
 
-                // Period Input
-                CompareLoansInputField(
-                    label = "Period",
-                    placeholder = "Ex: 10",
-                    value = loan1Period,
-                    onValueChange = { loan1Period = it }
-                )
-
-                // Period Type Radio Buttons
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                // Period Input with Radio Buttons
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(0.dp)
                 ) {
-                    CompareLoansRadioButton(
-                        label = "Years",
-                        selected = loan1PeriodType == "Years",
-                        onClick = { loan1PeriodType = "Years" }
-                    )
-                    CompareLoansRadioButton(
-                        label = "Month",
-                        selected = loan1PeriodType == "Month",
-                        onClick = { loan1PeriodType = "Month" }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Period",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color.Black,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            CompareLoansRadioButton(
+                                label = "Years",
+                                selected = loan1PeriodType == "Years",
+                                onClick = { loan1PeriodType = "Years" }
+                            )
+                            CompareLoansRadioButton(
+                                label = "Month",
+                                selected = loan1PeriodType == "Month",
+                                onClick = { loan1PeriodType = "Month" }
+                            )
+                        }
+                    }
+                    CompareLoansInputField(
+                        label = "",
+                        placeholder = "Ex: 10",
+                        value = loan1Period,
+                        onValueChange = { loan1Period = it }
                     )
                 }
             }
@@ -170,28 +182,42 @@ fun CompareLoansScreen(
                     onValueChange = { loan2InterestRate = it }
                 )
 
-                // Period Input
-                CompareLoansInputField(
-                    label = "Period",
-                    placeholder = "Ex: 10",
-                    value = loan2Period,
-                    onValueChange = { loan2Period = it }
-                )
-
-                // Period Type Radio Buttons
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                // Period Input with Radio Buttons
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(0.dp)
                 ) {
-                    CompareLoansRadioButton(
-                        label = "Years",
-                        selected = loan2PeriodType == "Years",
-                        onClick = { loan2PeriodType = "Years" }
-                    )
-                    CompareLoansRadioButton(
-                        label = "Month",
-                        selected = loan2PeriodType == "Month",
-                        onClick = { loan2PeriodType = "Month" }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Period",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color.Black,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            CompareLoansRadioButton(
+                                label = "Years",
+                                selected = loan2PeriodType == "Years",
+                                onClick = { loan2PeriodType = "Years" }
+                            )
+                            CompareLoansRadioButton(
+                                label = "Month",
+                                selected = loan2PeriodType == "Month",
+                                onClick = { loan2PeriodType = "Month" }
+                            )
+                        }
+                    }
+                    CompareLoansInputField(
+                        label = "",
+                        placeholder = "Ex: 10",
+                        value = loan2Period,
+                        onValueChange = { loan2Period = it }
                     )
                 }
             }
@@ -470,6 +496,40 @@ fun CompareLoansScreen(
                 }
             }
         }
+        
+        // Fixed Header Overlay - Absolutely positioned, never affected by keyboard
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(110.dp)
+                .align(Alignment.TopStart)
+                .background(Color(0xFF2196F3))
+                .statusBarsPadding()
+        ) {
+            IconButton(
+                onClick = onBackClick,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = 8.dp)
+                    .size(48.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.White,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+
+            Text(
+                text = "Compare Loans",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Center),
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
@@ -516,13 +576,15 @@ fun CompareLoansInputField(
     onValueChange: (String) -> Unit
 ) {
     Column {
-        Text(
-            text = label,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.Black,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
+        if (label.isNotEmpty()) {
+            Text(
+                text = label,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
@@ -559,11 +621,12 @@ fun CompareLoansRadioButton(
         modifier = Modifier
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
+        horizontalArrangement = Arrangement.Start
     ) {
         RadioButton(
             selected = selected,
             onClick = onClick,
+            modifier = Modifier.padding(end = 0.dp),
             colors = RadioButtonDefaults.colors(
                 selectedColor = Color(0xFF222222),
                 unselectedColor = Color(0xFF757575)
@@ -573,7 +636,8 @@ fun CompareLoansRadioButton(
             text = label,
             fontSize = 14.sp,
             color = Color.Black,
-            fontWeight = FontWeight.Normal
+            fontWeight = FontWeight.Normal,
+            modifier = Modifier.padding(start = 0.dp)
         )
     }
 }
