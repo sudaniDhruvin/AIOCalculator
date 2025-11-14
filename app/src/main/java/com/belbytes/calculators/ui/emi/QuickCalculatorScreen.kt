@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import android.view.View
 import com.belbytes.calculators.ads.BannerAd
 import com.belbytes.calculators.ads.NativeAd
 import com.github.mikephil.charting.charts.PieChart as MPAndroidPieChart
@@ -169,11 +170,27 @@ fun QuickCalculatorScreen(
             }
             
             // Results Section
-            if (emiResult != null) {
+            emiResult?.let { result ->
                 ResultsSection(
-                    emiResult = emiResult,
+                    emiResult = result,
                     key = selectedCategory
                 )
+            } ?: run {
+                // Show error message if calculation failed
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFFFEBEE)
+                    )
+                ) {
+                    Text(
+                        text = "Unable to calculate. Please check your inputs.",
+                        modifier = Modifier.padding(16.dp),
+                        color = Color(0xFFC62828),
+                        fontSize = 14.sp
+                    )
+                }
             }
             
             // Native Ad
@@ -332,16 +349,14 @@ fun SliderInputField(
             
             if (trackWidth > 0.dp) {
                 val thumbOffset = with(density) { (progress * trackWidth.toPx() - 10.dp.toPx()).toDp() }
-                Box(
-                    modifier = Modifier
-                        .offset(x = thumbOffset)
-                        .size(20.dp)
-                        .align(Alignment.CenterStart)
-                        .background(Color.White, CircleShape)
-                        .border(1.5.dp, Color(0xFF333333), CircleShape)
-                        .pointerInput(Unit) {
-                        }
-                )
+            Box(
+                modifier = Modifier
+                    .offset(x = thumbOffset)
+                    .size(20.dp)
+                    .align(Alignment.CenterStart)
+                    .background(Color.White, CircleShape)
+                    .border(1.5.dp, Color(0xFF333333), CircleShape)
+            )
             }
             
             Slider(
@@ -448,33 +463,83 @@ fun QuickPieChart(
     interest: Double,
     modifier: Modifier = Modifier
 ) {
-    val total = principal + interest
-    val principalPercentage = (principal / total * 100).toFloat()
-    val interestPercentage = (interest / total * 100).toFloat()
+    // Handle edge cases: prevent division by zero and negative values
+    val safePrincipal = principal.coerceAtLeast(0.0)
+    val safeInterest = interest.coerceAtLeast(0.0)
+    val total = safePrincipal + safeInterest
+    
+    // Calculate percentages safely
+    val principalPercentage = if (total > 0) {
+        (safePrincipal / total * 100).toFloat()
+    } else {
+        0f
+    }
+    val interestPercentage = if (total > 0) {
+        (safeInterest / total * 100).toFloat()
+    } else {
+        0f
+    }
     
     AndroidView(
         factory = { ctx ->
             try {
                 MPAndroidPieChart(ctx).apply {
+                    // Configure chart appearance - Donut chart
                     description.isEnabled = false
                     setUsePercentValues(false)
                     setDrawEntryLabels(false) // Remove labels, show only percentages
                     setCenterText("")
                     setDrawCenterText(false)
-                    setHoleRadius(50f)
+                    setHoleRadius(50f) // Make it a donut chart (50% hole radius)
                     setTransparentCircleRadius(0f)
-                    rotationAngle = -90f
+                    rotationAngle = -90f // Start from top
                     setRotationEnabled(false)
+                    setExtraOffsets(5f, 5f, 5f, 5f)
+                    isHighlightPerTapEnabled = false
                     
-                    legend.isEnabled = true
-                    legend.verticalAlignment = com.github.mikephil.charting.components.Legend.LegendVerticalAlignment.CENTER
-                    legend.horizontalAlignment = com.github.mikephil.charting.components.Legend.LegendHorizontalAlignment.RIGHT
-                    legend.orientation = com.github.mikephil.charting.components.Legend.LegendOrientation.VERTICAL
-                    legend.setDrawInside(false)
-                    legend.textSize = 14f
-                    legend.textColor = android.graphics.Color.BLACK
-                    legend.form = com.github.mikephil.charting.components.Legend.LegendForm.CIRCLE
-                    legend.formSize = 12f
+                    // Disable legend since we show it separately in ResultsSection
+                    legend.isEnabled = false
+                    
+                    // Ensure chart is visible
+                    visibility = View.VISIBLE
+                    
+                    // Set up initial data if we have valid values
+                    if (total > 0) {
+                        val entries = mutableListOf<PieEntry>()
+                        entries.add(PieEntry(principalPercentage, "Principal"))
+                        entries.add(PieEntry(interestPercentage, "Interest"))
+                        
+                        val dataSet = PieDataSet(entries, "").apply {
+                            colors = listOf(
+                                android.graphics.Color.parseColor("#3F6EE4"),
+                                android.graphics.Color.parseColor("#00AF52")
+                            )
+                            valueTextSize = 14f
+                            valueTextColor = android.graphics.Color.WHITE
+                            valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
+                                override fun getFormattedValue(value: Float): String {
+                                    return String.format("%.1f%%", value)
+                                }
+                            }
+                            setDrawValues(true)
+                            setYValuePosition(com.github.mikephil.charting.data.PieDataSet.ValuePosition.INSIDE_SLICE)
+                            setSliceSpace(2f)
+                        }
+                        
+                        data = PieData(dataSet)
+                        
+                        // Animate when chart is ready
+                        post {
+                            try {
+                                if (isAttachedToWindow && parent != null) {
+                                    animateY(1000)
+                                    invalidate()
+                                }
+                            } catch (e: Exception) {
+                                // Ignore exceptions during animation
+                            }
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 // Return a basic chart if initialization fails
@@ -483,8 +548,8 @@ fun QuickPieChart(
         },
         update = { chart ->
             try {
-                if (chart.isAttachedToWindow && chart.parent != null) {
-                    // Update chart data when principal or interest changes
+                // Update chart data when principal or interest changes
+                if (total > 0) {
                     val entries = mutableListOf<PieEntry>()
                     entries.add(PieEntry(principalPercentage, "Principal"))
                     entries.add(PieEntry(interestPercentage, "Interest"))
@@ -507,7 +572,22 @@ fun QuickPieChart(
                     }
                     
                     chart.data = PieData(dataSet)
-                    chart.animateY(1000)
+                    chart.notifyDataSetChanged()
+                    
+                    // Animate update if chart is ready
+                    chart.post {
+                        try {
+                            if (chart.isAttachedToWindow && chart.parent != null) {
+                                chart.animateY(1000)
+                                chart.invalidate()
+                            }
+                        } catch (e: Exception) {
+                            // Ignore exceptions during animation
+                        }
+                    }
+                } else {
+                    // Clear chart if no valid data
+                    chart.data = null
                     chart.invalidate()
                 }
             } catch (e: Exception) {
@@ -552,14 +632,27 @@ fun calculateQuickEMI(
     years: Int
 ): QuickEMIResult? {
     return try {
+        // Validate inputs
+        if (amount <= 0 || interestRate < 0 || years <= 0 || years > 100) {
+            return null
+        }
+        
         val months = years * 12
+        if (months <= 0) return null
+        
         val monthlyRate = interestRate / (12 * 100)
         
         val monthlyEMI = if (monthlyRate > 0) {
             val rateFactor = java.lang.Math.pow(1 + monthlyRate, months.toDouble())
+            if (rateFactor <= 1) return null // Prevent division by zero
             amount * monthlyRate * rateFactor / (rateFactor - 1)
         } else {
             amount / months
+        }
+        
+        // Validate calculated EMI
+        if (monthlyEMI.isNaN() || monthlyEMI.isInfinite() || monthlyEMI <= 0) {
+            return null
         }
         
         val totalPayment = monthlyEMI * months
@@ -567,7 +660,7 @@ fun calculateQuickEMI(
         
         QuickEMIResult(
             monthlyEMI = monthlyEMI,
-            totalInterest = totalInterest,
+            totalInterest = totalInterest.coerceAtLeast(0.0),
             totalPayment = totalPayment,
             principal = amount
         )
@@ -611,26 +704,42 @@ fun calculateQuickAmountFromInputs(
     monthlyEMI: Double
 ): QuickEMIResult? {
     return try {
-        val monthlyRate = interestRate / (12 * 100)
-        
-        // Calculate the number of months (period) from Amount, Interest, and Monthly EMI
-        val months = if (monthlyRate > 0 && monthlyEMI > amount * monthlyRate) {
-            ceil(
-                -ln(1 - (amount * monthlyRate) / monthlyEMI) /
-                        ln(1 + monthlyRate)
-            ).toInt()
-        } else if (monthlyEMI > 0) {
-            (amount / monthlyEMI).toInt()
-        } else {
+        // Validate inputs
+        if (amount <= 0 || interestRate < 0 || monthlyEMI <= 0) {
             return null
         }
         
-        val totalPayment = monthlyEMI * months
+        val monthlyRate = interestRate / (12 * 100)
+        
+        // Calculate the number of months (period) from Amount, Interest, and Monthly EMI
+        val monthsNullable: Int? = if (monthlyRate > 0 && monthlyEMI > amount * monthlyRate) {
+            val calculatedMonths = ceil(
+                -ln(1 - (amount * monthlyRate) / monthlyEMI) /
+                        ln(1 + monthlyRate)
+            ).toInt()
+            // Validate calculated months
+            if (calculatedMonths <= 0 || calculatedMonths > 1200) null else calculatedMonths
+        } else if (monthlyEMI > 0) {
+            val calculatedMonths = (amount / monthlyEMI).toInt()
+            if (calculatedMonths <= 0 || calculatedMonths > 1200) null else calculatedMonths
+        } else {
+            null
+        }
+        
+        val months: Int = monthsNullable ?: return null
+        val monthsDouble = months.toDouble()
+        val totalPayment = monthlyEMI * monthsDouble
         val totalInterest = totalPayment - amount
+        
+        // Validate results
+        if (totalPayment.isNaN() || totalPayment.isInfinite() || 
+            totalInterest.isNaN() || totalInterest.isInfinite()) {
+            return null
+        }
         
         QuickEMIResult(
             monthlyEMI = monthlyEMI,
-            totalInterest = totalInterest,
+            totalInterest = totalInterest.coerceAtLeast(0.0),
             totalPayment = totalPayment,
             principal = amount
         )
