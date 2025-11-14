@@ -49,7 +49,7 @@ fun EMICalculatorScreen(
     var amount by rememberSaveable { mutableStateOf("") }
     var interestRate by rememberSaveable { mutableStateOf("") }
     var periodTypeString by rememberSaveable { mutableStateOf(PeriodType.YEARS.name) }
-    val periodType = remember(periodTypeString) { 
+    val periodType = remember(periodTypeString) {
         PeriodType.valueOf(periodTypeString)
     }
     var period by rememberSaveable { mutableStateOf("") }
@@ -58,10 +58,10 @@ fun EMICalculatorScreen(
     var showResults by rememberSaveable { mutableStateOf(false) }
     var emiResult by remember { mutableStateOf<EMIResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
-    
+
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
-    
+
     // Scroll to end when results are shown
     LaunchedEffect(showResults) {
         if (showResults) {
@@ -70,20 +70,16 @@ fun EMICalculatorScreen(
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // Header
-        EMICalculatorHeader(
-            onBackClick = onBackClick
-        )
-
-        // Form Content
+        // Scrollable Form Content - Only this area scrolls and adjusts for keyboard
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(top = 110.dp) // Space for fixed header
                 .verticalScroll(scrollState)
                 .imePadding()
                 .padding(horizontal = 16.dp, vertical = 24.dp),
@@ -114,30 +110,44 @@ fun EMICalculatorScreen(
 
             // Conditional Fields based on EMI Type
             if (emiType == "EMI") {
-                // Period Type Radio Buttons
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(24.dp)
+                // Period Input with Radio Buttons
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(0.dp)
                 ) {
-                    PeriodTypeRadioButton(
-                        label = "Years",
-                        selected = periodType == PeriodType.YEARS,
-                        onClick = { periodTypeString = PeriodType.YEARS.name }
-                    )
-                    PeriodTypeRadioButton(
-                        label = "Month",
-                        selected = periodType == PeriodType.MONTH,
-                        onClick = { periodTypeString = PeriodType.MONTH.name }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Period",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color.Black,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            PeriodTypeRadioButton(
+                                label = "Years",
+                                selected = periodType == PeriodType.YEARS,
+                                onClick = { periodTypeString = PeriodType.YEARS.name }
+                            )
+                            PeriodTypeRadioButton(
+                                label = "Month",
+                                selected = periodType == PeriodType.MONTH,
+                                onClick = { periodTypeString = PeriodType.MONTH.name }
+                            )
+                        }
+                    }
+                    EMIInputField(
+                        label = "",
+                        placeholder = "Ex: 5",
+                        value = period,
+                        onValueChange = { period = it }
                     )
                 }
-
-                // Period Input
-                EMIInputField(
-                    label = "Period",
-                    placeholder = "Ex: 5",
-                    value = period,
-                    onValueChange = { period = it }
-                )
             } else if (emiType == "Loan Tenure") {
                 // EMI Input
                 EMIInputField(
@@ -186,13 +196,13 @@ fun EMICalculatorScreen(
                             emiResult = null
                             // Set error message based on validation
                             errorMessage = when {
-                                amount.isBlank() || (amount.toDoubleOrNull() ?: -1.0) <= 0 -> 
+                                amount.isBlank() || (amount.toDoubleOrNull() ?: -1.0) <= 0 ->
                                     "Please enter a valid loan amount"
-                                interestRate.isBlank() || (interestRate.toDoubleOrNull() ?: -1.0) <= 0 -> 
+                                interestRate.isBlank() || (interestRate.toDoubleOrNull() ?: -1.0) <= 0 ->
                                     "Please enter a valid interest rate"
-                                emiType == "EMI" && (period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0) -> 
+                                emiType == "EMI" && (period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0) ->
                                     "Please enter a valid period"
-                                emiType == "Loan Tenure" && (emi.isBlank() || (emi.toDoubleOrNull() ?: -1.0) <= 0) -> 
+                                emiType == "Loan Tenure" && (emi.isBlank() || (emi.toDoubleOrNull() ?: -1.0) <= 0) ->
                                     "Please enter a valid EMI amount"
                                 emiType == "Loan Tenure" -> {
                                     val principal = amount.toDoubleOrNull() ?: 0.0
@@ -400,6 +410,40 @@ fun EMICalculatorScreen(
                     }
                 }
             }
+        }
+        
+        // Fixed Header Overlay - Absolutely positioned, never affected by keyboard
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(110.dp)
+                .align(Alignment.TopStart)
+                .background(Color(0xFF2196F3))
+                .statusBarsPadding()
+        ) {
+            IconButton(
+                onClick = onBackClick,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = 8.dp)
+                    .size(48.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.White,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+
+            Text(
+                text = "EMI Calculator",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Center),
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
@@ -624,10 +668,11 @@ fun PieChart(
 
 @Composable
 fun EMICalculatorHeader(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(110.dp)
             .background(Color(0xFF2196F3))
@@ -770,13 +815,15 @@ fun EMIInputField(
     onValueChange: (String) -> Unit
 ) {
     Column {
-        Text(
-            text = label,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.Black,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
+        if (label.isNotEmpty()) {
+            Text(
+                text = label,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
@@ -813,11 +860,12 @@ fun PeriodTypeRadioButton(
         modifier = Modifier
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
+        horizontalArrangement = Arrangement.Start
     ) {
         RadioButton(
             selected = selected,
             onClick = onClick,
+            modifier = Modifier.padding(end = 0.dp),
             colors = RadioButtonDefaults.colors(
                 selectedColor = Color(0xFF757575),
                 unselectedColor = Color(0xFF757575)
@@ -826,7 +874,8 @@ fun PeriodTypeRadioButton(
         Text(
             text = label,
             fontSize = 14.sp,
-            color = Color.Black
+            color = Color.Black,
+            modifier = Modifier.padding(start = 0.dp)
         )
     }
 }
