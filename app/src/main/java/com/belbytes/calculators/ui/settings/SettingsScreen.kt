@@ -1,5 +1,8 @@
 package com.belbytes.calculators.ui.settings
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,34 +35,37 @@ data class SettingsItem(
 fun SettingsScreen(
     onBackClick: () -> Unit = {}
 ) {
+    val context = LocalContext.current
+    val packageName = context.packageName
+    
     val settingsItems = listOf(
         SettingsItem(
             id = "1",
             title = "Share App",
             iconName = "share",
             color = "#E8F5E9", // Very light green
-            onClick = { /* Handle share app */ }
+            onClick = { shareApp(context, packageName) }
         ),
         SettingsItem(
             id = "2",
             title = "Rate App",
             iconName = "rate",
             color = "#E3F2FD", // Very light blue
-            onClick = { /* Handle rate app */ }
+            onClick = { rateApp(context, packageName) }
         ),
         SettingsItem(
             id = "3",
             title = "Privacy Policy",
             iconName = "privacy",
             color = "#EFEBE9", // Very light brown/maroon
-            onClick = { /* Handle privacy policy */ }
+            onClick = { openPrivacyPolicy(context) }
         ),
         SettingsItem(
             id = "4",
             title = "More App",
             iconName = "more",
             color = "#FFF3E0", // Very light orange
-            onClick = { /* Handle more app */ }
+            onClick = { moreApps(context) }
         )
     )
 
@@ -192,5 +199,73 @@ fun getIconResourceForSettingsItem(iconName: String): Int {
         "privacy" -> R.drawable.privacy
         "more" -> R.drawable.more
         else -> R.drawable.settings
+    }
+}
+
+/**
+ * Share the app with friends
+ */
+private fun shareApp(context: android.content.Context, packageName: String) {
+    val shareMessage = "Check out this amazing app: https://play.google.com/store/apps/details?id=$packageName"
+    
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_SUBJECT, "Check out this app!")
+        putExtra(Intent.EXTRA_TEXT, shareMessage)
+    }
+    
+    context.startActivity(Intent.createChooser(intent, "Share via"))
+}
+
+/**
+ * Open the app's rating page on Google Play Store
+ */
+private fun rateApp(context: android.content.Context, packageName: String) {
+    try {
+        // Open Google Play Store app if installed
+        val uri = Uri.parse("market://details?id=$packageName")
+        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        // Open in web browser if Play Store app is not installed
+        val uri = Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
+        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(intent)
+    }
+}
+
+/**
+ * Open privacy policy URL in browser
+ */
+private fun openPrivacyPolicy(context: android.content.Context) {
+    val privacyUrl = "https://belcode.blogspot.com/2024/12/privacy-policy-emi-loan-calculator-app.html"
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(privacyUrl)).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    }
+    context.startActivity(intent)
+}
+
+/**
+ * Open developer's apps page on Google Play Store
+ */
+private fun moreApps(context: android.content.Context) {
+    try {
+        // Open Play Store to developer's apps page
+        val uri = Uri.parse("market://search?q=pub:BelBytes")
+        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        // Open in browser if Play Store is not installed
+        val uri = Uri.parse("https://play.google.com/store/apps/developer?id=BelBytes")
+        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(intent)
     }
 }
