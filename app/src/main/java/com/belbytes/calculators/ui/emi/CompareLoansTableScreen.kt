@@ -73,7 +73,8 @@ fun CompareLoansTableScreen(
                 modifier = Modifier
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
-                    .imePadding(),
+                    .imePadding()
+                    .padding(top = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 // Comparison Table Card with horizontal scrolling
@@ -467,25 +468,12 @@ fun AddLoanDialog(
                             pressedElevation = 0.dp
                         )
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = "Add to",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White,
-                                lineHeight = 18.sp
-                            )
-                            Text(
-                                text = "Compare",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White,
-                                lineHeight = 18.sp
-                            )
-                        }
+                        Text(
+                            text = "Compare",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
                     }
 
                     Button(

@@ -155,6 +155,15 @@ fun CompareLoansScreen(
                 }
             }
 
+            // Horizontal Divider between Loan 1 and Loan 2
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                color = Color(0xFFE0E0E0),
+                thickness = 1.dp
+            )
+
             // Loan 2 Section
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
