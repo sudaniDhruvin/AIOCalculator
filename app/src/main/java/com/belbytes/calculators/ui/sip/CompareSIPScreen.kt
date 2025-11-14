@@ -428,13 +428,6 @@ fun AddSIPDialog(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "Add to",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White,
-                                lineHeight = 18.sp
-                            )
-                            Text(
                                 text = "Compare",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
