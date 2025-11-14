@@ -2,6 +2,7 @@ package com.belbytes.calculators.ui.sip
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -284,18 +285,22 @@ fun QuickSIPTabs(
     onTabChange: (Int) -> Unit
 ) {
     val tabs = listOf("SIP", "Lumpsum", "Plan")
+    val scope = rememberCoroutineScope()
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFF5F5F5), RoundedCornerShape(8.dp))
-            .padding(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(0.dp)
     ) {
         tabs.forEachIndexed { index, tab ->
             QuickSIPTabButton(
                 text = tab,
-                isSelected = selectedTab == tab,
-                onClick = { onTabChange(index) },
+                selected = selectedTab == tab,
+                onClick = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
+                },
                 modifier = Modifier.weight(1f)
             )
         }
@@ -305,27 +310,33 @@ fun QuickSIPTabs(
 @Composable
 fun QuickSIPTabButton(
     text: String,
-    isSelected: Boolean,
+    selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Button(
-        onClick = onClick,
-        modifier = modifier.height(40.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) Color(0xFF2196F3) else Color(0xFFEEEEEE)
-        ),
-        shape = RoundedCornerShape(6.dp),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = if (isSelected) 2.dp else 0.dp
-        )
+    Column(
+        modifier = modifier
+            .clickable { onClick() }
+            .fillMaxWidth()
     ) {
         Text(
             text = text,
-            color = if (isSelected) Color.White else Color(0xFF222222),
-            fontSize = 14.sp,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+            fontSize = 16.sp,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+            color = if (selected) Color(0xFF2196F3) else Color(0xFF757575),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            textAlign = TextAlign.Center
         )
+        if (selected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp)
+                    .background(Color(0xFF2196F3))
+            )
+        }
     }
 }
 
