@@ -61,16 +61,16 @@ fun SimpleInterestCalculatorScreen(
     var selectedTab by rememberSaveable { mutableStateOf("Duration") }
     var amount by rememberSaveable { mutableStateOf("") }
     var interestRate by rememberSaveable { mutableStateOf("") }
-    
+
     // Duration tab fields
     var years by rememberSaveable { mutableStateOf("") }
     var months by rememberSaveable { mutableStateOf("") }
     var days by rememberSaveable { mutableStateOf("") }
-    
+
     // Date tab fields
     var fromDate by rememberSaveable { mutableStateOf<Date?>(null) }
     var toDate by rememberSaveable { mutableStateOf<Date?>(null) }
-    
+
     // Interest type
     var interestTypeString by rememberSaveable { mutableStateOf(InterestType.SIMPLE.name) }
     val interestType = remember(interestTypeString) {
@@ -80,27 +80,18 @@ fun SimpleInterestCalculatorScreen(
             InterestType.SIMPLE
         }
     }
-    
+
     // Compounding frequency (only for compound interest)
     var compoundingFrequency by rememberSaveable { mutableStateOf("Monthly") }
-    
+
     var showResults by rememberSaveable { mutableStateOf(false) }
     var result by remember { mutableStateOf<SimpleInterestResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
-    
+
     val tabs = listOf("Duration", "Date")
     val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
-    val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
-    
-    // Scroll to end when results are shown
-    LaunchedEffect(showResults) {
-        if (showResults) {
-            delay(100) // Small delay to ensure content is rendered
-            scrollState.animateScrollTo(scrollState.maxValue)
-        }
-    }
-    
+
     // Sync selectedTab with pager state
     LaunchedEffect(pagerState.currentPage) {
         selectedTab = tabs[pagerState.currentPage]
@@ -117,13 +108,7 @@ fun SimpleInterestCalculatorScreen(
         // Header
         SimpleInterestCalculatorHeader(onBackClick = onBackClick)
 
-        // Scrollable content wrapper
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-        ) {
-            // Tabs
+        // Tabs
         val scope = rememberCoroutineScope()
         Row(
             modifier = Modifier
@@ -135,7 +120,7 @@ fun SimpleInterestCalculatorScreen(
                 TabButton(
                     text = tab,
                     selected = selectedTab == tab,
-                    onClick = { 
+                    onClick = {
                         scope.launch {
                             pagerState.animateScrollToPage(index)
                         }
@@ -148,11 +133,22 @@ fun SimpleInterestCalculatorScreen(
         // Swipeable content
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.weight(1f)
         ) { page ->
+            val pageScrollState = rememberScrollState()
+            
+            // Scroll to end when results are shown
+            LaunchedEffect(showResults, page) {
+                if (showResults && pagerState.currentPage == page) {
+                    delay(100) // Small delay to ensure content is rendered
+                    pageScrollState.animateScrollTo(pageScrollState.maxValue)
+                }
+            }
+            
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
+                    .verticalScroll(pageScrollState)
                     .imePadding()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
@@ -188,121 +184,107 @@ fun SimpleInterestCalculatorScreen(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                        // Years Input
-                        Column(modifier = Modifier.weight(1f)) {
-                            OutlinedTextField(
-                                value = years,
-                                onValueChange = { years = it },
-                                placeholder = {
-                                    Text(
-                                        text = "Years",
-                                        color = Color.Gray,
-                                        fontSize = 14.sp
-                                    )
-                                },
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(8.dp),
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    unfocusedContainerColor = Color(0xFFF5F5F5),
-                                    focusedContainerColor = Color(0xFFF5F5F5),
-                                    unfocusedBorderColor = Color.Transparent,
-                                    focusedBorderColor = Color.Transparent
-                                ),
-                                singleLine = true
-                            )
-                        }
+                            // Years Input
+                            Column(modifier = Modifier.weight(1f)) {
+                                OutlinedTextField(
+                                    value = years,
+                                    onValueChange = { years = it },
+                                    placeholder = {
+                                        Text(
+                                            text = "Years",
+                                            color = Color.Gray,
+                                            fontSize = 14.sp
+                                        )
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(8.dp),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        unfocusedContainerColor = Color(0xFFF5F5F5),
+                                        focusedContainerColor = Color(0xFFF5F5F5),
+                                        unfocusedBorderColor = Color.Transparent,
+                                        focusedBorderColor = Color.Transparent
+                                    ),
+                                    singleLine = true
+                                )
+                            }
 
-                        // Months Input
-                        Column(modifier = Modifier.weight(1f)) {
-                            OutlinedTextField(
-                                value = months,
-                                onValueChange = { newValue ->
-                                    val numValue = newValue.toDoubleOrNull()
-                                    if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 11)) {
-                                        months = newValue
-                                    }
-                                },
-                                placeholder = {
-                                    Text(
-                                        text = "Months",
-                                        color = Color.Gray,
-                                        fontSize = 14.sp
-                                    )
-                                },
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(8.dp),
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    unfocusedContainerColor = Color(0xFFF5F5F5),
-                                    focusedContainerColor = Color(0xFFF5F5F5),
-                                    unfocusedBorderColor = Color.Transparent,
-                                    focusedBorderColor = Color.Transparent
-                                ),
-                                singleLine = true
-                            )
-                        }
+                            // Months Input
+                            Column(modifier = Modifier.weight(1f)) {
+                                OutlinedTextField(
+                                    value = months,
+                                    onValueChange = { newValue ->
+                                        val numValue = newValue.toDoubleOrNull()
+                                        if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 11)) {
+                                            months = newValue
+                                        }
+                                    },
+                                    placeholder = {
+                                        Text(
+                                            text = "Months",
+                                            color = Color.Gray,
+                                            fontSize = 14.sp
+                                        )
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(8.dp),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        unfocusedContainerColor = Color(0xFFF5F5F5),
+                                        focusedContainerColor = Color(0xFFF5F5F5),
+                                        unfocusedBorderColor = Color.Transparent,
+                                        focusedBorderColor = Color.Transparent
+                                    ),
+                                    singleLine = true
+                                )
+                            }
 
-                        // Days Input
-                        Column(modifier = Modifier.weight(1f)) {
-                            OutlinedTextField(
-                                value = days,
-                                onValueChange = { newValue ->
-                                    val numValue = newValue.toDoubleOrNull()
-                                    if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 30)) {
-                                        days = newValue
-                                    }
-                                },
-                                placeholder = {
-                                    Text(
-                                        text = "Days",
-                                        color = Color.Gray,
-                                        fontSize = 14.sp
-                                    )
-                                },
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(8.dp),
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    unfocusedContainerColor = Color(0xFFF5F5F5),
-                                    focusedContainerColor = Color(0xFFF5F5F5),
-                                    unfocusedBorderColor = Color.Transparent,
-                                    focusedBorderColor = Color.Transparent
-                                ),
-                                singleLine = true
-                            )
+                            // Days Input
+                            Column(modifier = Modifier.weight(1f)) {
+                                OutlinedTextField(
+                                    value = days,
+                                    onValueChange = { newValue ->
+                                        val numValue = newValue.toDoubleOrNull()
+                                        if (newValue.isEmpty() || (numValue != null && numValue >= 0 && numValue <= 30)) {
+                                            days = newValue
+                                        }
+                                    },
+                                    placeholder = {
+                                        Text(
+                                            text = "Days",
+                                            color = Color.Gray,
+                                            fontSize = 14.sp
+                                        )
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(8.dp),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        unfocusedContainerColor = Color(0xFFF5F5F5),
+                                        focusedContainerColor = Color(0xFFF5F5F5),
+                                        unfocusedBorderColor = Color.Transparent,
+                                        focusedBorderColor = Color.Transparent
+                                    ),
+                                    singleLine = true
+                                )
+                            }
                         }
-                    }
                     }
                 } else {
                     // Date Inputs
                     val context = LocalContext.current
-                    val currentFromDate = fromDate
-                    val currentToDate = toDate
-                    
+
                     // From Date
                     SimpleInterestDateField(
                         label = "From Date",
                         date = fromDate,
                         onDateSelected = { fromDate = it },
-                        context = context,
-                        maxDate = currentToDate,
-                        errorMessage = if (currentFromDate != null && currentToDate != null && currentFromDate.after(currentToDate)) {
-                            "From date must be before or equal to to date"
-                        } else null
+                        context = context
                     )
-                    
+
                     // To Date
                     SimpleInterestDateField(
                         label = "To Date",
                         date = toDate,
-                        onDateSelected = { selectedDate ->
-                            if (currentFromDate == null || selectedDate.after(currentFromDate)) {
-                                toDate = selectedDate
-                            }
-                        },
-                        context = context,
-                        minDate = currentFromDate,
-                        errorMessage = if (currentFromDate != null && currentToDate != null && (currentToDate.before(currentFromDate) || currentToDate == currentFromDate)) {
-                            "To date must be after from date"
-                        } else null
+                        onDateSelected = { toDate = it },
+                        context = context
                     )
                 }
 
@@ -428,143 +410,145 @@ fun SimpleInterestCalculatorScreen(
                                 }
                             }
                         },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(50.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF2196F3)
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        text = "Calculate",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
-
-                // Reset Button
-                Button(
-                    onClick = {
-                        amount = ""
-                        interestRate = ""
-                        years = ""
-                        months = ""
-                        days = ""
-                        fromDate = null
-                        toDate = null
-                        interestTypeString = InterestType.SIMPLE.name
-                        compoundingFrequency = "Monthly"
-                        showResults = false
-                        result = null
-                        errorMessage = null
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(50.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFEBEBEB)
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    elevation = ButtonDefaults.buttonElevation(
-                        defaultElevation = 0.dp,
-                        pressedElevation = 0.dp
-                    )
-                ) {
-                    Text(
-                        text = "Reset",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF333333)
-                    )
-                }
-            }
-        }
-
-        // Error Message Section
-        errorMessage?.let { error ->
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFFFEBEE)
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-            ) {
-                Text(
-                    text = error,
-                    fontSize = 14.sp,
-                    color = Color(0xFFC62828),
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
-        }
-
-        // Results Section
-        AnimatedVisibility(
-            visible = showResults && result != null,
-            enter = expandVertically(
-                    animationSpec = tween(300),
-                    expandFrom = Alignment.Top
-                ) + fadeIn(
-                    animationSpec = tween(300)
-                ),
-                exit = shrinkVertically(
-                    animationSpec = tween(300),
-                    shrinkTowards = Alignment.Top
-                ) + fadeOut(
-                    animationSpec = tween(300)
-                )
-            ) {
-                result?.let { res ->
-                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                            .weight(1f)
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF2196F3)
+                        ),
+                        shape = RoundedCornerShape(8.dp)
                     ) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        
-                        // Horizontal Divider
-                        Divider(
-                            color = Color(0xFFE0E0E0),
-                            thickness = 1.dp,
-                            modifier = Modifier.fillMaxWidth()
+                        Text(
+                            text = "Calculate",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
                         )
-                        
-                        // Results Card
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color(0xFFF7F7F7)
-                            )
+                    }
+
+                    // Reset Button
+                    Button(
+                        onClick = {
+                            amount = ""
+                            interestRate = ""
+                            years = ""
+                            months = ""
+                            days = ""
+                            fromDate = null
+                            toDate = null
+                            interestTypeString = InterestType.SIMPLE.name
+                            compoundingFrequency = "Monthly"
+                            showResults = false
+                            result = null
+                            errorMessage = null
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFEBEBEB)
+                        ),
+                        shape = RoundedCornerShape(8.dp),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 0.dp,
+                            pressedElevation = 0.dp
+                        )
+                    ) {
+                        Text(
+                            text = "Reset",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF333333)
+                        )
+                    }
+                }
+
+                // Error Message Section
+                errorMessage?.let { error ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFFFFEBEE)
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Text(
+                            text = error,
+                            fontSize = 14.sp,
+                            color = Color(0xFFC62828),
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                }
+
+                // Results Section
+                AnimatedVisibility(
+                    visible = showResults && result != null,
+                    enter = expandVertically(
+                        animationSpec = tween(300),
+                        expandFrom = Alignment.Top
+                    ) + fadeIn(
+                        animationSpec = tween(300)
+                    ),
+                    exit = shrinkVertically(
+                        animationSpec = tween(300),
+                        shrinkTowards = Alignment.Top
+                    ) + fadeOut(
+                        animationSpec = tween(300)
+                    )
+                ) {
+                    result?.let { res ->
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // Horizontal Divider
+                            Divider(
+                                color = Color(0xFFE0E0E0),
+                                thickness = 1.dp,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            // Results Card
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color(0xFFF7F7F7)
+                                )
                             ) {
-                                SimpleInterestResultRow(
-                                    label = "Principal Amount",
-                                    value = formatCurrencyWithDecimal(res.principalAmount)
-                                )
-                                SimpleInterestResultRow(
-                                    label = "Interest Amount",
-                                    value = formatCurrencyWithDecimal(res.interestAmount)
-                                )
-                                SimpleInterestResultRow(
-                                    label = "Total Amount",
-                                    value = formatCurrencyWithDecimal(res.totalAmount)
-                                )
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    SimpleInterestResultRow(
+                                        label = "Principal Amount",
+                                        value = formatCurrencyWithDecimal(res.principalAmount)
+                                    )
+                                    SimpleInterestResultRow(
+                                        label = "Interest Amount",
+                                        value = formatCurrencyWithDecimal(res.interestAmount)
+                                    )
+                                    SimpleInterestResultRow(
+                                        label = "Total Amount",
+                                        value = formatCurrencyWithDecimal(res.totalAmount)
+                                    )
+                                }
                             }
                         }
                     }
                 }
+                
+                // Extra spacing at bottom to ensure buttons remain accessible
+                Spacer(modifier = Modifier.height(16.dp))
             }
-        }
         }
     }
 }
@@ -683,13 +667,11 @@ fun SimpleInterestDateField(
     label: String,
     date: Date?,
     onDateSelected: (Date) -> Unit,
-    context: Context,
-    minDate: Date? = null,
-    maxDate: Date? = null,
-    errorMessage: String? = null
+    context: Context
 ) {
+    val calendar = Calendar.getInstance()
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    
+
     Column {
         Text(
             text = label,
@@ -702,52 +684,16 @@ fun SimpleInterestDateField(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    val initialCalendar = Calendar.getInstance()
-                    if (date != null) {
-                        initialCalendar.time = date
-                    }
-                    
                     val datePickerDialog = DatePickerDialog(
                         context,
                         { _, year, month, dayOfMonth ->
-                            val selectedCalendar = Calendar.getInstance()
-                            selectedCalendar.set(year, month, dayOfMonth)
-                            val selectedDate = selectedCalendar.time
-                            
-                            // Validate the selected date
-                            val isValid = when {
-                                minDate != null -> {
-                                    // For minDate, check if selected date is strictly after minDate (not equal)
-                                    // The picker already adds 1 day to minDate, so this ensures it's strictly after
-                                    selectedDate.after(minDate)
-                                }
-                                maxDate != null && selectedDate.after(maxDate) -> false
-                                else -> true
-                            }
-                            
-                            if (isValid) {
-                                onDateSelected(selectedDate)
-                            }
+                            calendar.set(year, month, dayOfMonth)
+                            onDateSelected(calendar.time)
                         },
-                        initialCalendar.get(Calendar.YEAR),
-                        initialCalendar.get(Calendar.MONTH),
-                        initialCalendar.get(Calendar.DAY_OF_MONTH)
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)
                     )
-                    
-                    // Set min and max dates if provided
-                    if (minDate != null) {
-                        val minCalendar = Calendar.getInstance()
-                        minCalendar.time = minDate
-                        // Add one day to prevent selecting the same date
-                        minCalendar.add(Calendar.DAY_OF_MONTH, 1)
-                        datePickerDialog.datePicker.minDate = minCalendar.timeInMillis
-                    }
-                    if (maxDate != null) {
-                        val maxCalendar = Calendar.getInstance()
-                        maxCalendar.time = maxDate
-                        datePickerDialog.datePicker.maxDate = maxCalendar.timeInMillis
-                    }
-                    
                     datePickerDialog.show()
                 }
         ) {
@@ -766,25 +712,15 @@ fun SimpleInterestDateField(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = if (errorMessage != null) Color(0xFFFFEBEE) else Color(0xFFF5F5F5),
-                    focusedContainerColor = if (errorMessage != null) Color(0xFFFFEBEE) else Color(0xFFF5F5F5),
-                    unfocusedBorderColor = if (errorMessage != null) Color(0xFFC62828) else Color.Transparent,
-                    focusedBorderColor = if (errorMessage != null) Color(0xFFC62828) else Color.Transparent,
-                    disabledContainerColor = if (errorMessage != null) Color(0xFFFFEBEE) else Color(0xFFF5F5F5),
-                    disabledBorderColor = if (errorMessage != null) Color(0xFFC62828) else Color.Transparent,
+                    unfocusedContainerColor = Color(0xFFF5F5F5),
+                    focusedContainerColor = Color(0xFFF5F5F5),
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = Color.Transparent,
+                    disabledContainerColor = Color(0xFFF5F5F5),
+                    disabledBorderColor = Color.Transparent,
                     disabledTextColor = Color.Black
                 ),
                 singleLine = true
-            )
-        }
-        
-        // Show error message if validation fails
-        errorMessage?.let { error ->
-            Text(
-                text = error,
-                color = Color(0xFFC62828),
-                fontSize = 12.sp,
-                modifier = Modifier.padding(top = 4.dp, start = 4.dp)
             )
         }
     }
@@ -865,7 +801,7 @@ fun SimpleInterestCompoundingDropdown(
                 }
             )
         }
-        
+
         AnimatedVisibility(
             visible = expanded,
             enter = expandVertically(
@@ -962,35 +898,35 @@ fun calculateSimpleInterest(
     return try {
         val principal = amount.toDoubleOrNull() ?: return null
         val rate = interestRate.toDoubleOrNull() ?: return null
-        
+
         if (principal <= 0 || rate <= 0) return null
-        
+
         // Calculate time period
         val timeInYears = if (selectedTab == "Duration") {
             val yearsValue = years.toDoubleOrNull() ?: 0.0
             val monthsValue = months.toDoubleOrNull() ?: 0.0
             val daysValue = days.toDoubleOrNull() ?: 0.0
-            
+
             if (yearsValue == 0.0 && monthsValue == 0.0 && daysValue == 0.0) return null
-            
+
             yearsValue + (monthsValue / 12.0) + (daysValue / 365.0)
         } else {
             // Date tab
             if (fromDate == null || toDate == null) return null
             if (fromDate.after(toDate)) return null
-            
+
             val diffInMillis = toDate.time - fromDate.time
             val diffInDays = diffInMillis / (1000.0 * 60 * 60 * 24)
             diffInDays / 365.0
         }
-        
+
         if (timeInYears <= 0) return null
-        
+
         val r = rate / 100.0
-        
+
         val interestAmount: Double
         val totalAmount: Double
-        
+
         if (interestType == InterestType.SIMPLE) {
             // Simple Interest: I = P * r * t
             interestAmount = principal * r * timeInYears
@@ -1004,13 +940,13 @@ fun calculateSimpleInterest(
                 "Yearly" -> 1
                 else -> 12
             }
-            
+
             // Compound Interest: A = P * (1 + r/n)^(n*t)
             val amount = principal * java.lang.Math.pow(1 + r / n, n * timeInYears)
             interestAmount = amount - principal
             totalAmount = amount
         }
-        
+
         SimpleInterestResult(
             principalAmount = principal,
             interestAmount = interestAmount,
@@ -1024,4 +960,3 @@ fun calculateSimpleInterest(
 private fun formatCurrencyWithDecimal(amount: Double): String {
     return String.format("%,.2f", amount)
 }
-
