@@ -215,7 +215,7 @@ fun SIPCalculatorScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = 16.dp, top = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 // Calculate Button
