@@ -1,6 +1,7 @@
 package com.belbytes.calculators.ui.bank
 
 import android.app.DatePickerDialog
+import android.widget.DatePicker
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -284,7 +285,8 @@ fun SimpleInterestCalculatorScreen(
                         label = "To Date",
                         date = toDate,
                         onDateSelected = { toDate = it },
-                        context = context
+                        context = context,
+                        minDate = fromDate
                     )
                 }
 
@@ -395,8 +397,8 @@ fun SimpleInterestCalculatorScreen(
                                     }
                                     selectedTab == "Date" && (fromDate == null || toDate == null) ->
                                         "Please select both from and to dates"
-                                    selectedTab == "Date" && fromDate != null && toDate != null && fromDate!!.after(toDate) ->
-                                        "From date must be before or equal to to date"
+                                    selectedTab == "Date" && fromDate != null && toDate != null && toDate!!.before(fromDate) ->
+                                        "To date must be greater than or equal to from date"
                                     else -> {
                                         // Check for invalid month/day values
                                         val monthsValue = months.toDoubleOrNull()
@@ -667,7 +669,8 @@ fun SimpleInterestDateField(
     label: String,
     date: Date?,
     onDateSelected: (Date) -> Unit,
-    context: Context
+    context: Context,
+    minDate: Date? = null
 ) {
     val calendar = Calendar.getInstance()
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -684,16 +687,44 @@ fun SimpleInterestDateField(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
+                    val initialYear = date?.let {
+                        val cal = Calendar.getInstance()
+                        cal.time = it
+                        cal.get(Calendar.YEAR)
+                    } ?: calendar.get(Calendar.YEAR)
+                    
+                    val initialMonth = date?.let {
+                        val cal = Calendar.getInstance()
+                        cal.time = it
+                        cal.get(Calendar.MONTH)
+                    } ?: calendar.get(Calendar.MONTH)
+                    
+                    val initialDay = date?.let {
+                        val cal = Calendar.getInstance()
+                        cal.time = it
+                        cal.get(Calendar.DAY_OF_MONTH)
+                    } ?: calendar.get(Calendar.DAY_OF_MONTH)
+                    
                     val datePickerDialog = DatePickerDialog(
                         context,
-                        { _, year, month, dayOfMonth ->
-                            calendar.set(year, month, dayOfMonth)
-                            onDateSelected(calendar.time)
-                        },
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH)
+                        null, // We'll handle date selection with setOnDateChangedListener
+                        initialYear,
+                        initialMonth,
+                        initialDay
                     )
+                    
+                    // Set minimum date if provided
+                    minDate?.let {
+                        datePickerDialog.datePicker.minDate = it.time
+                    }
+                    
+                    // Set up listener to auto-dismiss when date is selected (fires immediately on date change)
+                    datePickerDialog.datePicker.setOnDateChangedListener { _, year, monthOfYear, dayOfMonth ->
+                        calendar.set(year, monthOfYear, dayOfMonth)
+                        onDateSelected(calendar.time)
+                        datePickerDialog.dismiss()
+                    }
+                    
                     datePickerDialog.show()
                 }
         ) {
@@ -913,7 +944,7 @@ fun calculateSimpleInterest(
         } else {
             // Date tab
             if (fromDate == null || toDate == null) return null
-            if (fromDate.after(toDate)) return null
+            if (toDate.before(fromDate)) return null
 
             val diffInMillis = toDate.time - fromDate.time
             val diffInDays = diffInMillis / (1000.0 * 60 * 60 * 24)
