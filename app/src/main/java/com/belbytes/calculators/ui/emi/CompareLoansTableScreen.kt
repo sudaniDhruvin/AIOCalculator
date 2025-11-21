@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlinx.parcelize.Parcelize
 
@@ -134,12 +136,12 @@ fun CompareLoansTableScreen(
                             
                             // Label rows with consistent height
                             val labels = listOf(
-                                "Loan Amount",
-                                "%",
-                                "Period (M)",
-                                "Monthly EMI",
-                                "Total Interest",
-                                "Total Payment"
+                                stringResource(R.string.loan_amount_label),
+                                stringResource(R.string.percent_short),
+                                stringResource(R.string.period_months_label),
+                                stringResource(R.string.monthly_emi_label_table),
+                                stringResource(R.string.total_interest_label_table),
+                                stringResource(R.string.total_payment_label_table)
                             )
                             labels.forEachIndexed { index, label ->
                                 Box(
@@ -205,7 +207,7 @@ fun CompareLoansTableScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Add Loan",
+                    text = stringResource(R.string.add_loan),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -270,7 +272,7 @@ fun CompareLoansTableScreen(
             }
 
             Text(
-                text = "Compare Loans Table",
+                text = stringResource(R.string.compare_loans_table),
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
@@ -335,6 +337,7 @@ fun AddLoanDialog(
     onAddToCompare: () -> Unit,
     onCancel: () -> Unit
 ) {
+    val context = LocalContext.current
     var errorMessage by remember { mutableStateOf<String?>(null) }
     Dialog(onDismissRequest = onCancel) {
         Card(
@@ -354,7 +357,7 @@ fun AddLoanDialog(
             ) {
                 // Title
                 Text(
-                    text = "Add New Loan",
+                    text = stringResource(R.string.add_new_loan),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -362,16 +365,16 @@ fun AddLoanDialog(
                 
                 // Amount Input
                 AddLoanInputField(
-                    label = "Amount",
-                    placeholder = "Ex: 500,000",
+                    label = stringResource(R.string.amount),
+                    placeholder = stringResource(R.string.placeholder_amount_large),
                     value = amount,
                     onValueChange = onAmountChange
                 )
                 
                 // Interest Rate Input
                 AddLoanInputField(
-                    label = "Interest Rate (%)",
-                    placeholder = "Ex: 5%",
+                    label = stringResource(R.string.interest_rate),
+                    placeholder = stringResource(R.string.placeholder_rate_percent),
                     value = interestRate,
                     onValueChange = onInterestRateChange
                 )
@@ -386,7 +389,7 @@ fun AddLoanDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Period",
+                            text = stringResource(R.string.period),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
                             color = Color.Black,
@@ -396,12 +399,12 @@ fun AddLoanDialog(
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             AddLoanRadioButton(
-                                label = "Years",
+                                label = stringResource(R.string.years),
                                 selected = periodType == "Years",
                                 onClick = { onPeriodTypeChange("Years") }
                             )
                             AddLoanRadioButton(
-                                label = "Month",
+                                label = stringResource(R.string.months),
                                 selected = periodType == "Month",
                                 onClick = { onPeriodTypeChange("Month") }
                             )
@@ -445,13 +448,13 @@ fun AddLoanDialog(
                             errorMessage = null
                             when {
                                 amount.isBlank() || (amount.toDoubleOrNull() ?: -1.0) <= 0 -> {
-                                    errorMessage = "Please enter a valid loan amount"
+                                    errorMessage = context.getString(R.string.error_valid_loan_amount)
                                 }
                                 interestRate.isBlank() || (interestRate.toDoubleOrNull() ?: -1.0) <= 0 -> {
-                                    errorMessage = "Please enter a valid interest rate"
+                                    errorMessage = context.getString(R.string.error_valid_interest_rate)
                                 }
                                 period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0 -> {
-                                    errorMessage = "Please enter a valid period"
+                                    errorMessage = context.getString(R.string.error_invalid_period)
                                 }
                                 else -> {
                                     errorMessage = null
@@ -472,7 +475,7 @@ fun AddLoanDialog(
                         )
                     ) {
                         Text(
-                            text = "Compare",
+                            text = stringResource(R.string.compare),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -494,7 +497,7 @@ fun AddLoanDialog(
                         )
                     ) {
                         Text(
-                            text = "Cancel",
+                            text = stringResource(R.string.cancel),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF333333)
@@ -640,6 +643,7 @@ fun LoanDataColumn(
 ) {
     val context = LocalContext.current
     
+    
     Column(
         modifier = Modifier.width(120.dp)
     ) {
@@ -653,7 +657,7 @@ fun LoanDataColumn(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Loan ${index + 1}",
+                text = context.getString(R.string.loan_number, index + 1),
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,

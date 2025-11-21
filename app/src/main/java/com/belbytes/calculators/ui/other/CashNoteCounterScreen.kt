@@ -24,6 +24,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 
 data class CashNoteCounterResult(
     val totalAmount: Double
@@ -33,6 +36,7 @@ data class CashNoteCounterResult(
 fun CashNoteCounterScreen(
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
     // State variables for each denomination
     var note2000 by rememberSaveable { mutableStateOf("") }
     var note500 by rememberSaveable { mutableStateOf("") }
@@ -187,7 +191,7 @@ fun CashNoteCounterScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = stringResource(R.string.calculate),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -220,7 +224,7 @@ fun CashNoteCounterScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Reset",
+                        text = stringResource(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -262,7 +266,7 @@ fun CashNoteCounterScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Final Answer:",
+                            text = stringResource(R.string.final_answer),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Normal,
                             color = Color.Black

@@ -28,6 +28,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlinx.parcelize.Parcelize
 
@@ -97,7 +99,7 @@ fun CompareLoansScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    text = "Loan 1",
+                    text = stringResource(R.string.loan_1),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -105,16 +107,16 @@ fun CompareLoansScreen(
 
                 // Amount Input
                 CompareLoansInputField(
-                    label = "Amount",
-                    placeholder = "Ex: 500,000",
+                    label = stringResource(R.string.amount),
+                    placeholder = stringResource(R.string.placeholder_amount_large),
                     value = loan1Amount,
                     onValueChange = { loan1Amount = it }
                 )
 
                 // Interest Rate Input
                 CompareLoansInputField(
-                    label = "Interest Rate (%)",
-                    placeholder = "Ex: 5%",
+                    label = stringResource(R.string.interest_rate),
+                    placeholder = stringResource(R.string.placeholder_rate_percent),
                     value = loan1InterestRate,
                     onValueChange = { loan1InterestRate = it }
                 )
@@ -129,7 +131,7 @@ fun CompareLoansScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Period",
+                            text = stringResource(R.string.period),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
                             color = Color.Black,
@@ -139,12 +141,12 @@ fun CompareLoansScreen(
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             CompareLoansRadioButton(
-                                label = "Years",
+                                label = stringResource(R.string.years),
                                 selected = loan1PeriodType == "Years",
                                 onClick = { loan1PeriodType = "Years" }
                             )
                             CompareLoansRadioButton(
-                                label = "Month",
+                                label = stringResource(R.string.months),
                                 selected = loan1PeriodType == "Month",
                                 onClick = { loan1PeriodType = "Month" }
                             )
@@ -173,7 +175,7 @@ fun CompareLoansScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    text = "Loan 2",
+                    text = stringResource(R.string.loan_2),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -181,16 +183,16 @@ fun CompareLoansScreen(
 
                 // Amount Input
                 CompareLoansInputField(
-                    label = "Amount",
-                    placeholder = "Ex: 500,000",
+                    label = stringResource(R.string.amount),
+                    placeholder = stringResource(R.string.placeholder_amount_large),
                     value = loan2Amount,
                     onValueChange = { loan2Amount = it }
                 )
 
                 // Interest Rate Input
                 CompareLoansInputField(
-                    label = "Interest Rate (%)",
-                    placeholder = "Ex: 5%",
+                    label = stringResource(R.string.interest_rate),
+                    placeholder = stringResource(R.string.placeholder_rate_percent),
                     value = loan2InterestRate,
                     onValueChange = { loan2InterestRate = it }
                 )
@@ -205,7 +207,7 @@ fun CompareLoansScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Period",
+                            text = stringResource(R.string.period),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
                             color = Color.Black,
@@ -215,12 +217,12 @@ fun CompareLoansScreen(
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             CompareLoansRadioButton(
-                                label = "Years",
+                                label = stringResource(R.string.years),
                                 selected = loan2PeriodType == "Years",
                                 onClick = { loan2PeriodType = "Years" }
                             )
                             CompareLoansRadioButton(
-                                label = "Month",
+                                label = stringResource(R.string.months),
                                 selected = loan2PeriodType == "Month",
                                 onClick = { loan2PeriodType = "Month" }
                             )
@@ -314,7 +316,7 @@ fun CompareLoansScreen(
                     )
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = stringResource(R.string.calculate),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -349,7 +351,7 @@ fun CompareLoansScreen(
                     )
                 ) {
                     Text(
-                        text = "Reset",
+                        text = stringResource(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF333333)
@@ -402,21 +404,21 @@ fun CompareLoansScreen(
                     ) {
                         // Monthly EMI Card
                         CompareResultCard(
-                            title = "Monthly EMI",
+                            title = stringResource(R.string.monthly_emi_label),
                             loan1Value = result.loan1MonthlyEMI,
                             loan2Value = result.loan2MonthlyEMI
                         )
 
                         // Total Interest Card
                         CompareResultCard(
-                            title = "Total Interest",
+                            title = stringResource(R.string.total_interest_label),
                             loan1Value = result.loan1TotalInterest,
                             loan2Value = result.loan2TotalInterest
                         )
 
                         // Total Payment Card
                         CompareResultCard(
-                            title = "Total Payment",
+                            title = stringResource(R.string.total_payment_label),
                             loan1Value = result.loan1TotalPayment,
                             loan2Value = result.loan2TotalPayment
                         )
@@ -494,7 +496,7 @@ fun CompareLoansScreen(
                     ),
                 ) {
                     Text(
-                        text = "Compare More",
+                        text = stringResource(R.string.compare_more),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -535,7 +537,7 @@ fun CompareLoansScreen(
             }
 
             Text(
-                text = "Compare Loans",
+                text = stringResource(R.string.compare_loans),
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
@@ -564,14 +566,14 @@ fun CompareLoansHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "Compare Loans",
+            text = stringResource(R.string.compare_loans),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
@@ -715,7 +717,7 @@ fun CompareResultCard(
 
             // Difference - Centered
             Text(
-                text = "Difference : ${formatCurrencyWithDecimal(context, difference)}",
+                text = "${stringResource(R.string.difference)} : ${formatCurrencyWithDecimal(context, difference)}",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Normal,
                 color = Color(0xFF2196F3),

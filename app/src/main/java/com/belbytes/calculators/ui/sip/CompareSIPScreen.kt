@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlinx.parcelize.Parcelize
 import kotlin.math.pow
@@ -97,7 +99,7 @@ fun CompareSIPScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "No SIP entries yet. Add a SIP to compare.",
+                                text = stringResource(R.string.no_sip_entries),
                                 fontSize = 14.sp,
                                 color = Color.Gray,
                                 textAlign = TextAlign.Center
@@ -131,12 +133,12 @@ fun CompareSIPScreen(
                                 
                                 // Label rows with consistent height
                                 val labels = listOf(
-                                    "Monthly investment",
-                                    "%",
-                                    "Period (M)",
-                                    "Invested Amount",
-                                    "Est. Return",
-                                    "Total Value"
+                                    stringResource(R.string.monthly_investment_label),
+                                    stringResource(R.string.percent_short),
+                                    stringResource(R.string.period_months_label),
+                                    stringResource(R.string.invested_amount),
+                                    stringResource(R.string.est_return),
+                                    stringResource(R.string.total_value)
                                 )
                                 labels.forEachIndexed { index, label ->
                                     Box(
@@ -206,7 +208,7 @@ fun CompareSIPScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Add Loan",
+                        text = stringResource(R.string.add_loan),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -298,6 +300,7 @@ fun AddSIPDialog(
     onAddToCompare: () -> Unit,
     onCancel: () -> Unit
 ) {
+    val context = LocalContext.current
     var errorMessage by remember { mutableStateOf<String?>(null) }
     Dialog(onDismissRequest = onCancel) {
         Card(
@@ -317,7 +320,7 @@ fun AddSIPDialog(
             ) {
                 // Title
                 Text(
-                    text = "Add New SIP",
+                    text = stringResource(R.string.add_new_sip),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -325,24 +328,24 @@ fun AddSIPDialog(
                 
                 // Monthly Investment Input
                 AddSIPInputField(
-                    label = "Monthly Investment",
-                    placeholder = "Ex: 1,00,000",
+                    label = stringResource(R.string.monthly_investment),
+                    placeholder = stringResource(R.string.placeholder_amount_large),
                     value = monthlyInvestment,
                     onValueChange = onMonthlyInvestmentChange
                 )
                 
                 // Expected Returns Rate Input
                 AddSIPInputField(
-                    label = "Expected Returns Rate %",
-                    placeholder = "10% (p.a)",
+                    label = stringResource(R.string.expected_returns_rate),
+                    placeholder = stringResource(R.string.placeholder_rate_percent),
                     value = expectedReturnRate,
                     onValueChange = onExpectedReturnRateChange
                 )
                 
                 // Time Period Input
                 AddSIPInputField(
-                    label = "Time Period (Monthly)",
-                    placeholder = "Ex: 1",
+                    label = stringResource(R.string.time_period_monthly),
+                    placeholder = stringResource(R.string.placeholder_period),
                     value = timePeriod,
                     onValueChange = onTimePeriodChange
                 )
@@ -387,7 +390,7 @@ fun AddSIPDialog(
                         )
                     ) {
                         Text(
-                            text = "Cancel",
+                            text = stringResource(R.string.cancel),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF333333)
@@ -400,13 +403,13 @@ fun AddSIPDialog(
                             errorMessage = null
                             when {
                                 monthlyInvestment.isBlank() || (monthlyInvestment.toDoubleOrNull() ?: -1.0) <= 0 -> {
-                                    errorMessage = "Please enter a valid monthly investment"
+                                    errorMessage = context.getString(R.string.error_valid_monthly_investment)
                                 }
                                 expectedReturnRate.isBlank() || (expectedReturnRate.toDoubleOrNull() ?: -1.0) < 0 -> {
-                                    errorMessage = "Please enter a valid expected return rate"
+                                    errorMessage = context.getString(R.string.error_valid_expected_return_rate)
                                 }
                                 timePeriod.isBlank() || (timePeriod.toDoubleOrNull() ?: -1.0) <= 0 -> {
-                                    errorMessage = "Please enter a valid time period"
+                                    errorMessage = context.getString(R.string.error_valid_time_period)
                                 }
                                 else -> {
                                     errorMessage = null
@@ -431,7 +434,7 @@ fun AddSIPDialog(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "Compare",
+                                text = stringResource(R.string.compare),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White,
@@ -511,7 +514,7 @@ fun CompareSIPHeader(onBackClick: () -> Unit) {
         }
 
         Text(
-            text = "Compare SIP",
+            text = stringResource(R.string.compare_sip),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
@@ -559,7 +562,7 @@ fun SIPDataColumn(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "SIP ${index + 1}",
+                text = context.getString(R.string.sip_number, index + 1),
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,

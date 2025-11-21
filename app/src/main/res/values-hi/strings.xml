@@ -265,6 +265,9 @@
     <string name="error_valid_stp_amount">कृपया एक वैध एसटीपी राशि दर्ज करें</string>
     <string name="error_valid_transferor_rate">कृपया एक वैध स्थानांतरणकर्ता दर दर्ज करें</string>
     <string name="error_valid_transferee_rate">कृपया एक वैध स्थानांतरिती दर दर्ज करें</string>
+    <string name="error_valid_loan_amount">कृपया एक वैध ऋण राशि दर्ज करें</string>
+    <string name="error_valid_interest_rate">कृपया एक वैध ब्याज दर दर्ज करें</string>
+    <string name="error_valid_period">कृपया एक वैध अवधि दर्ज करें</string>
     
     <!-- Bottom Navigation -->
     <string name="nav_home">होम</string>
@@ -302,4 +305,16 @@
     <string name="subcategory_discount_calculator">छूट कैलकुलेटर</string>
     <string name="subcategory_cash_note_counter">कैश नोट काउंटर</string>
     <string name="subcategory_charging_time">चार्जिंग समय</string>
+    
+    <!-- Additional Labels for Tables and Lists -->
+    <string name="monthly_investment_label">मासिक निवेश</string>
+    <string name="period_months_label">अवधि (महीने)</string>
+    <string name="est_return">अनुमानित रिटर्न</string>
+    <string name="loan_amount_label">ऋण राशि</string>
+    <string name="monthly_emi_label_table">मासिक ईएमआई</string>
+    <string name="total_interest_label_table">कुल ब्याज</string>
+    <string name="total_payment_label_table">कुल भुगतान</string>
+    <string name="compare_more">अधिक तुलना करें</string>
+    <string name="withdrawal_amount_too_high">निवेश अवधि के लिए निकासी राशि बहुत अधिक लगती है</string>
+    <string name="stp_amount_must_be_less">एसटीपी राशि निवेश राशि से कम होनी चाहिए</string>
 </resources>

@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlin.math.max
 import kotlin.math.pow
@@ -80,32 +82,32 @@ fun SWPCalculatorScreen(
         ) {
             // Total Investment Input
             SWPInputField(
-                label = "Total Investment",
-                placeholder = "Ex: 10000",
+                label = stringResource(R.string.total_investment),
+                placeholder = stringResource(R.string.placeholder_amount),
                 value = totalInvestment,
                 onValueChange = { totalInvestment = it }
             )
 
             // Withdrawal Per Month Input
             SWPInputField(
-                label = "Withdrawal Per Month",
-                placeholder = "Ex: 1000",
+                label = stringResource(R.string.withdrawal_per_month),
+                placeholder = stringResource(R.string.placeholder_amount),
                 value = withdrawalPerMonth,
                 onValueChange = { withdrawalPerMonth = it }
             )
 
             // Expected Return Rate Input
             SWPInputField(
-                label = "Exp. Return Rate (%)",
-                placeholder = "Ex: 12",
+                label = stringResource(R.string.expected_return_rate),
+                placeholder = stringResource(R.string.placeholder_rate),
                 value = expectedReturnRate,
                 onValueChange = { expectedReturnRate = it }
             )
 
             // Period (Years) Input
             SWPInputField(
-                label = "Period (Years)",
-                placeholder = "Ex: 10",
+                label = stringResource(R.string.period_years),
+                placeholder = stringResource(R.string.placeholder_period),
                 value = periodYears,
                 onValueChange = { periodYears = it }
             )
@@ -137,22 +139,22 @@ fun SWPCalculatorScreen(
                             swpResult = null
                             errorMessage = when {
                                 totalInvestment.isBlank() || (totalInvestment.toDoubleOrNull() ?: -1.0) <= 0 ->
-                                    "Please enter a valid total investment"
+                                    context.getString(R.string.error_valid_total_investment)
                                 withdrawalPerMonth.isBlank() || (withdrawalPerMonth.toDoubleOrNull() ?: -1.0) <= 0 ->
-                                    "Please enter a valid withdrawal per month"
+                                    context.getString(R.string.error_valid_withdrawal_per_month)
                                 expectedReturnRate.isBlank() || expectedReturnRate.toDoubleOrNull() == null ->
-                                    "Please enter a valid expected return rate"
+                                    context.getString(R.string.error_valid_expected_return_rate)
                                 periodYears.isBlank() || (periodYears.toDoubleOrNull() ?: -1.0) <= 0 ->
-                                    "Please enter a valid period in years"
+                                    context.getString(R.string.error_invalid_period)
                                 else -> {
                                     val investment = totalInvestment.toDoubleOrNull() ?: 0.0
                                     val withdrawal = withdrawalPerMonth.toDoubleOrNull() ?: 0.0
                                     val years = periodYears.toDoubleOrNull() ?: 0.0
                                     val totalWithdrawals = withdrawal * years * 12
                                     if (totalWithdrawals > investment * 2) {
-                                        "Withdrawal amount seems too high for the investment period"
+                                        context.getString(R.string.withdrawal_amount_too_high)
                                     } else {
-                                        "Please check all input values"
+                                        context.getString(R.string.error_check_inputs)
                                     }
                                 }
                             }
@@ -167,7 +169,7 @@ fun SWPCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = stringResource(R.string.calculate),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -198,7 +200,7 @@ fun SWPCalculatorScreen(
                     )
                 ) {
                     Text(
-                        text = "Reset",
+                        text = stringResource(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF333333)
@@ -272,15 +274,15 @@ fun SWPCalculatorScreen(
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 SWPResultRow(
-                                    label = "Estimated Returns",
+                                    label = stringResource(R.string.estimated_returns),
                                     value = formatCurrencyWithDecimal(context, result.estimatedReturns)
                                 )
                                 SWPResultRow(
-                                    label = "Total Withdrawal",
+                                    label = stringResource(R.string.total_withdrawal),
                                     value = formatCurrencyWithDecimal(context, result.totalWithdrawal)
                                 )
                                 SWPResultRow(
-                                    label = "Final Balance",
+                                    label = stringResource(R.string.final_balance),
                                     value = formatCurrencyWithDecimal(context, result.finalBalance)
                                 )
                             }

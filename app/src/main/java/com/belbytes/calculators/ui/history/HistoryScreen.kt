@@ -10,11 +10,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 
 @Composable
 fun HistoryScreen(
     onBackClick: () -> Unit = {}
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -32,7 +36,7 @@ fun HistoryScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Calculation history will be shown here",
+                text = stringResource(R.string.calculation_history),
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -45,6 +49,7 @@ fun HistoryScreen(
 
 @Composable
 fun HeaderSection() {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -60,7 +65,7 @@ fun HeaderSection() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "History",
+                text = stringResource(R.string.history),
                 color = Color.White,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold

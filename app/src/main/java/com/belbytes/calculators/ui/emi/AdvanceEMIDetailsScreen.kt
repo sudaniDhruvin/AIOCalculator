@@ -17,6 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 
 @Composable
@@ -69,15 +71,15 @@ fun AdvanceEMIDetailsScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    ResultRowBold("Amount", formatCurrencyWithDecimal(context, amount))
-                    ResultRowBold("Interest", String.format("%.2f", interestRate))
-                    ResultRowBold("Periods (months)", emiResult.periodMonths.toString())
-                    ResultRowBold("Monthly EMI", formatCurrencyWithDecimal(context, emiResult.monthlyEMI))
-                    ResultRowBold("Total Interest", formatCurrencyWithDecimal(context, emiResult.totalInterest))
-                    ResultRowBold("Processing Fees", formatCurrencyWithDecimal(context, emiResult.processingFees))
-                    ResultRowBold("GST On Interest", formatCurrencyWithDecimal(context, emiResult.gstOnInterest))
-                    ResultRowBold("GST On Processing Fees", formatCurrencyWithDecimal(context, emiResult.gstOnProcessingFees))
-                    ResultRowBold("Total Payment", formatCurrencyWithDecimal(context, emiResult.totalPayment))
+                    ResultRowBold(stringResource(R.string.amount), formatCurrencyWithDecimal(context, amount))
+                    ResultRowBold(stringResource(R.string.interest), String.format("%.2f", interestRate))
+                    ResultRowBold(stringResource(R.string.periods_months), emiResult.periodMonths.toString())
+                    ResultRowBold(stringResource(R.string.monthly_emi), formatCurrencyWithDecimal(context, emiResult.monthlyEMI))
+                    ResultRowBold(stringResource(R.string.total_interest), formatCurrencyWithDecimal(context, emiResult.totalInterest))
+                    ResultRowBold(stringResource(R.string.processing_fees), formatCurrencyWithDecimal(context, emiResult.processingFees))
+                    ResultRowBold(stringResource(R.string.gst_on_interest), formatCurrencyWithDecimal(context, emiResult.gstOnInterest))
+                    ResultRowBold(stringResource(R.string.gst_on_processing_fees), formatCurrencyWithDecimal(context, emiResult.gstOnProcessingFees))
+                    ResultRowBold(stringResource(R.string.total_payment), formatCurrencyWithDecimal(context, emiResult.totalPayment))
                 }
             }
 
@@ -102,10 +104,10 @@ fun AdvanceEMIDetailsScreen(
                             .padding(12.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        TableHeaderCell("Month", weightValue = 1f)
-                        TableHeaderCell("Principal", weightValue = 1.5f)
-                        TableHeaderCell("Interest", weightValue = 1.5f)
-                        TableHeaderCell("Balance", weightValue = 1.5f)
+                        TableHeaderCell(stringResource(R.string.month), weightValue = 1f)
+                        TableHeaderCell(stringResource(R.string.principal), weightValue = 1.5f)
+                        TableHeaderCell(stringResource(R.string.interest), weightValue = 1.5f)
+                        TableHeaderCell(stringResource(R.string.balance), weightValue = 1.5f)
                     }
 
                     // Table Rows
@@ -161,7 +163,7 @@ fun AdvanceEMIDetailsHeader(onBackClick: () -> Unit) {
         }
 
         Text(
-            text = "Advance EMI Details",
+            text = stringResource(R.string.advance_emi_details),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,

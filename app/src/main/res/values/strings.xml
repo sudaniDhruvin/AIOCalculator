@@ -124,6 +124,9 @@
     <string name="error_invalid_vat_rate">Please enter a valid VAT rate</string>
     <string name="error_invalid_period">Please enter a valid period</string>
     <string name="error_check_inputs">Please check all input values</string>
+    <string name="error_valid_loan_amount">Please enter a valid loan amount</string>
+    <string name="error_valid_interest_rate">Please enter a valid interest rate</string>
+    <string name="error_valid_period">Please enter a valid period</string>
     
     <!-- Number Formats -->
     <string name="format_automatic">Automatic</string>
@@ -302,4 +305,16 @@
     <string name="subcategory_discount_calculator">Discount Calculator</string>
     <string name="subcategory_cash_note_counter">Cash Note Counter</string>
     <string name="subcategory_charging_time">Charging Time</string>
+    
+    <!-- Additional Labels for Tables and Lists -->
+    <string name="monthly_investment_label">Monthly investment</string>
+    <string name="period_months_label">Period (M)</string>
+    <string name="est_return">Est. Return</string>
+    <string name="loan_amount_label">Loan Amount</string>
+    <string name="monthly_emi_label_table">Monthly EMI</string>
+    <string name="total_interest_label_table">Total Interest</string>
+    <string name="total_payment_label_table">Total Payment</string>
+    <string name="compare_more">Compare More</string>
+    <string name="withdrawal_amount_too_high">Withdrawal amount seems too high for the investment period</string>
+    <string name="stp_amount_must_be_less">STP amount must be less than investment amount</string>
 </resources>
