@@ -10,7 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,9 +19,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.res.painterResource
 import com.belbytes.calculators.R
+import com.belbytes.calculators.utils.PreferenceManager
+import com.belbytes.calculators.utils.LocaleHelper
+import com.belbytes.calculators.ui.setup.*
 
 data class SettingsItem(
     val id: String,
@@ -38,7 +44,32 @@ fun SettingsScreen(
     val context = LocalContext.current
     val packageName = context.packageName
     
+    var showLanguageDialog by remember { mutableStateOf(false) }
+    var showNumberFormatDialog by remember { mutableStateOf(false) }
+    var showDecimalPlacesDialog by remember { mutableStateOf(false) }
+    
     val settingsItems = listOf(
+        SettingsItem(
+            id = "language",
+            title = "Language",
+            iconName = "language",
+            color = "#E1F5FE", // Very light blue
+            onClick = { showLanguageDialog = true }
+        ),
+        SettingsItem(
+            id = "number_format",
+            title = "Number Format",
+            iconName = "format",
+            color = "#F3E5F5", // Very light purple
+            onClick = { showNumberFormatDialog = true }
+        ),
+        SettingsItem(
+            id = "decimal_places",
+            title = "Decimal Places",
+            iconName = "decimal",
+            color = "#FFF9C4", // Very light yellow
+            onClick = { showDecimalPlacesDialog = true }
+        ),
         SettingsItem(
             id = "1",
             title = "Share App",
@@ -87,13 +118,60 @@ fun SettingsScreen(
             settingsItems.forEach { item ->
                 SettingsItemCard(
                     item = item,
-                    onClick = item.onClick
+                    onClick = item.onClick,
+                    subtitle = when (item.id) {
+                        "language" -> {
+                            val lang = PreferenceManager.getSelectedLanguage(context)
+                            if (lang == "hi") "हिंदी" else "English"
+                        }
+                        "number_format" -> {
+                            PreferenceManager.getNumberFormat(context)
+                        }
+                        "decimal_places" -> {
+                            "${PreferenceManager.getDecimalPlaces(context)} places"
+                        }
+                        else -> null
+                    }
                 )
             }
         }
         
         // Bottom padding for navigation bar
         Spacer(modifier = Modifier.height(80.dp))
+    }
+    
+    // Language Selection Dialog
+    if (showLanguageDialog) {
+        LanguageSelectionDialog(
+            onDismiss = { showLanguageDialog = false },
+            onLanguageSelected = { language ->
+                PreferenceManager.setSelectedLanguage(context, language)
+                LocaleHelper.setLocale(context, language)
+                showLanguageDialog = false
+            }
+        )
+    }
+    
+    // Number Format Selection Dialog
+    if (showNumberFormatDialog) {
+        NumberFormatSelectionDialog(
+            onDismiss = { showNumberFormatDialog = false },
+            onFormatSelected = { format ->
+                PreferenceManager.setNumberFormat(context, format)
+                showNumberFormatDialog = false
+            }
+        )
+    }
+    
+    // Decimal Places Selection Dialog
+    if (showDecimalPlacesDialog) {
+        DecimalPlacesSelectionDialog(
+            onDismiss = { showDecimalPlacesDialog = false },
+            onDecimalPlacesSelected = { places ->
+                PreferenceManager.setDecimalPlaces(context, places)
+                showDecimalPlacesDialog = false
+            }
+        )
     }
 }
 
@@ -126,7 +204,8 @@ fun HeaderSection() {
 @Composable
 fun SettingsItemCard(
     item: SettingsItem,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    subtitle: String? = null
 ) {
     Card(
         modifier = Modifier
@@ -152,23 +231,53 @@ fun SettingsItemCard(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = getIconResourceForSettingsItem(item.iconName)),
-                    contentDescription = item.title,
-                    modifier = Modifier.size(24.dp)
-                )
+                when (item.iconName) {
+                    "language" -> Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = item.title,
+                        tint = Color(0xFF2196F3),
+                        modifier = Modifier.size(24.dp)
+                    )
+                    "format" -> Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = item.title,
+                        tint = Color(0xFF9C27B0),
+                        modifier = Modifier.size(24.dp)
+                    )
+                    "decimal" -> Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = item.title,
+                        tint = Color(0xFFF57F17),
+                        modifier = Modifier.size(24.dp)
+                    )
+                    else -> Image(
+                        painter = painterResource(id = getIconResourceForSettingsItem(item.iconName)),
+                        contentDescription = item.title,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
             
             Spacer(modifier = Modifier.width(16.dp))
             
             // Text in center
-            Text(
-                text = item.title,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Normal,
-                color = Color.Black,
-                modifier = Modifier.weight(1f)
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = item.title,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Black
+                )
+                if (subtitle != null) {
+                    Text(
+                        text = subtitle,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Color(0xFF757575),
+                        modifier = Modifier.padding(top = 2.dp)
+                    )
+                }
+            }
             
             // Chevron arrow on the right
             Icon(
@@ -199,6 +308,243 @@ fun getIconResourceForSettingsItem(iconName: String): Int {
         "privacy" -> R.drawable.privacy
         "more" -> R.drawable.more
         else -> R.drawable.settings
+    }
+}
+
+@Composable
+fun LanguageSelectionDialog(
+    onDismiss: () -> Unit,
+    onLanguageSelected: (String) -> Unit
+) {
+    val context = LocalContext.current
+    var selectedLanguage by remember { 
+        mutableStateOf(PreferenceManager.getSelectedLanguage(context))
+    }
+    
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "Select Language",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    LanguageOption(
+                        language = "English",
+                        languageCode = "en",
+                        isSelected = selectedLanguage == "en",
+                        onClick = { selectedLanguage = "en" }
+                    )
+                    
+                    LanguageOption(
+                        language = "हिंदी",
+                        languageCode = "hi",
+                        isSelected = selectedLanguage == "hi",
+                        onClick = { selectedLanguage = "hi" }
+                    )
+                }
+                
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = onDismiss) {
+                        Text("Cancel")
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(
+                        onClick = {
+                            PreferenceManager.setSelectedLanguage(context, selectedLanguage)
+                            onLanguageSelected(selectedLanguage)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF2196F3)
+                        )
+                    ) {
+                        Text("Save")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun NumberFormatSelectionDialog(
+    onDismiss: () -> Unit,
+    onFormatSelected: (String) -> Unit
+) {
+    val context = LocalContext.current
+    val formats = listOf(
+        NumberFormatOption("Automatic", "auto", "Auto"),
+        NumberFormatOption("12,34,567.89", "12,34,567.89", "12,34,567.89"),
+        NumberFormatOption("1 234 567,89", "1 234 567,89", "1 234 567,89"),
+        NumberFormatOption("1'234'567.89", "1'234'567.89", "1'234'567.89"),
+        NumberFormatOption("1.234.567,89", "1.234.567,89", "1.234.567,89"),
+        NumberFormatOption("1,234,567.89", "1,234,567.89", "1,234,567.89")
+    )
+    
+    var selectedFormat by remember { 
+        mutableStateOf(PreferenceManager.getNumberFormat(context))
+    }
+    
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .heightIn(max = 500.dp)
+            ) {
+                Text(
+                    text = "Select Number Format",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    formats.forEach { formatOption ->
+                        NumberFormatOption(
+                            format = formatOption.format,
+                            label = formatOption.label,
+                            example = formatOption.example,
+                            isSelected = selectedFormat == formatOption.format,
+                            onClick = { selectedFormat = formatOption.format }
+                        )
+                    }
+                }
+                
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = onDismiss) {
+                        Text("Cancel")
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(
+                        onClick = {
+                            PreferenceManager.setNumberFormat(context, selectedFormat)
+                            onFormatSelected(selectedFormat)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF2196F3)
+                        )
+                    ) {
+                        Text("Save")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DecimalPlacesSelectionDialog(
+    onDismiss: () -> Unit,
+    onDecimalPlacesSelected: (Int) -> Unit
+) {
+    val context = LocalContext.current
+    var selectedPlaces by remember { 
+        mutableStateOf(PreferenceManager.getDecimalPlaces(context))
+    }
+    
+    val decimalOptions = listOf(0, 1, 2, 3, 4, 5)
+    
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "Select Decimal Places",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    decimalOptions.forEach { places ->
+                        DecimalPlacesOption(
+                            places = places,
+                            example = formatExample(places),
+                            isSelected = selectedPlaces == places,
+                            onClick = { selectedPlaces = places }
+                        )
+                    }
+                }
+                
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = onDismiss) {
+                        Text("Cancel")
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(
+                        onClick = {
+                            PreferenceManager.setDecimalPlaces(context, selectedPlaces)
+                            onDecimalPlacesSelected(selectedPlaces)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF2196F3)
+                        )
+                    ) {
+                        Text("Save")
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun formatExample(places: Int): String {
+    val base = "123"
+    return if (places == 0) {
+        base
+    } else {
+        val decimals = "456789".take(places)
+        "$base.$decimals"
     }
 }
 
