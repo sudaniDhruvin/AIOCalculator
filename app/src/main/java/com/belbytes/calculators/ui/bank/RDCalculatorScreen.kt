@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.PieChart as MPAndroidPieChart
@@ -90,16 +92,16 @@ fun RDCalculatorScreen(
         ) {
             // Monthly Amount Input
             RDInputField(
-                label = "Monthly Amount",
-                placeholder = "Ex: 10,000",
+                label = context.getString(R.string.monthly_amount),
+                placeholder = context.getString(R.string.placeholder_amount_large),
                 value = monthlyAmount,
                 onValueChange = { monthlyAmount = it }
             )
 
             // Interest % Input
             RDInputField(
-                label = "Interest %",
-                placeholder = "Ex: 7%",
+                label = context.getString(R.string.interest_rate),
+                placeholder = context.getString(R.string.placeholder_rate_percent),
                 value = interestRate,
                 onValueChange = { interestRate = it }
             )
@@ -114,7 +116,7 @@ fun RDCalculatorScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Period",
+                        text = context.getString(R.string.period),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.Black,
@@ -124,12 +126,12 @@ fun RDCalculatorScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         RDPeriodTypeRadioButton(
-                            label = "Years",
+                            label = context.getString(R.string.years),
                             selected = periodType == PeriodType.YEARS,
                             onClick = { periodTypeString = PeriodType.YEARS.name }
                         )
                         RDPeriodTypeRadioButton(
-                            label = "Months",
+                            label = context.getString(R.string.months),
                             selected = periodType == PeriodType.MONTHS,
                             onClick = { periodTypeString = PeriodType.MONTHS.name }
                         )
@@ -137,7 +139,7 @@ fun RDCalculatorScreen(
                 }
                 RDInputField(
                     label = "",
-                    placeholder = "Ex: 6",
+                    placeholder = context.getString(R.string.placeholder_period),
                     value = period,
                     onValueChange = { period = it }
                 )
@@ -226,7 +228,7 @@ fun RDCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Reset",
+                        text = context.getString(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -290,19 +292,19 @@ fun RDCalculatorScreen(
                             ) {
                                 // Total Investment
                                 RDResultRow(
-                                    "Total Investment",
+                                    context.getString(R.string.total_investment),
                                     formatCurrencyWithDecimal(context, result.totalInvestment)
                                 )
                                 
                                 // Total Interest
                                 RDResultRow(
-                                    "Total Interest",
+                                    context.getString(R.string.total_interest),
                                     formatCurrencyWithDecimal(context, result.totalInterest)
                                 )
                                 
                                 // Maturity Amount
                                 RDResultRow(
-                                    "Maturity Amount",
+                                    context.getString(R.string.maturity_amount),
                                     formatCurrencyWithDecimal(context, result.maturityAmount)
                                 )
                             }
@@ -341,7 +343,7 @@ fun RDCalculatorScreen(
                                 ) {
                                     // Total Investment Legend
                                     RDLegendItem(
-                                        label = "Total Investment",
+                                        label = context.getString(R.string.total_investment),
                                         color = Color(0xFF3F6EE4) // Blue - matches pie chart
                                     )
                                     
@@ -349,7 +351,7 @@ fun RDCalculatorScreen(
                                     
                                     // Total Interest Legend
                                     RDLegendItem(
-                                        label = "Total Interest",
+                                        label = context.getString(R.string.total_interest),
                                         color = Color(0xFF00AF52) // Green - matches pie chart
                                     )
                                 }
@@ -378,14 +380,14 @@ fun RDCalculatorScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = context.getString(R.string.back),
                     tint = Color.White,
                     modifier = Modifier.size(28.dp)
                 )
             }
 
             Text(
-                text = "RD Calculator",
+                text = context.getString(R.string.rd_calculator),
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
@@ -398,6 +400,7 @@ fun RDCalculatorScreen(
 
 @Composable
 fun RDCalculatorHeader(onBackClick: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -414,14 +417,14 @@ fun RDCalculatorHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "RD Calculator",
+            text = context.getString(R.string.rd_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,

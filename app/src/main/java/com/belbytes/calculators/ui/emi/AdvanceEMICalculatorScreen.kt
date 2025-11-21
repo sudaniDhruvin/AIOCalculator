@@ -27,6 +27,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.github.mikephil.charting.charts.PieChart as MPAndroidPieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -40,6 +43,7 @@ fun AdvanceEMICalculatorScreen(
     onBackClick: () -> Unit,
     onViewDetails: (AdvanceEMIResult, Double, Double, String, String) -> Unit = { _, _, _, _, _ -> }
 ) {
+    val context = LocalContext.current
     // State variables
     var amount by rememberSaveable { mutableStateOf("") }
     var interestRate by rememberSaveable { mutableStateOf("") }
@@ -82,8 +86,8 @@ fun AdvanceEMICalculatorScreen(
         ) {
             // Amount Input
             AdvanceEMIInputField(
-                label = "Amount",
-                placeholder = "Ex: 500,000",
+                label = context.getString(R.string.amount),
+                placeholder = context.getString(R.string.placeholder_amount_large),
                 value = amount,
                 onValueChange = { amount = it }
             )
@@ -96,7 +100,7 @@ fun AdvanceEMICalculatorScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Interest Rate (%)",
+                        text = context.getString(R.string.interest_rate),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color(0xFF222222),
@@ -120,7 +124,7 @@ fun AdvanceEMICalculatorScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 AdvanceEMIInputField(
                     label = "",
-                    placeholder = "Ex: 5%",
+                    placeholder = context.getString(R.string.placeholder_rate_percent),
                     value = interestRate,
                     onValueChange = { interestRate = it }
                 )
@@ -136,7 +140,7 @@ fun AdvanceEMICalculatorScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Period",
+                        text = context.getString(R.string.period),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color(0xFF222222),
@@ -146,7 +150,7 @@ fun AdvanceEMICalculatorScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         AdvanceEMIRadioButton(
-                            label = "Years",
+                            label = context.getString(R.string.years),
                             selected = periodType == "Years",
                             onClick = { periodType = "Years" }
                         )
@@ -159,7 +163,7 @@ fun AdvanceEMICalculatorScreen(
                 }
                 AdvanceEMIInputField(
                     label = "",
-                    placeholder = "Ex: 10",
+                    placeholder = context.getString(R.string.placeholder_period),
                     value = period,
                     onValueChange = { period = it }
                 )
@@ -173,7 +177,7 @@ fun AdvanceEMICalculatorScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Processing Fees",
+                        text = context.getString(R.string.processing_fees),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color(0xFF222222),
@@ -205,8 +209,8 @@ fun AdvanceEMICalculatorScreen(
 
             // GST On Interest Input
             AdvanceEMIInputField(
-                label = "GST On Interest",
-                placeholder = "Ex: 5",
+                label = context.getString(R.string.gst_on_interest),
+                placeholder = context.getString(R.string.placeholder_rate),
                 value = gstOnInterest,
                 onValueChange = { gstOnInterest = it }
             )
@@ -242,17 +246,17 @@ fun AdvanceEMICalculatorScreen(
                         errorMessage = null
                         when {
                             amount.isBlank() || (amount.toDoubleOrNull() ?: -1.0) <= 0 -> {
-                                errorMessage = "Please enter a valid loan amount"
+                                errorMessage = context.getString(R.string.error_invalid_amount)
                                 showResults = false
                                 emiResult = null
                             }
                             interestRate.isBlank() || (interestRate.toDoubleOrNull() ?: -1.0) <= 0 -> {
-                                errorMessage = "Please enter a valid interest rate"
+                                errorMessage = context.getString(R.string.error_invalid_rate)
                                 showResults = false
                                 emiResult = null
                             }
                             period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0 -> {
-                                errorMessage = "Please enter a valid period"
+                                errorMessage = context.getString(R.string.error_invalid_period)
                                 showResults = false
                                 emiResult = null
                             }
@@ -273,7 +277,7 @@ fun AdvanceEMICalculatorScreen(
                                     showResults = true
                                     errorMessage = null
                                 } else {
-                                    errorMessage = "Please check all input values"
+                                    errorMessage = context.getString(R.string.error_check_inputs)
                                     showResults = false
                                     emiResult = null
                                 }
@@ -289,7 +293,7 @@ fun AdvanceEMICalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = context.getString(R.string.calculate),
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
@@ -325,7 +329,7 @@ fun AdvanceEMICalculatorScreen(
                     )
                 ) {
                     Text(
-                        text = "Reset",
+                        text = context.getString(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF333333)
@@ -455,7 +459,7 @@ fun AdvanceEMICalculatorScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "View Details",
+                                    text = context.getString(R.string.view_details),
                                     color = Color.White,
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
@@ -463,7 +467,7 @@ fun AdvanceEMICalculatorScreen(
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Icon(
                                     imageVector = Icons.Default.ArrowForward,
-                                    contentDescription = "View Details",
+                                    contentDescription = context.getString(R.string.view_details),
                                     tint = Color.White,
                                     modifier = Modifier.size(20.dp)
                                 )
@@ -492,14 +496,14 @@ fun AdvanceEMICalculatorScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = context.getString(R.string.back),
                     tint = Color.White,
                     modifier = Modifier.size(28.dp)
                 )
             }
 
             Text(
-                text = "Advance EMI Calculator",
+                text = context.getString(R.string.advance_emi_calculator),
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
@@ -512,6 +516,7 @@ fun AdvanceEMICalculatorScreen(
 
 @Composable
 fun AdvanceEMIHeader(onBackClick: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -528,14 +533,14 @@ fun AdvanceEMIHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "Advance EMI Calculator",
+            text = context.getString(R.string.advance_emi_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,

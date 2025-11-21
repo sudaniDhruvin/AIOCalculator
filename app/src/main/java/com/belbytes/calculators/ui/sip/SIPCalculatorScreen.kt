@@ -31,6 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import androidx.compose.ui.viewinterop.AndroidView
 import android.view.View
@@ -55,9 +57,12 @@ fun SIPCalculatorScreen(
     onBackClick: () -> Unit
 ) {
     val context = LocalContext.current
-    val tabs = listOf("SIP", "Lumpsum", "Plan")
+    val sipLabel = context.getString(R.string.sip)
+    val lumpsumLabel = context.getString(R.string.lumpsum)
+    val planLabel = context.getString(R.string.plan)
+    val tabs = listOf(sipLabel, lumpsumLabel, planLabel)
     val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
-    var selectedTab by rememberSaveable { mutableStateOf("SIP") }
+    var selectedTab by rememberSaveable { mutableStateOf(sipLabel) }
     var resultTab by rememberSaveable { mutableStateOf<String?>(null) } // Track which tab the result belongs to
     
     // SIP Tab inputs
@@ -144,68 +149,68 @@ fun SIPCalculatorScreen(
                 ) {
                     // Input fields based on selected tab
                     when (tabs[page]) {
-                        "SIP" -> {
+                        sipLabel -> {
                             SIPCalculatorInputField(
-                                label = "Monthly Investment",
-                                placeholder = "Ex: 1000",
+                                label = context.getString(R.string.monthly_investment),
+                                placeholder = context.getString(R.string.placeholder_amount),
                                 value = monthlyInvestmentSIP,
                                 onValueChange = { monthlyInvestmentSIP = it }
                             )
                             
                             SIPCalculatorInputField(
-                                label = "Exp. Return Rate (%)",
-                                placeholder = "Ex: 12",
+                                label = context.getString(R.string.expected_return_rate),
+                                placeholder = context.getString(R.string.placeholder_rate),
                                 value = expReturnRateSIP,
                                 onValueChange = { expReturnRateSIP = it }
                             )
                             
                             SIPCalculatorInputField(
-                                label = "Period (Years)",
-                                placeholder = "Ex: 10",
+                                label = context.getString(R.string.period_years),
+                                placeholder = context.getString(R.string.placeholder_period),
                                 value = periodYearsSIP,
                                 onValueChange = { periodYearsSIP = it }
                             )
                         }
-                        "Lumpsum" -> {
+                        lumpsumLabel -> {
                             SIPCalculatorInputField(
-                                label = "Total Investment",
-                                placeholder = "Ex: 1000",
+                                label = context.getString(R.string.total_investment),
+                                placeholder = context.getString(R.string.placeholder_amount_large),
                                 value = totalInvestmentLumpsum,
                                 onValueChange = { totalInvestmentLumpsum = it }
                             )
                             
                             SIPCalculatorInputField(
-                                label = "Exp. Return Rate (%)",
-                                placeholder = "Ex: 12",
+                                label = context.getString(R.string.expected_return_rate),
+                                placeholder = context.getString(R.string.placeholder_rate),
                                 value = expReturnRateLumpsum,
                                 onValueChange = { expReturnRateLumpsum = it }
                             )
                             
                             SIPCalculatorInputField(
-                                label = "Period (Years)",
-                                placeholder = "Ex: 10",
+                                label = context.getString(R.string.period_years),
+                                placeholder = context.getString(R.string.placeholder_period),
                                 value = periodYearsLumpsum,
                                 onValueChange = { periodYearsLumpsum = it }
                             )
                         }
-                        "Plan" -> {
+                        planLabel -> {
                             SIPCalculatorInputField(
-                                label = "Target Investment",
-                                placeholder = "Ex: 1000",
+                                label = context.getString(R.string.initial_investment),
+                                placeholder = context.getString(R.string.placeholder_amount_large),
                                 value = targetAmountPlan,
                                 onValueChange = { targetAmountPlan = it }
                             )
                             
                             SIPCalculatorInputField(
-                                label = "Exp. Return Rate (%)",
-                                placeholder = "Ex: 12",
+                                label = context.getString(R.string.expected_return_rate),
+                                placeholder = context.getString(R.string.placeholder_rate),
                                 value = expReturnRatePlan,
                                 onValueChange = { expReturnRatePlan = it }
                             )
                             
                             SIPCalculatorInputField(
-                                label = "Period (Years)",
-                                placeholder = "Ex: 10",
+                                label = context.getString(R.string.period_years),
+                                placeholder = context.getString(R.string.placeholder_period),
                                 value = periodYearsPlan,
                                 onValueChange = { periodYearsPlan = it }
                             )
@@ -227,17 +232,17 @@ fun SIPCalculatorScreen(
                         keyboardController?.hide() // Hide keyboard when calculate is clicked
                         errorMessage = null
                         val result = when (selectedTab) {
-                            "SIP" -> calculateSIP(
+                            sipLabel -> calculateSIP(
                                 monthlyInvestmentSIP,
                                 expReturnRateSIP,
                                 periodYearsSIP
                             )
-                            "Lumpsum" -> calculateLumpsumSIP(
+                            lumpsumLabel -> calculateLumpsumSIP(
                                 totalInvestmentLumpsum,
                                 expReturnRateLumpsum,
                                 periodYearsLumpsum
                             )
-                            "Plan" -> calculatePlanSIP(
+                            planLabel -> calculatePlanSIP(
                                 targetAmountPlan,
                                 expReturnRatePlan,
                                 periodYearsPlan
@@ -253,34 +258,34 @@ fun SIPCalculatorScreen(
                             showResults = false
                             sipResult = null
                             errorMessage = when (selectedTab) {
-                                "SIP" -> when {
+                                sipLabel -> when {
                                     monthlyInvestmentSIP.isBlank() || (monthlyInvestmentSIP.toDoubleOrNull() ?: -1.0) <= 0 ->
-                                        "Please enter a valid monthly investment"
+                                        context.getString(R.string.error_invalid_amount)
                                     expReturnRateSIP.isBlank() || expReturnRateSIP.toDoubleOrNull() == null ->
-                                        "Please enter a valid expected return rate"
+                                        context.getString(R.string.error_invalid_rate)
                                     periodYearsSIP.isBlank() || (periodYearsSIP.toDoubleOrNull() ?: -1.0) <= 0 ->
-                                        "Please enter a valid period in years"
-                                    else -> "Please check all input values"
+                                        context.getString(R.string.error_invalid_period)
+                                    else -> context.getString(R.string.error_check_inputs)
                                 }
-                                "Lumpsum" -> when {
+                                lumpsumLabel -> when {
                                     totalInvestmentLumpsum.isBlank() || (totalInvestmentLumpsum.toDoubleOrNull() ?: -1.0) <= 0 ->
-                                        "Please enter a valid total investment"
+                                        context.getString(R.string.error_invalid_amount)
                                     expReturnRateLumpsum.isBlank() || expReturnRateLumpsum.toDoubleOrNull() == null ->
-                                        "Please enter a valid expected return rate"
+                                        context.getString(R.string.error_invalid_rate)
                                     periodYearsLumpsum.isBlank() || (periodYearsLumpsum.toDoubleOrNull() ?: -1.0) <= 0 ->
-                                        "Please enter a valid period in years"
-                                    else -> "Please check all input values"
+                                        context.getString(R.string.error_invalid_period)
+                                    else -> context.getString(R.string.error_check_inputs)
                                 }
-                                "Plan" -> when {
+                                planLabel -> when {
                                     targetAmountPlan.isBlank() || (targetAmountPlan.toDoubleOrNull() ?: -1.0) <= 0 ->
-                                        "Please enter a valid target amount"
+                                        context.getString(R.string.error_invalid_amount)
                                     expReturnRatePlan.isBlank() || expReturnRatePlan.toDoubleOrNull() == null ->
-                                        "Please enter a valid expected return rate"
+                                        context.getString(R.string.error_invalid_rate)
                                     periodYearsPlan.isBlank() || (periodYearsPlan.toDoubleOrNull() ?: -1.0) <= 0 ->
-                                        "Please enter a valid period in years"
-                                    else -> "Please check all input values"
+                                        context.getString(R.string.error_invalid_period)
+                                    else -> context.getString(R.string.error_check_inputs)
                                 }
-                                else -> "Please check all input values"
+                                else -> context.getString(R.string.error_check_inputs)
                             }
                         }
                     },
@@ -293,7 +298,7 @@ fun SIPCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = context.getString(R.string.calculate),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -304,17 +309,17 @@ fun SIPCalculatorScreen(
                 Button(
                     onClick = {
                         when (selectedTab) {
-                            "SIP" -> {
+                            sipLabel -> {
                                 monthlyInvestmentSIP = ""
                                 expReturnRateSIP = ""
                                 periodYearsSIP = ""
                             }
-                            "Lumpsum" -> {
+                            lumpsumLabel -> {
                                 totalInvestmentLumpsum = ""
                                 expReturnRateLumpsum = ""
                                 periodYearsLumpsum = ""
                             }
-                            "Plan" -> {
+                            planLabel -> {
                                 targetAmountPlan = ""
                                 expReturnRatePlan = ""
                                 periodYearsPlan = ""
@@ -338,7 +343,7 @@ fun SIPCalculatorScreen(
                     )
                 ) {
                     Text(
-                        text = "Reset",
+                        text = context.getString(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF333333)
@@ -412,20 +417,20 @@ fun SIPCalculatorScreen(
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 when (selectedTab) {
-                                    "SIP" -> {
-                                        SIPCalculatorResultRow("Total Investment", formatCurrencyWithDecimal(context, result.totalInvestment))
-                                        SIPCalculatorResultRow("Estimated Returns", formatCurrencyWithDecimal(context, result.estimatedReturns))
-                                        SIPCalculatorResultRow("Total Value", formatCurrencyWithDecimal(context, result.totalValue))
+                                    sipLabel -> {
+                                        SIPCalculatorResultRow(context.getString(R.string.total_investment), formatCurrencyWithDecimal(context, result.totalInvestment))
+                                        SIPCalculatorResultRow(context.getString(R.string.estimated_returns), formatCurrencyWithDecimal(context, result.estimatedReturns))
+                                        SIPCalculatorResultRow(context.getString(R.string.total_value), formatCurrencyWithDecimal(context, result.totalValue))
                                     }
-                                    "Lumpsum" -> {
-                                        SIPCalculatorResultRow("Invested Amount", formatCurrencyWithDecimal(context, result.totalInvestment))
-                                        SIPCalculatorResultRow("Estimated Returns", formatCurrencyWithDecimal(context, result.estimatedReturns))
-                                        SIPCalculatorResultRow("Total Value", formatCurrencyWithDecimal(context, result.totalValue))
+                                    lumpsumLabel -> {
+                                        SIPCalculatorResultRow(context.getString(R.string.invested_amount), formatCurrencyWithDecimal(context, result.totalInvestment))
+                                        SIPCalculatorResultRow(context.getString(R.string.estimated_returns), formatCurrencyWithDecimal(context, result.estimatedReturns))
+                                        SIPCalculatorResultRow(context.getString(R.string.total_value), formatCurrencyWithDecimal(context, result.totalValue))
                                     }
-                                    "Plan" -> {
-                                        SIPCalculatorResultRow("Total Investment", formatCurrencyWithDecimal(context, result.totalInvestment))
-                                        SIPCalculatorResultRow("Estimated Returns", formatCurrencyWithDecimal(context, result.estimatedReturns))
-                                        SIPCalculatorResultRow("Monthly Investment", formatCurrencyWithDecimal(context, result.monthlyInvestment))
+                                    planLabel -> {
+                                        SIPCalculatorResultRow(context.getString(R.string.total_investment), formatCurrencyWithDecimal(context, result.totalInvestment))
+                                        SIPCalculatorResultRow(context.getString(R.string.estimated_returns), formatCurrencyWithDecimal(context, result.estimatedReturns))
+                                        SIPCalculatorResultRow(context.getString(R.string.monthly_investment), formatCurrencyWithDecimal(context, result.monthlyInvestment))
                                     }
                                 }
                             }
@@ -465,6 +470,7 @@ fun SIPCalculatorScreen(
 
 @Composable
 fun SIPCalculatorHeader(onBackClick: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -481,14 +487,14 @@ fun SIPCalculatorHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "SIP Calculator",
+            text = context.getString(R.string.sip_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
@@ -504,7 +510,11 @@ fun SIPCalculatorTabs(
     pagerState: PagerState,
     onTabChange: (Int) -> Unit
 ) {
-    val tabs = listOf("SIP", "Lumpsum", "Plan")
+    val context = LocalContext.current
+    val sipLabel = context.getString(R.string.sip)
+    val lumpsumLabel = context.getString(R.string.lumpsum)
+    val planLabel = context.getString(R.string.plan)
+    val tabs = listOf(sipLabel, lumpsumLabel, planLabel)
     val scope = rememberCoroutineScope()
     Row(
         modifier = Modifier

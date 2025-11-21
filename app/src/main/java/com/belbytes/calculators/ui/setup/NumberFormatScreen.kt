@@ -17,6 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.PreferenceManager
 
 data class NumberFormatOption(
@@ -31,12 +34,12 @@ fun NumberFormatScreen(
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val formats = listOf(
-        NumberFormatOption("Automatic", "auto", "Auto"),
-        NumberFormatOption("12,34,567.89", "12,34,567.89", "12,34,567.89"),
-        NumberFormatOption("1 234 567,89", "1 234 567,89", "1 234 567,89"),
-        NumberFormatOption("1'234'567.89", "1'234'567.89", "1'234'567.89"),
-        NumberFormatOption("1.234.567,89", "1.234.567,89", "1.234.567,89"),
-        NumberFormatOption("1,234,567.89", "1,234,567.89", "1,234,567.89")
+        NumberFormatOption(context.getString(R.string.format_automatic), "auto", context.getString(R.string.format_automatic)),
+        NumberFormatOption(context.getString(R.string.format_indian), "12,34,567.89", context.getString(R.string.format_indian)),
+        NumberFormatOption(context.getString(R.string.format_european_space), "1 234 567,89", context.getString(R.string.format_european_space)),
+        NumberFormatOption(context.getString(R.string.format_swiss), "1'234'567.89", context.getString(R.string.format_swiss)),
+        NumberFormatOption(context.getString(R.string.format_european_dot), "1.234.567,89", context.getString(R.string.format_european_dot)),
+        NumberFormatOption(context.getString(R.string.format_us_uk), "1,234,567.89", context.getString(R.string.format_us_uk))
     )
     
     var selectedFormat by remember { 
@@ -50,7 +53,7 @@ fun NumberFormatScreen(
     ) {
         // Header
         HeaderSection(
-            title = "Select Number Format",
+            title = context.getString(R.string.select_number_format),
             onBackClick = { /* Handle back */ },
             onDoneClick = {
                 PreferenceManager.setNumberFormat(context, selectedFormat)

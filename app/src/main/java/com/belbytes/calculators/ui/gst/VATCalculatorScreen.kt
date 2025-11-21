@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 
 data class VATResult(
@@ -38,11 +40,12 @@ fun VATCalculatorScreen(
     onBackClick: () -> Unit
 ) {
     val context = LocalContext.current
+    val addVatLabel = context.getString(R.string.add_vat)
     
     // State variables
     var initialAmount by rememberSaveable { mutableStateOf("") }
     var vatRate by rememberSaveable { mutableStateOf("") }
-    var vatOperation by rememberSaveable { mutableStateOf("Add VAT (+)") } // "Add VAT (+)" or "Remove VAT (-)"
+    var vatOperation by rememberSaveable { mutableStateOf(addVatLabel) }
     var showResults by rememberSaveable { mutableStateOf(false) }
     var vatResult by remember { mutableStateOf<VATResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
@@ -77,16 +80,16 @@ fun VATCalculatorScreen(
         ) {
             // Initial Amount Input
             VATInputField(
-                label = "Amount",
-                placeholder = "Ex: 10000",
+                label = context.getString(R.string.amount),
+                placeholder = context.getString(R.string.placeholder_amount),
                 value = initialAmount,
                 onValueChange = { initialAmount = it }
             )
 
             // Rate of VAT Input
             VATInputField(
-                label = "Rate of VAT",
-                placeholder = "Ex: 6.5",
+                label = context.getString(R.string.vat_rate),
+                placeholder = context.getString(R.string.placeholder_rate),
                 value = vatRate,
                 onValueChange = { vatRate = it }
             )
@@ -97,14 +100,14 @@ fun VATCalculatorScreen(
                 horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 VATRadioButton(
-                    label = "Add VAT (+)",
-                    selected = vatOperation == "Add VAT (+)",
-                    onClick = { vatOperation = "Add VAT (+)" }
+                    label = context.getString(R.string.add_vat),
+                    selected = vatOperation == context.getString(R.string.add_vat),
+                    onClick = { vatOperation = context.getString(R.string.add_vat) }
                 )
                 VATRadioButton(
-                    label = "Remove VAT (-)",
-                    selected = vatOperation == "Remove VAT (-)",
-                    onClick = { vatOperation = "Remove VAT (-)" }
+                    label = context.getString(R.string.remove_vat),
+                    selected = vatOperation == context.getString(R.string.remove_vat),
+                    onClick = { vatOperation = context.getString(R.string.remove_vat) }
                 )
             }
 
@@ -122,23 +125,23 @@ fun VATCalculatorScreen(
                         errorMessage = null
                         when {
                             initialAmount.isBlank() || (initialAmount.toDoubleOrNull() ?: -1.0) <= 0 -> {
-                                errorMessage = "Please enter a valid amount"
+                                errorMessage = context.getString(R.string.error_invalid_amount)
                                 showResults = false
                                 vatResult = null
                             }
                             vatRate.isBlank() || (vatRate.toDoubleOrNull() ?: -1.0) <= 0 -> {
-                                errorMessage = "Please enter a valid VAT rate"
+                                errorMessage = context.getString(R.string.error_invalid_vat_rate)
                                 showResults = false
                                 vatResult = null
                             }
                             else -> {
-                                val result = calculateVAT(initialAmount, vatRate, vatOperation)
+                                val result = calculateVAT(initialAmount, vatRate, vatOperation, addVatLabel)
                                 if (result != null) {
                                     vatResult = result
                                     showResults = true
                                     errorMessage = null
                                 } else {
-                                    errorMessage = "Please check all input values"
+                                    errorMessage = context.getString(R.string.error_check_inputs)
                                     showResults = false
                                     vatResult = null
                                 }
@@ -154,7 +157,7 @@ fun VATCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = context.getString(R.string.calculate),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -166,7 +169,7 @@ fun VATCalculatorScreen(
                     onClick = {
                         initialAmount = ""
                         vatRate = ""
-                        vatOperation = "Add VAT (+)"
+                        vatOperation = addVatLabel
                         showResults = false
                         vatResult = null
                         errorMessage = null
@@ -180,7 +183,7 @@ fun VATCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Reset",
+                        text = context.getString(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF333333)
@@ -239,13 +242,13 @@ fun VATCalculatorScreen(
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             // Initial Amount
-                            VATResultRow("Initial Amount", formatCurrencyWithDecimal(context, result.initialAmount))
+                            VATResultRow(context.getString(R.string.initial_amount), formatCurrencyWithDecimal(context, result.initialAmount))
                             
                             // VAT Amount
-                            VATResultRow("VAT Amount", formatCurrencyWithDecimal(context, result.vatAmount))
+                            VATResultRow(context.getString(R.string.vat_amount), formatCurrencyWithDecimal(context, result.vatAmount))
                             
                             // Total Amount
-                            VATResultRow("Total Amount", formatCurrencyWithDecimal(context, result.totalAmount))
+                            VATResultRow(context.getString(R.string.total_amount), formatCurrencyWithDecimal(context, result.totalAmount))
                         }
                     }
                 }
@@ -256,6 +259,7 @@ fun VATCalculatorScreen(
 
 @Composable
 fun VATCalculatorHeader(onBackClick: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -272,14 +276,14 @@ fun VATCalculatorHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "VAT Calculator",
+            text = context.getString(R.string.vat_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
@@ -387,7 +391,8 @@ fun VATResultRow(
 fun calculateVAT(
     initialAmount: String,
     vatRate: String,
-    vatOperation: String
+    vatOperation: String,
+    addVatLabel: String
 ): VATResult? {
     return try {
         val amount = initialAmount.toDoubleOrNull() ?: return null
@@ -397,7 +402,7 @@ fun calculateVAT(
         val vatAmount: Double
         val totalAmount: Double
         
-        if (vatOperation == "Add VAT (+)") {
+        if (vatOperation == addVatLabel) {
             // Add VAT: Base Amount is the input, VAT is added
             baseAmount = amount
             vatAmount = baseAmount * (rate / 100)

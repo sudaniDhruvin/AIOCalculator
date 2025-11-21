@@ -1,0 +1,268 @@
+<resources>
+    <string name="app_name">कैलकुलेटर</string>
+    
+    <!-- Common UI -->
+    <string name="language">भाषा</string>
+    <string name="number_format">संख्या प्रारूप</string>
+    <string name="decimal_places">दशमलव स्थान</string>
+    <string name="settings">सेटिंग्स</string>
+    <string name="share_app">ऐप साझा करें</string>
+    <string name="rate_app">ऐप रेट करें</string>
+    <string name="privacy_policy">गोपनीयता नीति</string>
+    <string name="more_app">अधिक ऐप</string>
+    <string name="select_language">भाषा चुनें</string>
+    <string name="select_number_format">संख्या प्रारूप चुनें</string>
+    <string name="select_decimal_places">दशमलव स्थान चुनें</string>
+    <string name="cancel">रद्द करें</string>
+    <string name="save">सहेजें</string>
+    <string name="english">अंग्रेजी</string>
+    <string name="hindi">हिंदी</string>
+    <string name="places">स्थान</string>
+    
+    <!-- Navigation -->
+    <string name="home">होम</string>
+    <string name="calculators">कैलकुलेटर</string>
+    <string name="history">इतिहास</string>
+    
+    <!-- Common Actions -->
+    <string name="calculate">गणना करें</string>
+    <string name="reset">रीसेट</string>
+    <string name="back">वापस</string>
+    <string name="done">पूर्ण</string>
+    <string name="next">अगला</string>
+    <string name="skip">छोड़ें</string>
+    <string name="view_details">विवरण देखें</string>
+    <string name="retry">पुनः प्रयास करें</string>
+    <string name="error">त्रुटि</string>
+    
+    <!-- Onboarding -->
+    <string name="onboarding_title_1">EMI की गणना करें</string>
+    <string name="onboarding_desc_1">उन्नत और त्वरित विकल्पों के साथ EMI के लिए गणना करें, बेहतर विकल्प के लिए ऋणों की तुलना करना भी आसान है।</string>
+    <string name="onboarding_title_2">सब कुछ ट्रैक करें</string>
+    <string name="onboarding_desc_2">विभिन्न ऋण प्रोफाइल बनाएं और ट्रैक करें जैसे व्यक्तिगत ऋण, होम लोन, कार लोन और अन्य जो आपके पास हो सकते हैं, पूर्व भुगतान और ब्याज दर (ROI) परिवर्तन का भी मूल्यांकन करें।</string>
+    <string name="onboarding_title_3">बैंकिंग कैलकुलेटर</string>
+    <string name="onboarding_desc_3">बैंकिंग योजना से संबंधित सटीक और सबसे तेज़ कैलकुलेटर जैसे FD, RD, PPF, VAT और GST। अन्य वित्तीय उपकरण जैसे मुद्रा कनवर्टर और नकद नोट काउंटर आदि।</string>
+    <string name="onboarding_title_4">आंकड़े</string>
+    <string name="onboarding_desc_4">आंकड़े मूल राशि, ब्याज दर और प्रति माह शेष राशि दिखाते हैं, और ऋण की पूरी अवधि का ग्राफिकल प्रतिनिधित्व भी।</string>
+    
+    <!-- Common Labels -->
+    <string name="amount">राशि</string>
+    <string name="interest_rate">ब्याज दर (%)</string>
+    <string name="period">अवधि</string>
+    <string name="years">वर्ष</string>
+    <string name="months">महीने</string>
+    <string name="month">महीना</string>
+    <string name="emi">EMI</string>
+    <string name="processing_fee">प्रसंस्करण शुल्क (%)</string>
+    <string name="gst_rate">GST दर (%)</string>
+    <string name="vat_rate">VAT दर (%)</string>
+    <string name="add_gst">GST जोड़ें (+)</string>
+    <string name="remove_gst">GST हटाएं (-)</string>
+    <string name="add_vat">VAT जोड़ें (+)</string>
+    <string name="remove_vat">VAT हटाएं (-)</string>
+    
+    <!-- Placeholders -->
+    <string name="placeholder_amount">उदा: 10000</string>
+    <string name="placeholder_amount_large">उदा: 500,000</string>
+    <string name="placeholder_rate">उदा: 6.5</string>
+    <string name="placeholder_rate_percent">उदा: 5%</string>
+    <string name="placeholder_period">उदा: 5</string>
+    <string name="placeholder_emi">उदा: 10,000</string>
+    
+    <!-- Calculator Titles -->
+    <string name="gst_calculator">GST कैलकुलेटर</string>
+    <string name="vat_calculator">VAT कैलकुलेटर</string>
+    <string name="emi_calculator">EMI कैलकुलेटर</string>
+    <string name="advance_emi_calculator">उन्नत EMI कैलकुलेटर</string>
+    <string name="quick_calculator">त्वरित कैलकुलेटर</string>
+    <string name="compare_loans">ऋणों की तुलना करें</string>
+    <string name="compare_loans_table">ऋण तुलना तालिका</string>
+    <string name="sip_calculator">SIP कैलकुलेटर</string>
+    <string name="advance_sip_calculator">उन्नत SIP कैलकुलेटर</string>
+    <string name="quick_sip_calculator">त्वरित SIP कैलकुलेटर</string>
+    <string name="compare_sip">SIP की तुलना करें</string>
+    <string name="stp_calculator">STP कैलकुलेटर</string>
+    <string name="swp_calculator">SWP कैलकुलेटर</string>
+    <string name="fd_calculator">FD कैलकुलेटर</string>
+    <string name="rd_calculator">RD कैलकुलेटर</string>
+    <string name="ppf_calculator">PPF कैलकुलेटर</string>
+    <string name="simple_interest_calculator">साधारण ब्याज कैलकुलेटर</string>
+    <string name="check_eligibility">पात्रता जांचें</string>
+    <string name="prepayment_roi_change">पूर्व भुगतान / ROI परिवर्तन</string>
+    <string name="moratorium_calculator">मोरेटोरियम कैलकुलेटर</string>
+    <string name="discount_calculator">छूट कैलकुलेटर</string>
+    <string name="charging_time_calculator">चार्जिंग समय कैलकुलेटर</string>
+    <string name="cash_note_counter">नकद नोट काउंटर</string>
+    
+    <!-- Result Labels -->
+    <string name="initial_amount">प्रारंभिक राशि</string>
+    <string name="gst_amount">GST राशि</string>
+    <string name="vat_amount">VAT राशि</string>
+    <string name="total_amount">कुल राशि</string>
+    <string name="monthly_emi">मासिक EMI</string>
+    <string name="total_interest">कुल ब्याज</string>
+    <string name="total_payment">कुल भुगतान</string>
+    <string name="processing_fees">प्रसंस्करण शुल्क</string>
+    <string name="cgst">CGST</string>
+    <string name="sgst">SGST</string>
+    <string name="principal_amount">मूल राशि</string>
+    <string name="interest_amount">ब्याज राशि</string>
+    <string name="maturity_amount">परिपक्वता राशि</string>
+    <string name="total_investment">कुल निवेश</string>
+    <string name="invested_amount">निवेशित राशि</string>
+    <string name="estimated_returns">अनुमानित रिटर्न</string>
+    <string name="estimated_return">अनुमानित रिटर्न</string>
+    <string name="total_value">कुल मूल्य</string>
+    <string name="monthly_investment">मासिक निवेश</string>
+    <string name="gst_on_interest">ब्याज पर GST</string>
+    <string name="gst_on_processing_fees">प्रसंस्करण शुल्क पर GST</string>
+    
+    <!-- Error Messages -->
+    <string name="error_invalid_amount">कृपया एक वैध राशि दर्ज करें</string>
+    <string name="error_invalid_rate">कृपया एक वैध दर दर्ज करें</string>
+    <string name="error_invalid_gst_rate">कृपया एक वैध GST दर दर्ज करें</string>
+    <string name="error_invalid_vat_rate">कृपया एक वैध VAT दर दर्ज करें</string>
+    <string name="error_invalid_period">कृपया एक वैध अवधि दर्ज करें</string>
+    <string name="error_check_inputs">कृपया सभी इनपुट मान जांचें</string>
+    
+    <!-- Number Formats -->
+    <string name="format_automatic">स्वचालित</string>
+    <string name="format_indian">12,34,567.89</string>
+    <string name="format_european_space">1 234 567,89</string>
+    <string name="format_swiss">1\'234\'567.89</string>
+    <string name="format_european_dot">1.234.567,89</string>
+    <string name="format_us_uk">1,234,567.89</string>
+    
+    <!-- Setup Screens -->
+    <string name="select_language_title">भाषा</string>
+    
+    <!-- EMI Details -->
+    <string name="emi_details">EMI विवरण</string>
+    <string name="advance_emi_details">उन्नत EMI विवरण</string>
+    <string name="periods_months">अवधि (महीने)</string>
+    <string name="month_label">महीना</string>
+    <string name="principal">मूलधन</string>
+    <string name="interest">ब्याज</string>
+    <string name="balance">शेष</string>
+    
+    <!-- Loan Comparison -->
+    <string name="loan_1">ऋण 1</string>
+    <string name="loan_2">ऋण 2</string>
+    <string name="difference">अंतर</string>
+    <string name="loan_amount">ऋण राशि</string>
+    <string name="monthly_emi_label">मासिक EMI</string>
+    <string name="total_interest_label">कुल ब्याज</string>
+    <string name="total_payment_label">कुल भुगतान</string>
+    
+    <!-- SIP -->
+    <string name="lumpsum">एकमुश्त</string>
+    <string name="plan">योजना</string>
+    <string name="sip">SIP</string>
+    <string name="expected_return_rate">अपेक्षित रिटर्न दर (%)</string>
+    <string name="period_years">अवधि (वर्ष)</string>
+    <string name="initial_investment">प्रारंभिक निवेश</string>
+    <string name="total_amount_transferred">कुल स्थानांतरित राशि</string>
+    <string name="total_profit">कुल लाभ</string>
+    <string name="balance_in_transferor">ट्रांसफरर में शेष</string>
+    <string name="balance_in_transferee">ट्रांसफरी में शेष</string>
+    <string name="total_withdrawal">कुल निकासी</string>
+    <string name="final_balance">अंतिम शेष</string>
+    <string name="withdrawal_per_month">प्रति माह निकासी</string>
+    <string name="inflation_rate">मुद्रास्फीति दर (%)</string>
+    <string name="step_up">स्टेप अप</string>
+    <string name="step_up_amount">राशि</string>
+    <string name="step_up_pct">प्रतिशत%</string>
+    
+    <!-- Bank Calculators -->
+    <string name="deposit_amount">जमा राशि</string>
+    <string name="monthly_amount">मासिक राशि</string>
+    <string name="frequency">आवृत्ति</string>
+    <string name="yearly">वार्षिक</string>
+    <string name="monthly">मासिक</string>
+    <string name="quarterly">त्रैमासिक</string>
+    <string name="half_yearly">अर्धवार्षिक</string>
+    
+    <!-- Loan Calculators -->
+    <string name="gross_monthly_income">सकल मासिक आय</string>
+    <string name="foir_percent">FOIR (%)</string>
+    <string name="total_monthly_emis">कुल मासिक EMIs</string>
+    <string name="eligible_emi">पात्र EMI</string>
+    <string name="eligible_loan_amount">पात्र ऋण राशि</string>
+    <string name="outstanding_amount">बकाया राशि</string>
+    <string name="current_rate">वर्तमान दर (%)</string>
+    <string name="new_rate">नई दर (%)</string>
+    <string name="prepayment_amount">पूर्व भुगतान राशि</string>
+    <string name="old_emi">पुरानी EMI</string>
+    <string name="new_emi">नई EMI</string>
+    <string name="old_months">पुराने महीने</string>
+    <string name="new_months">नए महीने</string>
+    <string name="old_interest">पुराना ब्याज</string>
+    <string name="new_interest">नया ब्याज</string>
+    <string name="no_moratorium">मोरेटोरियम नहीं</string>
+    <string name="with_moratorium">मोरेटोरियम के साथ</string>
+    <string name="moratorium_period">मोरेटोरियम अवधि</string>
+    <string name="select_option">अपना विकल्प चुनें</string>
+    <string name="total_principal">कुल मूलधन</string>
+    <string name="tenure_months">अवधि (महीने में)</string>
+    
+    <!-- Other Calculators -->
+    <string name="discount_percent">छूट (%)</string>
+    <string name="sales_tax">बिक्री कर</string>
+    <string name="saving">बचत</string>
+    <string name="payable_amount">देय राशि</string>
+    <string name="apply_discount">छूट लागू करें</string>
+    <string name="after_tax">कर के बाद</string>
+    <string name="before_tax">कर से पहले</string>
+    <string name="battery_capacity">बैटरी क्षमता (mAh)</string>
+    <string name="charger_output">चार्जर आउटपुट (W)</string>
+    <string name="charging_time">चार्जिंग समय</string>
+    <string name="hours">घंटे</string>
+    <string name="minutes">मिनट</string>
+    
+    <!-- Interest Types -->
+    <string name="simple_interest">साधारण ब्याज</string>
+    <string name="compound_interest">चक्रवृद्धि ब्याज</string>
+    
+    <!-- Compounding Frequency -->
+    <string name="compounding_monthly">मासिक</string>
+    <string name="compounding_quarterly">त्रैमासिक</string>
+    <string name="compounding_half_yearly">अर्धवार्षिक</string>
+    <string name="compounding_yearly">वार्षिक</string>
+    
+    <!-- Additional Labels -->
+    <string name="target_amount">लक्ष्य राशि</string>
+    <string name="investment_amount">निवेश राशि</string>
+    <string name="stp_amount">एसटीपी राशि</string>
+    <string name="transferor">स्थानांतरणकर्ता (%)</string>
+    <string name="transferee">स्थानांतरिती (%)</string>
+    <string name="final_answer">अंतिम उत्तर:</string>
+    <string name="no_sip_entries">अभी तक कोई एसआईपी प्रविष्टियां नहीं हैं। तुलना करने के लिए एक एसआईपी जोड़ें।</string>
+    <string name="add_new_sip">नया एसआईपी जोड़ें</string>
+    <string name="expected_returns_rate">अपेक्षित रिटर्न दर %</string>
+    <string name="time_period_monthly">समय अवधि (मासिक)</string>
+    <string name="add_loan">ऋण जोड़ें</string>
+    <string name="compare">तुलना करें</string>
+    <string name="no_loan_entries">अभी तक कोई ऋण प्रविष्टियां नहीं हैं। तुलना करने के लिए एक ऋण जोड़ें।</string>
+    <string name="add_new_loan">नया ऋण जोड़ें</string>
+    <string name="welcome_to">स्वागत है</string>
+    <string name="app_name_full">सभी कैलकुलेटर एक में</string>
+    <string name="featured_tools">विशेष उपकरण</string>
+    <string name="view_all">सभी देखें</string>
+    <string name="recent_calculations">हाल की गणनाएं</string>
+    <string name="no_any_calculations">कोई गणना नहीं</string>
+    <string name="calculation_history">गणना इतिहास यहां दिखाया जाएगा</string>
+    <string name="month_label_short">महीना</string>
+    <string name="period_months_short">अवधि (महीने)</string>
+    <string name="percent_short">%</string>
+    <string name="sip_number">एसआईपी %1$d</string>
+    <string name="loan_number">ऋण %1$d</string>
+    <string name="error_valid_monthly_investment">कृपया एक वैध मासिक निवेश दर्ज करें</string>
+    <string name="error_valid_expected_return_rate">कृपया एक वैध अपेक्षित रिटर्न दर दर्ज करें</string>
+    <string name="error_valid_time_period">कृपया एक वैध समय अवधि दर्ज करें</string>
+    <string name="error_valid_total_investment">कृपया एक वैध कुल निवेश दर्ज करें</string>
+    <string name="error_valid_withdrawal_per_month">कृपया एक वैध मासिक निकासी दर्ज करें</string>
+    <string name="error_valid_investment_amount">कृपया एक वैध निवेश राशि दर्ज करें</string>
+    <string name="error_valid_stp_amount">कृपया एक वैध एसटीपी राशि दर्ज करें</string>
+    <string name="error_valid_transferor_rate">कृपया एक वैध स्थानांतरणकर्ता दर दर्ज करें</string>
+    <string name="error_valid_transferee_rate">कृपया एक वैध स्थानांतरिती दर दर्ज करें</string>
+</resources>

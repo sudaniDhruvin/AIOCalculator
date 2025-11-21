@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.PieChart as MPAndroidPieChart
@@ -91,8 +93,8 @@ fun AdvanceSIPCalculatorScreen(
         ) {
             // Initial Investment Input with Toggle
             AdvanceSIPInputFieldWithToggle(
-                label = "Initial Investment",
-                placeholder = "Ex: 1000",
+                label = context.getString(R.string.initial_investment),
+                placeholder = context.getString(R.string.placeholder_amount),
                 value = initialInvestment,
                 onValueChange = { initialInvestment = it },
                 enabled = initialInvestmentEnabled,
@@ -101,16 +103,16 @@ fun AdvanceSIPCalculatorScreen(
 
             // Monthly Investment Input
             AdvanceSIPInputField(
-                label = "Monthly Investment",
-                placeholder = "Ex: 1000",
+                label = context.getString(R.string.monthly_investment),
+                placeholder = context.getString(R.string.placeholder_amount),
                 value = monthlyInvestment,
                 onValueChange = { monthlyInvestment = it }
             )
 
             // Expected Return Rate Input
             AdvanceSIPInputField(
-                label = "Exp. Return Rate (%)",
-                placeholder = "Ex: 12",
+                label = context.getString(R.string.expected_return_rate),
+                placeholder = context.getString(R.string.placeholder_rate),
                 value = expReturnRate,
                 onValueChange = { expReturnRate = it }
             )
@@ -125,7 +127,7 @@ fun AdvanceSIPCalculatorScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Period",
+                        text = context.getString(R.string.period),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.Black,
@@ -135,12 +137,12 @@ fun AdvanceSIPCalculatorScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         AdvanceSIPRadioButton(
-                            label = "Years",
+                            label = context.getString(R.string.years),
                             selected = isPeriodYears,
                             onClick = { isPeriodYears = true }
                         )
                         AdvanceSIPRadioButton(
-                            label = "Months",
+                            label = context.getString(R.string.months),
                             selected = !isPeriodYears,
                             onClick = { isPeriodYears = false }
                         )
@@ -148,7 +150,7 @@ fun AdvanceSIPCalculatorScreen(
                 }
                 AdvanceSIPInputField(
                     label = "",
-                    placeholder = "Ex: 6",
+                    placeholder = context.getString(R.string.placeholder_period),
                     value = period,
                     onValueChange = { period = it }
                 )
@@ -156,8 +158,8 @@ fun AdvanceSIPCalculatorScreen(
 
             // Inflation Rate Input with Toggle
             AdvanceSIPInputFieldWithToggle(
-                label = "Inflation Rate (%)",
-                placeholder = "Ex: 6",
+                label = context.getString(R.string.inflation_rate),
+                placeholder = context.getString(R.string.placeholder_rate),
                 value = inflationRate,
                 onValueChange = { inflationRate = it },
                 enabled = inflationRateEnabled,
@@ -172,7 +174,7 @@ fun AdvanceSIPCalculatorScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Step Up",
+                        text = context.getString(R.string.step_up),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.Gray,
@@ -196,7 +198,7 @@ fun AdvanceSIPCalculatorScreen(
                         onValueChange = { stepUpValue = it },
                         placeholder = {
                             Text(
-                                text = "Ex: 6",
+                                text = context.getString(R.string.placeholder_period),
                                 color = Color.Gray,
                                 fontSize = 14.sp
                             )
@@ -220,12 +222,12 @@ fun AdvanceSIPCalculatorScreen(
                     horizontalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
                     AdvanceSIPRadioButton(
-                        label = "AMOUNT",
+                        label = context.getString(R.string.step_up_amount),
                         selected = isStepUpAmount,
                         onClick = { isStepUpAmount = true }
                     )
                     AdvanceSIPRadioButton(
-                        label = "PCT%",
+                        label = context.getString(R.string.step_up_pct),
                         selected = !isStepUpAmount,
                         onClick = { isStepUpAmount = false }
                     )
@@ -286,7 +288,7 @@ fun AdvanceSIPCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = context.getString(R.string.calculate),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -319,7 +321,7 @@ fun AdvanceSIPCalculatorScreen(
                     )
                 ) {
                     Text(
-                        text = "Reset",
+                        text = context.getString(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF333333)
@@ -393,15 +395,15 @@ fun AdvanceSIPCalculatorScreen(
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 AdvanceSIPResultRow(
-                                    label = "Total Investment",
+                                    label = context.getString(R.string.total_investment),
                                     value = formatCurrencyWithDecimal(context, result.totalInvestment)
                                 )
                                 AdvanceSIPResultRow(
-                                    label = "Estimated Returns",
+                                    label = context.getString(R.string.estimated_returns),
                                     value = formatCurrencyWithDecimal(context, result.estimatedReturns)
                                 )
                                 AdvanceSIPResultRow(
-                                    label = "Total Value",
+                                    label = context.getString(R.string.total_value),
                                     value = formatCurrencyWithDecimal(context, result.totalValue)
                                 )
                             }
@@ -425,12 +427,12 @@ fun AdvanceSIPCalculatorScreen(
                         ) {
                             AdvanceSIPLegendItem(
                                 color = Color(0xFF3F6EE4),
-                                label = "$investmentPercent Total Investment"
+                                label = "$investmentPercent ${context.getString(R.string.total_investment)}"
                             )
                             Spacer(modifier = Modifier.width(24.dp))
                             AdvanceSIPLegendItem(
                                 color = Color(0xFF00AF52),
-                                label = "$returnsPercent Estimated Returns"
+                                label = "$returnsPercent ${context.getString(R.string.estimated_returns)}"
                             )
                         }
                     }
@@ -442,6 +444,7 @@ fun AdvanceSIPCalculatorScreen(
 
 @Composable
 fun AdvanceSIPCalculatorHeader(onBackClick: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -458,14 +461,14 @@ fun AdvanceSIPCalculatorHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "Advance SIP Calculator",
+            text = context.getString(R.string.advance_sip_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,

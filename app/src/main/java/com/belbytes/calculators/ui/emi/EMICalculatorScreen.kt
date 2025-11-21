@@ -30,6 +30,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.github.mikephil.charting.charts.PieChart as MPAndroidPieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -45,7 +48,10 @@ fun EMICalculatorScreen(
     onCalculateClick: () -> Unit,
     onViewDetails: (EMIResult, Double, Double) -> Unit = { _, _, _ -> }
 ) {
-    var emiType by rememberSaveable { mutableStateOf("EMI") }
+    val context = LocalContext.current
+    val emiLabel = context.getString(R.string.emi)
+    
+    var emiType by rememberSaveable { mutableStateOf(emiLabel) }
     var amount by rememberSaveable { mutableStateOf("") }
     var interestRate by rememberSaveable { mutableStateOf("") }
     var periodTypeString by rememberSaveable { mutableStateOf(PeriodType.YEARS.name) }
@@ -87,29 +93,29 @@ fun EMICalculatorScreen(
         ) {
             // EMI Dropdown
             EMIDropdownField(
-                label = "EMI",
+                label = context.getString(R.string.emi),
                 value = emiType,
                 onValueChange = { emiType = it }
             )
 
             // Amount Input
             EMIInputField(
-                label = "Amount",
-                placeholder = "Ex: 500,000",
+                label = context.getString(R.string.amount),
+                placeholder = context.getString(R.string.placeholder_amount_large),
                 value = amount,
                 onValueChange = { amount = it }
             )
 
             // Interest Rate Input
             EMIInputField(
-                label = "Interest Rate (%)",
-                placeholder = "Ex: 5%",
+                label = context.getString(R.string.interest_rate),
+                placeholder = context.getString(R.string.placeholder_rate_percent),
                 value = interestRate,
                 onValueChange = { interestRate = it }
             )
 
             // Conditional Fields based on EMI Type
-            if (emiType == "EMI") {
+            if (emiType == emiLabel) {
                 // Period Input with Radio Buttons
                 Column(
                     verticalArrangement = Arrangement.spacedBy(0.dp)
@@ -120,7 +126,7 @@ fun EMICalculatorScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Period",
+                            text = context.getString(R.string.period),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
                             color = Color.Black,
@@ -130,12 +136,12 @@ fun EMICalculatorScreen(
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             PeriodTypeRadioButton(
-                                label = "Years",
+                                label = context.getString(R.string.years),
                                 selected = periodType == PeriodType.YEARS,
                                 onClick = { periodTypeString = PeriodType.YEARS.name }
                             )
                             PeriodTypeRadioButton(
-                                label = "Month",
+                                label = context.getString(R.string.month),
                                 selected = periodType == PeriodType.MONTH,
                                 onClick = { periodTypeString = PeriodType.MONTH.name }
                             )
@@ -143,7 +149,7 @@ fun EMICalculatorScreen(
                     }
                     EMIInputField(
                         label = "",
-                        placeholder = "Ex: 5",
+                        placeholder = context.getString(R.string.placeholder_period),
                         value = period,
                         onValueChange = { period = it }
                     )
@@ -151,8 +157,8 @@ fun EMICalculatorScreen(
             } else if (emiType == "Loan Tenure") {
                 // EMI Input
                 EMIInputField(
-                    label = "EMI",
-                    placeholder = "Ex: 10,000",
+                    label = context.getString(R.string.emi),
+                    placeholder = context.getString(R.string.placeholder_emi),
                     value = emi,
                     onValueChange = { emi = it }
                 )
@@ -160,8 +166,8 @@ fun EMICalculatorScreen(
 
             // Processing Fee Input
             EMIInputField(
-                label = "Processing Fee (%)",
-                placeholder = "Ex: 2%",
+                label = context.getString(R.string.processing_fee),
+                placeholder = context.getString(R.string.placeholder_rate_percent),
                 value = processingFee,
                 onValueChange = { processingFee = it }
             )
@@ -197,13 +203,13 @@ fun EMICalculatorScreen(
                             // Set error message based on validation
                             errorMessage = when {
                                 amount.isBlank() || (amount.toDoubleOrNull() ?: -1.0) <= 0 ->
-                                    "Please enter a valid loan amount"
+                                    context.getString(R.string.error_invalid_amount)
                                 interestRate.isBlank() || (interestRate.toDoubleOrNull() ?: -1.0) <= 0 ->
-                                    "Please enter a valid interest rate"
-                                emiType == "EMI" && (period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0) ->
-                                    "Please enter a valid period"
+                                    context.getString(R.string.error_invalid_rate)
+                                emiType == emiLabel && (period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0) ->
+                                    context.getString(R.string.error_invalid_period)
                                 emiType == "Loan Tenure" && (emi.isBlank() || (emi.toDoubleOrNull() ?: -1.0) <= 0) ->
-                                    "Please enter a valid EMI amount"
+                                    context.getString(R.string.error_invalid_amount)
                                 emiType == "Loan Tenure" -> {
                                     val principal = amount.toDoubleOrNull() ?: 0.0
                                     val rate = interestRate.toDoubleOrNull() ?: 0.0
@@ -211,12 +217,12 @@ fun EMICalculatorScreen(
                                     val monthlyRate = rate / (12 * 100)
                                     val minimumEMI = principal * monthlyRate
                                     if (emiValue <= minimumEMI) {
-                                        "EMI amount is too low. Minimum EMI required: ${String.format("%,.2f", minimumEMI)}"
+                                        context.getString(R.string.error_check_inputs)
                                     } else {
-                                        "Please check all input values"
+                                        context.getString(R.string.error_check_inputs)
                                     }
                                 }
-                                else -> "Please check all input values"
+                                else -> context.getString(R.string.error_check_inputs)
                             }
                         }
                         onCalculateClick()
@@ -230,7 +236,7 @@ fun EMICalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = context.getString(R.string.calculate),
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
@@ -263,7 +269,7 @@ fun EMICalculatorScreen(
                     )
                 ) {
                     Text(
-                        text = "Reset",
+                        text = context.getString(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF333333)
@@ -393,7 +399,7 @@ fun EMICalculatorScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "View Details",
+                                    text = context.getString(R.string.view_details),
                                     color = Color.White,
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
@@ -401,7 +407,7 @@ fun EMICalculatorScreen(
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Icon(
                                     imageVector = Icons.Default.ArrowForward,
-                                    contentDescription = "View Details",
+                                    contentDescription = context.getString(R.string.view_details),
                                     tint = Color.White,
                                     modifier = Modifier.size(20.dp)
                                 )
@@ -430,14 +436,14 @@ fun EMICalculatorScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = context.getString(R.string.back),
                     tint = Color.White,
                     modifier = Modifier.size(28.dp)
                 )
             }
 
             Text(
-                text = "EMI Calculator",
+                text = context.getString(R.string.emi_calculator),
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
@@ -685,16 +691,18 @@ fun EMICalculatorHeader(
                 .padding(start = 8.dp)
                 .size(48.dp)
         ) {
+            val context = LocalContext.current
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
+        val context = LocalContext.current
         Text(
-            text = "EMI Calculator",
+            text = context.getString(R.string.emi_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,

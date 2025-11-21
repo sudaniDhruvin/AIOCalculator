@@ -29,6 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlin.math.ceil
 import kotlin.math.ln
@@ -64,7 +66,8 @@ data class ROIChangeResult(
 fun PrePaymentROIChangeScreen(
     onBackClick: () -> Unit
 ) {
-    val tabs = listOf("Pre Payment", "ROI Change")
+    val context = LocalContext.current
+    val tabs = listOf("Pre Payment", "ROI Change") // Keep English for internal logic
     val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
     var selectedTab by rememberSaveable { mutableStateOf("Pre Payment") }
 
@@ -150,24 +153,24 @@ fun PrePaymentROIChangeScreen(
             ) {
                     // Outstanding Amount Input
                     PrePaymentROIInputField(
-                        label = "Outstanding Amount",
-                        placeholder = "Ex: 1,00,000",
+                        label = context.getString(R.string.outstanding_amount),
+                        placeholder = context.getString(R.string.placeholder_amount_large),
                         value = outstandingAmount,
                         onValueChange = { outstandingAmount = it }
                     )
 
                     // Current Rate % Input
                     PrePaymentROIInputField(
-                        label = "Current Rate %",
-                        placeholder = "Ex: 12%",
+                        label = context.getString(R.string.current_rate),
+                        placeholder = context.getString(R.string.placeholder_rate_percent),
                         value = currentRate,
                         onValueChange = { currentRate = it }
                     )
 
                     // Current EMI Input
                     PrePaymentROIInputField(
-                        label = "Current EMI",
-                        placeholder = "Ex: 1000",
+                        label = context.getString(R.string.old_emi),
+                        placeholder = context.getString(R.string.placeholder_amount),
                         value = currentEMI,
                         onValueChange = { currentEMI = it }
                     )
@@ -176,16 +179,16 @@ fun PrePaymentROIChangeScreen(
                     if (tabs[page] == "Pre Payment") {
                         // Pre Payment Amount Input
                         PrePaymentROIInputField(
-                            label = "Pre Payment Amount",
-                            placeholder = "Ex: 10%",
+                            label = context.getString(R.string.prepayment_amount),
+                            placeholder = context.getString(R.string.placeholder_rate_percent),
                             value = prePaymentAmount,
                             onValueChange = { prePaymentAmount = it }
                         )
                     } else {
                         // Revised Rate % Input
                         PrePaymentROIInputField(
-                            label = "Revised Rate %",
-                            placeholder = "Ex: 10%",
+                            label = context.getString(R.string.new_rate),
+                            placeholder = context.getString(R.string.placeholder_rate_percent),
                             value = revisedRate,
                             onValueChange = { revisedRate = it }
                         )
@@ -268,7 +271,7 @@ fun PrePaymentROIChangeScreen(
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Text(
-                                text = "Calculate",
+                                text = context.getString(R.string.calculate),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
@@ -301,7 +304,7 @@ fun PrePaymentROIChangeScreen(
                             )
                         ) {
                             Text(
-                                text = "Reset",
+                                text = context.getString(R.string.reset),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF333333)
@@ -424,22 +427,23 @@ fun PrePaymentROIChangeHeader(onBackClick: () -> Unit) {
                 .padding(start = 8.dp)
                 .size(48.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
-                tint = Color.White,
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
-        Text(
-            text = "Pre Payment ROI Change",
-            color = Color.White,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.Center),
-            textAlign = TextAlign.Center
+        Icon(
+            imageVector = Icons.Default.ArrowBack,
+            contentDescription = "Back",
+            tint = Color.White,
+            modifier = Modifier.size(28.dp)
         )
+    }
+
+    val context = LocalContext.current
+    Text(
+        text = context.getString(R.string.prepayment_roi_change),
+        color = Color.White,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.align(Alignment.Center),
+        textAlign = TextAlign.Center
+    )
     }
 }
 

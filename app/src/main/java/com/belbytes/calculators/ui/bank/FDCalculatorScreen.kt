@@ -26,6 +26,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.PieChart as MPAndroidPieChart
@@ -87,16 +89,16 @@ fun FDCalculatorScreen(
         ) {
             // Deposit Amount Input
             FDInputField(
-                label = "Deposit Amount",
-                placeholder = "Ex: 10,00,000",
+                label = context.getString(R.string.deposit_amount),
+                placeholder = context.getString(R.string.placeholder_amount_large),
                 value = depositAmount,
                 onValueChange = { depositAmount = it }
             )
 
             // Interest % Input
             FDInputField(
-                label = "Interest %",
-                placeholder = "Ex: 6.5%",
+                label = context.getString(R.string.interest_rate),
+                placeholder = context.getString(R.string.placeholder_rate_percent),
                 value = interestRate,
                 onValueChange = { interestRate = it }
             )
@@ -104,7 +106,7 @@ fun FDCalculatorScreen(
             // Period Inputs in One Row
             Column {
                 Text(
-                    text = "Period",
+                    text = context.getString(R.string.period),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color.Black,
@@ -117,7 +119,7 @@ fun FDCalculatorScreen(
                     // Years Input
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Years",
+                            text = context.getString(R.string.years),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
                             color = Color.Black,
@@ -151,7 +153,7 @@ fun FDCalculatorScreen(
                     // Months Input
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Months",
+                            text = context.getString(R.string.months),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
                             color = Color.Black,
@@ -167,7 +169,7 @@ fun FDCalculatorScreen(
                             },
                             placeholder = {
                                 Text(
-                                    text = "Ex: 6",
+                                    text = context.getString(R.string.placeholder_period),
                                     color = Color.Gray,
                                     fontSize = 14.sp
                                 )
@@ -206,7 +208,7 @@ fun FDCalculatorScreen(
                             },
                             placeholder = {
                                 Text(
-                                    text = "Ex: 30",
+                                    text = context.getString(R.string.placeholder_period),
                                     color = Color.Gray,
                                     fontSize = 14.sp
                                 )
@@ -230,7 +232,7 @@ fun FDCalculatorScreen(
 
             // Deposit Type Dropdown
             FDDepositTypeDropdown(
-                label = "Deposit Type",
+                label = context.getString(R.string.deposit_amount),
                 value = depositType,
                 onValueChange = { depositType = it }
             )
@@ -307,7 +309,7 @@ fun FDCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = context.getString(R.string.calculate),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -336,7 +338,7 @@ fun FDCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Reset",
+                        text = context.getString(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -400,13 +402,13 @@ fun FDCalculatorScreen(
                             ) {
                                 // Total Interest
                                 FDResultRow(
-                                    "Total Interest",
+                                    context.getString(R.string.total_interest),
                                     formatCurrencyWithDecimal(context, result.totalInterest)
                                 )
                                 
                                 // Maturity Amount
                                 FDResultRow(
-                                    "Maturity Amount",
+                                    context.getString(R.string.maturity_amount),
                                     formatCurrencyWithDecimal(context, result.maturityAmount)
                                 )
                             }
@@ -445,7 +447,7 @@ fun FDCalculatorScreen(
                                 ) {
                                     // Deposit Amount Legend
                                     FDLegendItem(
-                                        label = "Deposit Amount",
+                                        label = context.getString(R.string.deposit_amount),
                                         color = Color(0xFF3F6EE4) // Blue - matches pie chart
                                     )
                                     
@@ -453,7 +455,7 @@ fun FDCalculatorScreen(
                                     
                                     // Total Interest Legend
                                     FDLegendItem(
-                                        label = "Total Interest",
+                                        label = context.getString(R.string.total_interest),
                                         color = Color(0xFF00AF52) // Green - matches pie chart
                                     )
                                 }
@@ -468,6 +470,7 @@ fun FDCalculatorScreen(
 
 @Composable
 fun FDCalculatorHeader(onBackClick: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -484,14 +487,14 @@ fun FDCalculatorHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "FD Calculator",
+            text = context.getString(R.string.fd_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,

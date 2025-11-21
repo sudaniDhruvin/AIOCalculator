@@ -31,6 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import androidx.compose.ui.viewinterop.AndroidView
 import android.view.View
@@ -52,9 +54,12 @@ fun QuickSIPCalculatorScreen(
     onBackClick: () -> Unit
 ) {
     val context = LocalContext.current
-    val tabs = listOf("SIP", "Lumpsum", "Plan")
+    val sipLabel = stringResource(R.string.sip)
+    val lumpsumLabel = stringResource(R.string.lumpsum)
+    val planLabel = stringResource(R.string.plan)
+    val tabs = listOf(sipLabel, lumpsumLabel, planLabel)
     val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
-    var selectedTab by rememberSaveable { mutableStateOf("SIP") }
+    var selectedTab by rememberSaveable { mutableStateOf(sipLabel) }
     
     // SIP Tab inputs
     var monthlyInvestmentSIP by rememberSaveable { mutableStateOf(1000f) } // Already at 500 increment
@@ -83,17 +88,17 @@ fun QuickSIPCalculatorScreen(
         selectedTab
     ) {
         when (selectedTab) {
-            "SIP" -> calculateQuickSIP(
+            sipLabel -> calculateQuickSIP(
                 monthlyInvestmentSIP.toDouble(),
                 expReturnRateSIP.toDouble(),
                 periodYearsSIP.toInt()
             )
-            "Lumpsum" -> calculateQuickLumpsum(
+            lumpsumLabel -> calculateQuickLumpsum(
                 totalInvestmentLumpsum.toDouble(),
                 expReturnRateLumpsum.toDouble(),
                 periodYearsLumpsum.toInt()
             )
-            "Plan" -> calculateQuickPlan(
+            planLabel -> calculateQuickPlan(
                 targetAmountPlan.toDouble(),
                 expReturnRatePlan.toDouble(),
                 periodYearsPlan.toInt()
@@ -141,9 +146,9 @@ fun QuickSIPCalculatorScreen(
                 ) {
                     // Input fields based on selected tab
                     when (tabs[page]) {
-                        "SIP" -> {
+                        sipLabel -> {
                             QuickSIPSliderInputField(
-                                label = "Monthly Investment",
+                                label = stringResource(R.string.monthly_investment),
                                 value = monthlyInvestmentSIP,
                                 onValueChange = { monthlyInvestmentSIP = it },
                                 valueRange = 1000f..100000f,
@@ -152,7 +157,7 @@ fun QuickSIPCalculatorScreen(
                             )
                             
                             QuickSIPSliderInputField(
-                                label = "Exp. Return Rate (%)",
+                                label = stringResource(R.string.expected_return_rate),
                                 value = expReturnRateSIP,
                                 onValueChange = { expReturnRateSIP = it },
                                 valueRange = 1f..30f,
@@ -160,7 +165,7 @@ fun QuickSIPCalculatorScreen(
                             )
                             
                             QuickSIPSliderInputField(
-                                label = "Period (Years)",
+                                label = stringResource(R.string.period_years),
                                 value = periodYearsSIP,
                                 onValueChange = { periodYearsSIP = it },
                                 valueRange = 1f..50f,
@@ -171,9 +176,9 @@ fun QuickSIPCalculatorScreen(
                                 }
                             )
                         }
-                        "Lumpsum" -> {
+                        lumpsumLabel -> {
                             QuickSIPSliderInputField(
-                                label = "Total Investment",
+                                label = stringResource(R.string.total_investment),
                                 value = totalInvestmentLumpsum,
                                 onValueChange = { totalInvestmentLumpsum = it },
                                 valueRange = 1000f..100000f,
@@ -182,7 +187,7 @@ fun QuickSIPCalculatorScreen(
                             )
                             
                             QuickSIPSliderInputField(
-                                label = "Exp. Return Rate (%)",
+                                label = stringResource(R.string.expected_return_rate),
                                 value = expReturnRateLumpsum,
                                 onValueChange = { expReturnRateLumpsum = it },
                                 valueRange = 1f..30f,
@@ -190,7 +195,7 @@ fun QuickSIPCalculatorScreen(
                             )
                             
                             QuickSIPSliderInputField(
-                                label = "Period (Years)",
+                                label = stringResource(R.string.period_years),
                                 value = periodYearsLumpsum,
                                 onValueChange = { periodYearsLumpsum = it },
                                 valueRange = 1f..50f,
@@ -201,9 +206,9 @@ fun QuickSIPCalculatorScreen(
                                 }
                             )
                         }
-                        "Plan" -> {
+                        planLabel -> {
                             QuickSIPSliderInputField(
-                                label = "Target Amount",
+                                label = stringResource(R.string.target_amount),
                                 value = targetAmountPlan,
                                 onValueChange = { targetAmountPlan = it },
                                 valueRange = 1000f..100000f,
@@ -212,7 +217,7 @@ fun QuickSIPCalculatorScreen(
                             )
                             
                             QuickSIPSliderInputField(
-                                label = "Exp. Return Rate (%)",
+                                label = stringResource(R.string.expected_return_rate),
                                 value = expReturnRatePlan,
                                 onValueChange = { expReturnRatePlan = it },
                                 valueRange = 1f..30f,
@@ -220,7 +225,7 @@ fun QuickSIPCalculatorScreen(
                             )
                             
                             QuickSIPSliderInputField(
-                                label = "Period (Years)",
+                                label = stringResource(R.string.period_years),
                                 value = periodYearsPlan,
                                 onValueChange = { periodYearsPlan = it },
                                 valueRange = 1f..50f,
@@ -271,7 +276,7 @@ fun QuickSIPCalculatorHeader(onBackClick: () -> Unit) {
         }
 
         Text(
-            text = "SIP Calculator",
+            text = stringResource(R.string.sip_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
@@ -287,7 +292,10 @@ fun QuickSIPTabs(
     pagerState: PagerState,
     onTabChange: (Int) -> Unit
 ) {
-    val tabs = listOf("SIP", "Lumpsum", "Plan")
+    val sipLabel = stringResource(R.string.sip)
+    val lumpsumLabel = stringResource(R.string.lumpsum)
+    val planLabel = stringResource(R.string.plan)
+    val tabs = listOf(sipLabel, lumpsumLabel, planLabel)
     val scope = rememberCoroutineScope()
     Row(
         modifier = Modifier
@@ -454,6 +462,9 @@ fun QuickSIPResultsSection(
     selectedTab: String
 ) {
     val context = LocalContext.current
+    val sipLabel = stringResource(R.string.sip)
+    val lumpsumLabel = stringResource(R.string.lumpsum)
+    val planLabel = stringResource(R.string.plan)
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -487,8 +498,8 @@ fun QuickSIPResultsSection(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
-                    QuickSIPLegendItem("Total Investment", Color(0xFF3F6EE4))
-                    QuickSIPLegendItem("Estimated Return", Color(0xFF00AF52))
+                    QuickSIPLegendItem(stringResource(R.string.total_investment), Color(0xFF3F6EE4))
+                    QuickSIPLegendItem(stringResource(R.string.estimated_return), Color(0xFF00AF52))
                 }
             }
             
@@ -498,20 +509,20 @@ fun QuickSIPResultsSection(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 when (selectedTab) {
-                    "SIP" -> {
-                        QuickSIPResultCard("Total Investment", formatCurrencyWithDecimal(context, result.totalInvestment))
-                        QuickSIPResultCard("Estimated Return", formatCurrencyWithDecimal(context, result.estimatedReturns))
-                        QuickSIPResultCard("Total Value", formatCurrencyWithDecimal(context, result.totalValue), isHighlighted = true)
+                    sipLabel -> {
+                        QuickSIPResultCard(stringResource(R.string.total_investment), formatCurrencyWithDecimal(context, result.totalInvestment))
+                        QuickSIPResultCard(stringResource(R.string.estimated_return), formatCurrencyWithDecimal(context, result.estimatedReturns))
+                        QuickSIPResultCard(stringResource(R.string.total_value), formatCurrencyWithDecimal(context, result.totalValue), isHighlighted = true)
                     }
-                    "Lumpsum" -> {
-                        QuickSIPResultCard("Investment Amount", formatCurrencyWithDecimal(context, result.totalInvestment))
-                        QuickSIPResultCard("Estimated Return", formatCurrencyWithDecimal(context, result.estimatedReturns))
-                        QuickSIPResultCard("Total Value", formatCurrencyWithDecimal(context, result.totalValue), isHighlighted = true)
+                    lumpsumLabel -> {
+                        QuickSIPResultCard(stringResource(R.string.investment_amount), formatCurrencyWithDecimal(context, result.totalInvestment))
+                        QuickSIPResultCard(stringResource(R.string.estimated_return), formatCurrencyWithDecimal(context, result.estimatedReturns))
+                        QuickSIPResultCard(stringResource(R.string.total_value), formatCurrencyWithDecimal(context, result.totalValue), isHighlighted = true)
                     }
-                    "Plan" -> {
-                        QuickSIPResultCard("Total Investment", formatCurrencyWithDecimal(context, result.totalInvestment))
-                        QuickSIPResultCard("Estimated Return", formatCurrencyWithDecimal(context, result.estimatedReturns))
-                        QuickSIPResultCard("Monthly Investment", formatCurrencyWithDecimal(context, result.monthlyInvestment), isHighlighted = true)
+                    planLabel -> {
+                        QuickSIPResultCard(stringResource(R.string.total_investment), formatCurrencyWithDecimal(context, result.totalInvestment))
+                        QuickSIPResultCard(stringResource(R.string.estimated_return), formatCurrencyWithDecimal(context, result.estimatedReturns))
+                        QuickSIPResultCard(stringResource(R.string.monthly_investment), formatCurrencyWithDecimal(context, result.monthlyInvestment), isHighlighted = true)
                     }
                 }
             }

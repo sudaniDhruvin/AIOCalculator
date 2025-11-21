@@ -1,3 +1,268 @@
 <resources>
     <string name="app_name">Calculators</string>
+    
+    <!-- Common UI -->
+    <string name="language">Language</string>
+    <string name="number_format">Number Format</string>
+    <string name="decimal_places">Decimal Places</string>
+    <string name="settings">Settings</string>
+    <string name="share_app">Share App</string>
+    <string name="rate_app">Rate App</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="more_app">More App</string>
+    <string name="select_language">Select Language</string>
+    <string name="select_number_format">Select Number Format</string>
+    <string name="select_decimal_places">Select Decimal Places</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="english">English</string>
+    <string name="hindi">हिंदी</string>
+    <string name="places">places</string>
+    
+    <!-- Navigation -->
+    <string name="home">Home</string>
+    <string name="calculators">Calculators</string>
+    <string name="history">History</string>
+    
+    <!-- Common Actions -->
+    <string name="calculate">Calculate</string>
+    <string name="reset">Reset</string>
+    <string name="back">Back</string>
+    <string name="done">Done</string>
+    <string name="next">Next</string>
+    <string name="skip">Skip</string>
+    <string name="view_details">View Details</string>
+    <string name="retry">Retry</string>
+    <string name="error">Error</string>
+    
+    <!-- Onboarding -->
+    <string name="onboarding_title_1">Calculate EMI</string>
+    <string name="onboarding_desc_1">Perform calculations for EMI with Advanced and Quick options, Also easy to compare loans for better option.</string>
+    <string name="onboarding_title_2">Track Everything</string>
+    <string name="onboarding_desc_2">Create and track various loan profiles such as personal loan, home loan, car loan and others that you many have, Also evaluate prepayment and rate of interest(ROI) change.</string>
+    <string name="onboarding_title_3">Banking Calculators</string>
+    <string name="onboarding_desc_3">Accurate and fastest calculator related to banking scheme such as FD, RD, PPF, VAT and GST. Other financial tools like currency converter and cash note counter etc.</string>
+    <string name="onboarding_title_4">Statistics</string>
+    <string name="onboarding_desc_4">Statistics show the principal amount, interest rate, and remaining balance per month, And also graphical representation of complete tenure of loan.</string>
+    
+    <!-- Common Labels -->
+    <string name="amount">Amount</string>
+    <string name="interest_rate">Interest Rate (%)</string>
+    <string name="period">Period</string>
+    <string name="years">Years</string>
+    <string name="months">Months</string>
+    <string name="month">Month</string>
+    <string name="emi">EMI</string>
+    <string name="processing_fee">Processing Fee (%)</string>
+    <string name="gst_rate">Rate of GST(%)</string>
+    <string name="vat_rate">Rate of VAT(%)</string>
+    <string name="add_gst">Add GST (+)</string>
+    <string name="remove_gst">Remove GST (-)</string>
+    <string name="add_vat">Add VAT (+)</string>
+    <string name="remove_vat">Remove VAT (-)</string>
+    
+    <!-- Placeholders -->
+    <string name="placeholder_amount">Ex: 10000</string>
+    <string name="placeholder_amount_large">Ex: 500,000</string>
+    <string name="placeholder_rate">Ex: 6.5</string>
+    <string name="placeholder_rate_percent">Ex: 5%</string>
+    <string name="placeholder_period">Ex: 5</string>
+    <string name="placeholder_emi">Ex: 10,000</string>
+    
+    <!-- Calculator Titles -->
+    <string name="gst_calculator">GST Calculator</string>
+    <string name="vat_calculator">VAT Calculator</string>
+    <string name="emi_calculator">EMI Calculator</string>
+    <string name="advance_emi_calculator">Advance EMI Calculator</string>
+    <string name="quick_calculator">Quick Calculator</string>
+    <string name="compare_loans">Compare Loans</string>
+    <string name="compare_loans_table">Compare Loans Table</string>
+    <string name="sip_calculator">SIP Calculator</string>
+    <string name="advance_sip_calculator">Advance SIP Calculator</string>
+    <string name="quick_sip_calculator">Quick SIP Calculator</string>
+    <string name="compare_sip">Compare SIP</string>
+    <string name="stp_calculator">STP Calculator</string>
+    <string name="swp_calculator">SWP Calculator</string>
+    <string name="fd_calculator">FD Calculator</string>
+    <string name="rd_calculator">RD Calculator</string>
+    <string name="ppf_calculator">PPF Calculator</string>
+    <string name="simple_interest_calculator">Simple Interest Calculator</string>
+    <string name="check_eligibility">Check Eligibility</string>
+    <string name="prepayment_roi_change">Pre Payment / ROI Change</string>
+    <string name="moratorium_calculator">Moratorium Calculator</string>
+    <string name="discount_calculator">Discount Calculator</string>
+    <string name="charging_time_calculator">Charging Time Calculator</string>
+    <string name="cash_note_counter">Cash Note Counter</string>
+    
+    <!-- Result Labels -->
+    <string name="initial_amount">Initial Amount</string>
+    <string name="gst_amount">GST Amount</string>
+    <string name="vat_amount">VAT Amount</string>
+    <string name="total_amount">Total Amount</string>
+    <string name="monthly_emi">Monthly EMI</string>
+    <string name="total_interest">Total Interest</string>
+    <string name="total_payment">Total Payment</string>
+    <string name="processing_fees">Processing Fees</string>
+    <string name="cgst">CGST</string>
+    <string name="sgst">SGST</string>
+    <string name="principal_amount">Principal Amount</string>
+    <string name="interest_amount">Interest Amount</string>
+    <string name="maturity_amount">Maturity Amount</string>
+    <string name="total_investment">Total Investment</string>
+    <string name="invested_amount">Invested Amount</string>
+    <string name="estimated_returns">Estimated Returns</string>
+    <string name="estimated_return">Estimated Return</string>
+    <string name="total_value">Total Value</string>
+    <string name="monthly_investment">Monthly Investment</string>
+    <string name="gst_on_interest">GST On Interest</string>
+    <string name="gst_on_processing_fees">GST On Processing Fees</string>
+    
+    <!-- Error Messages -->
+    <string name="error_invalid_amount">Please enter a valid amount</string>
+    <string name="error_invalid_rate">Please enter a valid rate</string>
+    <string name="error_invalid_gst_rate">Please enter a valid GST rate</string>
+    <string name="error_invalid_vat_rate">Please enter a valid VAT rate</string>
+    <string name="error_invalid_period">Please enter a valid period</string>
+    <string name="error_check_inputs">Please check all input values</string>
+    
+    <!-- Number Formats -->
+    <string name="format_automatic">Automatic</string>
+    <string name="format_indian">12,34,567.89</string>
+    <string name="format_european_space">1 234 567,89</string>
+    <string name="format_swiss">1\'234\'567.89</string>
+    <string name="format_european_dot">1.234.567,89</string>
+    <string name="format_us_uk">1,234,567.89</string>
+    
+    <!-- Setup Screens -->
+    <string name="select_language_title">Language</string>
+    
+    <!-- EMI Details -->
+    <string name="emi_details">EMI Details</string>
+    <string name="advance_emi_details">Advance EMI Details</string>
+    <string name="periods_months">Periods (months)</string>
+    <string name="month_label">Month</string>
+    <string name="principal">Principal</string>
+    <string name="interest">Interest</string>
+    <string name="balance">Balance</string>
+    
+    <!-- Loan Comparison -->
+    <string name="loan_1">Loan 1</string>
+    <string name="loan_2">Loan 2</string>
+    <string name="difference">Difference</string>
+    <string name="loan_amount">Loan Amount</string>
+    <string name="monthly_emi_label">Monthly EMI</string>
+    <string name="total_interest_label">Total Interest</string>
+    <string name="total_payment_label">Total Payment</string>
+    
+    <!-- SIP -->
+    <string name="lumpsum">Lumpsum</string>
+    <string name="plan">Plan</string>
+    <string name="sip">SIP</string>
+    <string name="expected_return_rate">Expected Return Rate (%)</string>
+    <string name="period_years">Period (Years)</string>
+    <string name="initial_investment">Initial Investment</string>
+    <string name="total_amount_transferred">Total Amount Transferred</string>
+    <string name="total_profit">Total Profit</string>
+    <string name="balance_in_transferor">Balance In Transferor</string>
+    <string name="balance_in_transferee">Balance In Transferee</string>
+    <string name="total_withdrawal">Total Withdrawal</string>
+    <string name="final_balance">Final Balance</string>
+    <string name="withdrawal_per_month">Withdrawal Per Month</string>
+    <string name="inflation_rate">Inflation Rate (%)</string>
+    <string name="step_up">Step Up</string>
+    <string name="step_up_amount">AMOUNT</string>
+    <string name="step_up_pct">PCT%</string>
+    
+    <!-- Bank Calculators -->
+    <string name="deposit_amount">Deposit Amount</string>
+    <string name="monthly_amount">Monthly Amount</string>
+    <string name="frequency">Frequency</string>
+    <string name="yearly">Yearly</string>
+    <string name="monthly">Monthly</string>
+    <string name="quarterly">Quarterly</string>
+    <string name="half_yearly">Half Yearly</string>
+    
+    <!-- Loan Calculators -->
+    <string name="gross_monthly_income">Gross Monthly Income</string>
+    <string name="foir_percent">FOIR (%)</string>
+    <string name="total_monthly_emis">Total Monthly EMIs</string>
+    <string name="eligible_emi">Eligible EMI</string>
+    <string name="eligible_loan_amount">Eligible Loan Amount</string>
+    <string name="outstanding_amount">Outstanding Amount</string>
+    <string name="current_rate">Current Rate (%)</string>
+    <string name="new_rate">New Rate (%)</string>
+    <string name="prepayment_amount">Prepayment Amount</string>
+    <string name="old_emi">Old EMI</string>
+    <string name="new_emi">New EMI</string>
+    <string name="old_months">Old Months</string>
+    <string name="new_months">New Months</string>
+    <string name="old_interest">Old Interest</string>
+    <string name="new_interest">New Interest</string>
+    <string name="no_moratorium">No Moratorium</string>
+    <string name="with_moratorium">With Moratorium</string>
+    <string name="moratorium_period">Moratorium Period</string>
+    <string name="select_option">Select your option</string>
+    <string name="total_principal">Total Principal</string>
+    <string name="tenure_months">Tenure (in Month)</string>
+    
+    <!-- Other Calculators -->
+    <string name="discount_percent">Discount (%)</string>
+    <string name="sales_tax">Sales Tax</string>
+    <string name="saving">Saving</string>
+    <string name="payable_amount">Payable Amount</string>
+    <string name="apply_discount">Apply Discount</string>
+    <string name="after_tax">After Tax</string>
+    <string name="before_tax">Before Tax</string>
+    <string name="battery_capacity">Battery Capacity (mAh)</string>
+    <string name="charger_output">Charger Output (W)</string>
+    <string name="charging_time">Charging Time</string>
+    <string name="hours">Hours</string>
+    <string name="minutes">Minutes</string>
+    
+    <!-- Interest Types -->
+    <string name="simple_interest">Simple Interest</string>
+    <string name="compound_interest">Compound Interest</string>
+    
+    <!-- Compounding Frequency -->
+    <string name="compounding_monthly">Monthly</string>
+    <string name="compounding_quarterly">Quarterly</string>
+    <string name="compounding_half_yearly">Half Yearly</string>
+    <string name="compounding_yearly">Yearly</string>
+    
+    <!-- Additional Labels -->
+    <string name="target_amount">Target Amount</string>
+    <string name="investment_amount">Investment Amount</string>
+    <string name="stp_amount">STP Amount</string>
+    <string name="transferor">Transferor(%)</string>
+    <string name="transferee">Transferee(%)</string>
+    <string name="final_answer">Final Answer:</string>
+    <string name="no_sip_entries">No SIP entries yet. Add a SIP to compare.</string>
+    <string name="add_new_sip">Add New SIP</string>
+    <string name="expected_returns_rate">Expected Returns Rate %</string>
+    <string name="time_period_monthly">Time Period (Monthly)</string>
+    <string name="add_loan">Add Loan</string>
+    <string name="compare">Compare</string>
+    <string name="no_loan_entries">No loan entries yet. Add a loan to compare.</string>
+    <string name="add_new_loan">Add New Loan</string>
+    <string name="welcome_to">Welcome to</string>
+    <string name="app_name_full">All in one calculators</string>
+    <string name="featured_tools">Featured Tools</string>
+    <string name="view_all">View All</string>
+    <string name="recent_calculations">Recent Calculations</string>
+    <string name="no_any_calculations">No Any Calculations</string>
+    <string name="calculation_history">Calculation history will be shown here</string>
+    <string name="month_label_short">Month</string>
+    <string name="period_months_short">Period (M)</string>
+    <string name="percent_short">%</string>
+    <string name="sip_number">SIP %1$d</string>
+    <string name="loan_number">Loan %1$d</string>
+    <string name="error_valid_monthly_investment">Please enter a valid monthly investment</string>
+    <string name="error_valid_expected_return_rate">Please enter a valid expected return rate</string>
+    <string name="error_valid_time_period">Please enter a valid time period</string>
+    <string name="error_valid_total_investment">Please enter a valid total investment</string>
+    <string name="error_valid_withdrawal_per_month">Please enter a valid withdrawal per month</string>
+    <string name="error_valid_investment_amount">Please enter a valid investment amount</string>
+    <string name="error_valid_stp_amount">Please enter a valid STP amount</string>
+    <string name="error_valid_transferor_rate">Please enter a valid transferor rate</string>
+    <string name="error_valid_transferee_rate">Please enter a valid transferee rate</string>
 </resources>

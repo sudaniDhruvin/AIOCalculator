@@ -34,6 +34,8 @@ import android.content.Context
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import java.text.SimpleDateFormat
 import java.util.*
@@ -158,16 +160,16 @@ fun SimpleInterestCalculatorScreen(
             ) {
                 // Amount Input
                 SimpleInterestInputField(
-                    label = "Amount",
-                    placeholder = "Ex: 1,00,000",
+                    label = context.getString(R.string.amount),
+                    placeholder = context.getString(R.string.placeholder_amount_large),
                     value = amount,
                     onValueChange = { amount = it }
                 )
 
                 // Interest Input
                 SimpleInterestInputField(
-                    label = "Interest",
-                    placeholder = "Ex: 7.5%",
+                    label = context.getString(R.string.interest_rate),
+                    placeholder = context.getString(R.string.placeholder_rate_percent),
                     value = interestRate,
                     onValueChange = { interestRate = it }
                 )
@@ -177,7 +179,7 @@ fun SimpleInterestCalculatorScreen(
                     // Period Inputs in One Row
                     Column {
                         Text(
-                            text = "Period",
+                            text = context.getString(R.string.period),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
                             color = Color.Gray,
@@ -194,7 +196,7 @@ fun SimpleInterestCalculatorScreen(
                                     onValueChange = { years = it },
                                     placeholder = {
                                         Text(
-                                            text = "Years",
+                                            text = context.getString(R.string.years),
                                             color = Color.Gray,
                                             fontSize = 14.sp
                                         )
@@ -223,7 +225,7 @@ fun SimpleInterestCalculatorScreen(
                                     },
                                     placeholder = {
                                         Text(
-                                            text = "Months",
+                                            text = context.getString(R.string.months),
                                             color = Color.Gray,
                                             fontSize = 14.sp
                                         )
@@ -295,7 +297,7 @@ fun SimpleInterestCalculatorScreen(
                 // Interest Type Radio Buttons
                 Column {
                     Text(
-                        text = "Interest Type",
+                        text = context.getString(R.string.interest_rate),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.Gray,
@@ -306,12 +308,12 @@ fun SimpleInterestCalculatorScreen(
                         horizontalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
                         SimpleInterestRadioButton(
-                            label = "Simple",
+                            label = context.getString(R.string.simple_interest),
                             selected = interestType == InterestType.SIMPLE,
                             onClick = { interestTypeString = InterestType.SIMPLE.name }
                         )
                         SimpleInterestRadioButton(
-                            label = "Compound",
+                            label = context.getString(R.string.compound_interest),
                             selected = interestType == InterestType.COMPOUND,
                             onClick = { interestTypeString = InterestType.COMPOUND.name }
                         )
@@ -335,7 +337,7 @@ fun SimpleInterestCalculatorScreen(
                     )
                 ) {
                     SimpleInterestCompoundingDropdown(
-                        label = "Compounded",
+                        label = context.getString(R.string.frequency),
                         value = compoundingFrequency,
                         onValueChange = { compoundingFrequency = it }
                     )
@@ -423,7 +425,7 @@ fun SimpleInterestCalculatorScreen(
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
-                            text = "Calculate",
+                            text = context.getString(R.string.calculate),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -459,7 +461,7 @@ fun SimpleInterestCalculatorScreen(
                         )
                     ) {
                         Text(
-                            text = "Reset",
+                            text = context.getString(R.string.reset),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF333333)
@@ -533,15 +535,15 @@ fun SimpleInterestCalculatorScreen(
                                     verticalArrangement = Arrangement.spacedBy(12.dp)
                                 ) {
                                     SimpleInterestResultRow(
-                                        label = "Principal Amount",
+                                        label = context.getString(R.string.principal_amount),
                                         value = formatCurrencyWithDecimal(context, res.principalAmount)
                                     )
                                     SimpleInterestResultRow(
-                                        label = "Interest Amount",
+                                        label = context.getString(R.string.interest_amount),
                                         value = formatCurrencyWithDecimal(context, res.interestAmount)
                                     )
                                     SimpleInterestResultRow(
-                                        label = "Total Amount",
+                                        label = context.getString(R.string.total_amount),
                                         value = formatCurrencyWithDecimal(context, res.totalAmount)
                                     )
                                 }
@@ -559,6 +561,7 @@ fun SimpleInterestCalculatorScreen(
 
 @Composable
 fun SimpleInterestCalculatorHeader(onBackClick: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -575,14 +578,14 @@ fun SimpleInterestCalculatorHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "Simple Interest",
+            text = context.getString(R.string.simple_interest_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
@@ -793,7 +796,15 @@ fun SimpleInterestCompoundingDropdown(
     value: String,
     onValueChange: (String) -> Unit
 ) {
+    val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
+    // Map English keys to localized display strings
+    val frequencyMap = mapOf(
+        "Monthly" to context.getString(R.string.compounding_monthly),
+        "Quarterly" to context.getString(R.string.compounding_quarterly),
+        "Half Yearly" to context.getString(R.string.compounding_half_yearly),
+        "Yearly" to context.getString(R.string.compounding_yearly)
+    )
     val options = listOf("Monthly", "Quarterly", "Half Yearly", "Yearly")
 
     Column {
@@ -810,7 +821,7 @@ fun SimpleInterestCompoundingDropdown(
                 .clickable { expanded = !expanded }
         ) {
             OutlinedTextField(
-                value = value,
+                value = frequencyMap[value] ?: value, // Display localized string
                 onValueChange = {},
                 readOnly = true,
                 enabled = false,
@@ -866,13 +877,13 @@ fun SimpleInterestCompoundingDropdown(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    onValueChange(option)
+                                    onValueChange(option) // Store English key
                                     expanded = false
                                 }
                                 .padding(horizontal = 16.dp, vertical = 12.dp)
                         ) {
                             Text(
-                                text = option,
+                                text = frequencyMap[option] ?: option, // Display localized string
                                 fontSize = 14.sp,
                                 color = Color.Black
                             )

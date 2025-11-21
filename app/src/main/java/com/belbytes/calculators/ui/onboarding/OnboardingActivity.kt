@@ -17,6 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.ui.setup.SetupActivity
 import com.belbytes.calculators.ui.theme.AIOCalculatorTheme
 import com.belbytes.calculators.utils.PreferenceManager
@@ -97,6 +100,7 @@ fun BottomNavigationSection(
     onNext: () -> Unit,
     onDone: () -> Unit
 ) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -110,7 +114,7 @@ fun BottomNavigationSection(
             modifier = Modifier.padding(start = 0.dp)
         ) {
             Text(
-                text = "SKIP",
+                text = context.getString(R.string.skip).uppercase(),
                 color = Color(0xFF2196F3),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal
@@ -156,14 +160,14 @@ fun BottomNavigationSection(
         ) {
             if (currentPage == totalPages - 1) {
                 Text(
-                    text = "DONE",
+                    text = context.getString(R.string.done).uppercase(),
                     color = Color(0xFF2196F3),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
                 )
             } else {
                 Text(
-                    text = ">",
+                    text = context.getString(R.string.next),
                     color = Color(0xFF2196F3),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold

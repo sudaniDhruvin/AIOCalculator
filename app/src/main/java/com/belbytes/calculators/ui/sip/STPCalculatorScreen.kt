@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlin.math.pow
 
@@ -93,32 +95,32 @@ fun STPCalculatorScreen(
         ) {
             // Investment Amount Input
             STPInputField(
-                label = "Investment Amount",
-                placeholder = "Ex: 1,00,000",
+                label = stringResource(R.string.investment_amount),
+                placeholder = stringResource(R.string.placeholder_amount_large),
                 value = investmentAmount,
                 onValueChange = { investmentAmount = it }
             )
 
             // STP Amount Input
             STPInputField(
-                label = "STP Amount",
-                placeholder = "Ex: 1000",
+                label = stringResource(R.string.stp_amount),
+                placeholder = stringResource(R.string.placeholder_amount),
                 value = stpAmount,
                 onValueChange = { stpAmount = it }
             )
 
             // Transferor(%) Input
             STPInputField(
-                label = "Transferor(%)",
-                placeholder = "Ex: 12%",
+                label = stringResource(R.string.transferor),
+                placeholder = stringResource(R.string.placeholder_rate_percent),
                 value = transferorRate,
                 onValueChange = { transferorRate = it }
             )
 
             // Transferee(%) Input
             STPInputField(
-                label = "Transferee(%)",
-                placeholder = "Ex: 10",
+                label = stringResource(R.string.transferee),
+                placeholder = stringResource(R.string.placeholder_rate),
                 value = transfereeRate,
                 onValueChange = { transfereeRate = it }
             )
@@ -133,7 +135,7 @@ fun STPCalculatorScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Period",
+                        text = stringResource(R.string.period),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.Black,
@@ -143,12 +145,12 @@ fun STPCalculatorScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         STPPeriodTypeRadioButton(
-                            label = "Years",
+                            label = stringResource(R.string.years),
                             selected = periodType == STPPeriodType.YEARS,
                             onClick = { periodTypeString = STPPeriodType.YEARS.name }
                         )
                         STPPeriodTypeRadioButton(
-                            label = "Months",
+                            label = stringResource(R.string.months),
                             selected = periodType == STPPeriodType.MONTHS,
                             onClick = { periodTypeString = STPPeriodType.MONTHS.name }
                         )
@@ -191,22 +193,22 @@ fun STPCalculatorScreen(
                             stpResult = null
                             errorMessage = when {
                                 investmentAmount.isBlank() || (investmentAmount.toDoubleOrNull() ?: -1.0) <= 0 ->
-                                    "Please enter a valid investment amount"
+                                    context.getString(R.string.error_valid_investment_amount)
                                 stpAmount.isBlank() || (stpAmount.toDoubleOrNull() ?: -1.0) <= 0 ->
-                                    "Please enter a valid STP amount"
+                                    context.getString(R.string.error_valid_stp_amount)
                                 transferorRate.isBlank() || (transferorRate.toDoubleOrNull() ?: -1.0) <= 0 ->
-                                    "Please enter a valid transferor rate"
+                                    context.getString(R.string.error_valid_transferor_rate)
                                 transfereeRate.isBlank() || transfereeRate.toDoubleOrNull() == null ->
-                                    "Please enter a valid transferee rate"
+                                    context.getString(R.string.error_valid_transferee_rate)
                                 period.isBlank() || (period.toDoubleOrNull() ?: -1.0) <= 0 ->
-                                    "Please enter a valid period"
+                                    context.getString(R.string.error_invalid_period)
                                 else -> {
                                     val invAmount = investmentAmount.toDoubleOrNull() ?: 0.0
                                     val stpAmt = stpAmount.toDoubleOrNull() ?: 0.0
                                     if (stpAmt >= invAmount) {
-                                        "STP amount must be less than investment amount"
+                                        context.getString(R.string.error_check_inputs)
                                     } else {
-                                        "Please check all input values"
+                                        context.getString(R.string.error_check_inputs)
                                     }
                                 }
                             }
@@ -221,7 +223,7 @@ fun STPCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = stringResource(R.string.calculate),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -254,7 +256,7 @@ fun STPCalculatorScreen(
                     )
                 ) {
                     Text(
-                        text = "Reset",
+                        text = stringResource(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF333333)
@@ -328,19 +330,19 @@ fun STPCalculatorScreen(
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 STPResultRow(
-                                    label = "Total Amount Transferred",
+                                    label = stringResource(R.string.total_amount_transferred),
                                     value = formatCurrencyWithDecimal(context, result.totalAmountTransferred)
                                 )
                                 STPResultRow(
-                                    label = "Total Profit",
+                                    label = stringResource(R.string.total_profit),
                                     value = formatCurrencyWithDecimal(context, result.totalProfit)
                                 )
                                 STPResultRow(
-                                    label = "Balance in Transferor",
+                                    label = stringResource(R.string.balance_in_transferor),
                                     value = formatCurrencyWithDecimal(context, result.balanceInTransferor)
                                 )
                                 STPResultRow(
-                                    label = "Balance in Transferee",
+                                    label = stringResource(R.string.balance_in_transferee),
                                     value = formatCurrencyWithDecimal(context, result.balanceInTransferee)
                                 )
                             }
@@ -375,7 +377,7 @@ fun STPCalculatorScreen(
             }
 
             Text(
-                text = "STP Calculator",
+                text = stringResource(R.string.stp_calculator),
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
@@ -404,14 +406,14 @@ fun STPCalculatorHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "STP Calculator",
+            text = stringResource(R.string.stp_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,

@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 
 data class GSTResult(
@@ -42,11 +44,12 @@ fun GSTCalculatorScreen(
     onBackClick: () -> Unit
 ) {
     val context = LocalContext.current
+    val addGstLabel = context.getString(R.string.add_gst)
     
     // State variables
     var initialAmount by rememberSaveable { mutableStateOf("") }
     var gstRate by rememberSaveable { mutableStateOf("") }
-    var gstOperation by rememberSaveable { mutableStateOf("Add GST (+)") } // "Add GST (+)" or "Remove GST (-)"
+    var gstOperation by rememberSaveable { mutableStateOf(addGstLabel) }
     var showResults by rememberSaveable { mutableStateOf(false) }
     var gstResult by remember { mutableStateOf<GSTResult?>(null) }
     var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
@@ -81,16 +84,16 @@ fun GSTCalculatorScreen(
         ) {
             // Initial Amount Input
             GSTInputField(
-                label = "Amount",
-                placeholder = "Ex: 10000",
+                label = context.getString(R.string.amount),
+                placeholder = context.getString(R.string.placeholder_amount),
                 value = initialAmount,
                 onValueChange = { initialAmount = it }
             )
 
             // Rate of GST Input
             GSTInputField(
-                label = "Rate of GST(%)",
-                placeholder = "Ex: 6.5",
+                label = context.getString(R.string.gst_rate),
+                placeholder = context.getString(R.string.placeholder_rate),
                 value = gstRate,
                 onValueChange = { gstRate = it }
             )
@@ -101,14 +104,14 @@ fun GSTCalculatorScreen(
                 horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 GSTRadioButton(
-                    label = "Add GST (+)",
-                    selected = gstOperation == "Add GST (+)",
-                    onClick = { gstOperation = "Add GST (+)" }
+                    label = context.getString(R.string.add_gst),
+                    selected = gstOperation == context.getString(R.string.add_gst),
+                    onClick = { gstOperation = context.getString(R.string.add_gst) }
                 )
                 GSTRadioButton(
-                    label = "Remove GST (-)",
-                    selected = gstOperation == "Remove GST (-)",
-                    onClick = { gstOperation = "Remove GST (-)" }
+                    label = context.getString(R.string.remove_gst),
+                    selected = gstOperation == context.getString(R.string.remove_gst),
+                    onClick = { gstOperation = context.getString(R.string.remove_gst) }
                 )
             }
 
@@ -126,23 +129,23 @@ fun GSTCalculatorScreen(
                         errorMessage = null
                         when {
                             initialAmount.isBlank() || (initialAmount.toDoubleOrNull() ?: -1.0) <= 0 -> {
-                                errorMessage = "Please enter a valid amount"
+                                errorMessage = context.getString(R.string.error_invalid_amount)
                                 showResults = false
                                 gstResult = null
                             }
                             gstRate.isBlank() || (gstRate.toDoubleOrNull() ?: -1.0) <= 0 -> {
-                                errorMessage = "Please enter a valid GST rate"
+                                errorMessage = context.getString(R.string.error_invalid_gst_rate)
                                 showResults = false
                                 gstResult = null
                             }
                             else -> {
-                                val result = calculateGST(initialAmount, gstRate, gstOperation)
+                                val result = calculateGST(initialAmount, gstRate, gstOperation, addGstLabel)
                                 if (result != null) {
                                     gstResult = result
                                     showResults = true
                                     errorMessage = null
                                 } else {
-                                    errorMessage = "Please check all input values"
+                                    errorMessage = context.getString(R.string.error_check_inputs)
                                     showResults = false
                                     gstResult = null
                                 }
@@ -158,7 +161,7 @@ fun GSTCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = context.getString(R.string.calculate),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -170,7 +173,7 @@ fun GSTCalculatorScreen(
                     onClick = {
                         initialAmount = ""
                         gstRate = ""
-                        gstOperation = "Add GST (+)"
+                        gstOperation = addGstLabel
                         showResults = false
                         gstResult = null
                         errorMessage = null
@@ -184,7 +187,7 @@ fun GSTCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Reset",
+                        text = context.getString(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF333333)
@@ -243,13 +246,13 @@ fun GSTCalculatorScreen(
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             // Initial Amount
-                            GSTResultRow("Initial Amount", formatCurrencyWithDecimal(context, result.initialAmount))
+                            GSTResultRow(context.getString(R.string.initial_amount), formatCurrencyWithDecimal(context, result.initialAmount))
                             
                             // GST Amount
-                            GSTResultRow("GST Amount", formatCurrencyWithDecimal(context, result.gstAmount))
+                            GSTResultRow(context.getString(R.string.gst_amount), formatCurrencyWithDecimal(context, result.gstAmount))
                             
                             // Total Amount
-                            GSTResultRow("Total Amount", formatCurrencyWithDecimal(context, result.totalAmount))
+                            GSTResultRow(context.getString(R.string.total_amount), formatCurrencyWithDecimal(context, result.totalAmount))
                             
                             // CGST and SGST Breakdown
                             Row(
@@ -262,7 +265,7 @@ fun GSTCalculatorScreen(
                                     horizontalAlignment = Alignment.Start
                                 ) {
                                     Text(
-                                        text = "CGST : ${String.format("%.1f", result.cgstRate)}% =",
+                                        text = "${context.getString(R.string.cgst)} : ${String.format("%.1f", result.cgstRate)}% =",
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Normal,
                                         color = Color.Black
@@ -281,7 +284,7 @@ fun GSTCalculatorScreen(
                                     horizontalAlignment = Alignment.End
                                 ) {
                                     Text(
-                                        text = "SGST : ${String.format("%.1f", result.sgstRate)}% =",
+                                        text = "${context.getString(R.string.sgst)} : ${String.format("%.1f", result.sgstRate)}% =",
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Normal,
                                         color = Color.Black
@@ -304,6 +307,7 @@ fun GSTCalculatorScreen(
 
 @Composable
 fun GSTCalculatorHeader(onBackClick: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -320,14 +324,14 @@ fun GSTCalculatorHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "GST Calculator",
+            text = context.getString(R.string.gst_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
@@ -435,7 +439,8 @@ fun GSTResultRow(
 fun calculateGST(
     initialAmount: String,
     gstRate: String,
-    gstOperation: String
+    gstOperation: String,
+    addGstLabel: String
 ): GSTResult? {
     return try {
         val amount = initialAmount.toDoubleOrNull() ?: return null
@@ -445,7 +450,7 @@ fun calculateGST(
         val gstAmount: Double
         val totalAmount: Double
         
-        if (gstOperation == "Add GST (+)") {
+        if (gstOperation == addGstLabel) {
             // Add GST: Base Amount is the input, GST is added
             baseAmount = amount
             gstAmount = baseAmount * (rate / 100)

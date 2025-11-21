@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 
 data class DiscountResult(
@@ -79,24 +81,24 @@ fun DiscountCalculatorScreen(
         ) {
             // Amount Input
             DiscountInputField(
-                label = "Amount",
-                placeholder = "Ex: 20000",
+                label = context.getString(R.string.amount),
+                placeholder = context.getString(R.string.placeholder_amount),
                 value = amount,
                 onValueChange = { amount = it }
             )
 
             // Discount % Input
             DiscountInputField(
-                label = "Discount %",
-                placeholder = "Ex: 8.5",
+                label = context.getString(R.string.discount_percent),
+                placeholder = context.getString(R.string.placeholder_rate),
                 value = discountPercent,
                 onValueChange = { discountPercent = it }
             )
 
             // Sales Tax % Input
             DiscountInputField(
-                label = "Sales Tax %",
-                placeholder = "Ex: 6.0",
+                label = context.getString(R.string.sales_tax),
+                placeholder = context.getString(R.string.placeholder_rate),
                 value = salesTaxPercent,
                 onValueChange = { salesTaxPercent = it }
             )
@@ -107,12 +109,12 @@ fun DiscountCalculatorScreen(
                 horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 DiscountRadioButton(
-                    label = "After Tax",
+                    label = context.getString(R.string.after_tax),
                     selected = applyDiscount == "After Tax",
                     onClick = { applyDiscount = "After Tax" }
                 )
                 DiscountRadioButton(
-                    label = "Before Tax",
+                    label = context.getString(R.string.before_tax),
                     selected = applyDiscount == "Before Tax",
                     onClick = { applyDiscount = "Before Tax" }
                 )
@@ -132,17 +134,17 @@ fun DiscountCalculatorScreen(
                         errorMessage = null
                         when {
                             amount.isBlank() || (amount.toDoubleOrNull() ?: -1.0) <= 0 -> {
-                                errorMessage = "Please enter a valid amount"
+                                errorMessage = context.getString(R.string.error_invalid_amount)
                                 showResults = false
                                 discountResult = null
                             }
                             discountPercent.isBlank() || (discountPercent.toDoubleOrNull() ?: -1.0) < 0 -> {
-                                errorMessage = "Please enter a valid discount percentage"
+                                errorMessage = context.getString(R.string.error_invalid_rate)
                                 showResults = false
                                 discountResult = null
                             }
                             salesTaxPercent.isBlank() || (salesTaxPercent.toDoubleOrNull() ?: -1.0) < 0 -> {
-                                errorMessage = "Please enter a valid sales tax percentage"
+                                errorMessage = context.getString(R.string.error_invalid_rate)
                                 showResults = false
                                 discountResult = null
                             }
@@ -158,7 +160,7 @@ fun DiscountCalculatorScreen(
                                     showResults = true
                                     errorMessage = null
                                 } else {
-                                    errorMessage = "Please check all input values"
+                                    errorMessage = context.getString(R.string.error_check_inputs)
                                     showResults = false
                                     discountResult = null
                                 }
@@ -174,7 +176,7 @@ fun DiscountCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = context.getString(R.string.calculate),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -201,7 +203,7 @@ fun DiscountCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Reset",
+                        text = context.getString(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -260,16 +262,16 @@ fun DiscountCalculatorScreen(
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             // Amount
-                            DiscountResultRow("Amount", formatCurrencyWithDecimal(context, result.amount))
+                            DiscountResultRow(context.getString(R.string.amount), formatCurrencyWithDecimal(context, result.amount))
                             
                             // Sales Tax
-                            DiscountResultRow("Sales Tax", formatCurrencyWithDecimal(context, result.salesTax))
+                            DiscountResultRow(context.getString(R.string.sales_tax), formatCurrencyWithDecimal(context, result.salesTax))
                             
                             // Saving
-                            DiscountResultRow("Saving", formatCurrencyWithDecimal(context, result.saving))
+                            DiscountResultRow(context.getString(R.string.saving), formatCurrencyWithDecimal(context, result.saving))
                             
                             // Payable Amount
-                            DiscountResultRow("Payable Amount", formatCurrencyWithDecimal(context, result.payableAmount))
+                            DiscountResultRow(context.getString(R.string.payable_amount), formatCurrencyWithDecimal(context, result.payableAmount))
                         }
                     }
                 }
@@ -280,6 +282,7 @@ fun DiscountCalculatorScreen(
 
 @Composable
 fun DiscountCalculatorHeader(onBackClick: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -296,14 +299,14 @@ fun DiscountCalculatorHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "Discount Calculator",
+            text = context.getString(R.string.discount_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,

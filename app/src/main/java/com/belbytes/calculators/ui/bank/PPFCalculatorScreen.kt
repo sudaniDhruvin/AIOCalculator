@@ -26,6 +26,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.PieChart as MPAndroidPieChart
@@ -108,8 +110,8 @@ fun PPFCalculatorScreen(
 
             // Period (Years) Input
             PPFInputField(
-                label = "Period (Years)",
-                placeholder = "Ex: 15",
+                label = context.getString(R.string.period_years),
+                placeholder = context.getString(R.string.placeholder_period),
                 value = period,
                 onValueChange = { period = it }
             )
@@ -170,7 +172,7 @@ fun PPFCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = context.getString(R.string.calculate),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -197,7 +199,7 @@ fun PPFCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Reset",
+                        text = context.getString(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -261,19 +263,19 @@ fun PPFCalculatorScreen(
                             ) {
                                 // Total Investment
                                 PPFResultRow(
-                                    "Total Investment",
+                                    context.getString(R.string.total_investment),
                                     formatCurrencyWithDecimal(context, result.totalInvestment)
                                 )
                                 
                                 // Total Interest
                                 PPFResultRow(
-                                    "Total Interest",
+                                    context.getString(R.string.total_interest),
                                     formatCurrencyWithDecimal(context, result.totalInterest)
                                 )
                                 
                                 // Maturity Amount
                                 PPFResultRow(
-                                    "Maturity Amount",
+                                    context.getString(R.string.maturity_amount),
                                     formatCurrencyWithDecimal(context, result.maturityAmount)
                                 )
                             }
@@ -312,7 +314,7 @@ fun PPFCalculatorScreen(
                                 ) {
                                     // Total Investment Legend
                                     PPFLegendItem(
-                                        label = "Total Investment",
+                                        label = context.getString(R.string.total_investment),
                                         color = Color(0xFF3F6EE4) // Blue - matches pie chart
                                     )
                                     
@@ -320,7 +322,7 @@ fun PPFCalculatorScreen(
                                     
                                     // Total Interest Legend
                                     PPFLegendItem(
-                                        label = "Total Interest",
+                                        label = context.getString(R.string.total_interest),
                                         color = Color(0xFF00AF52) // Green - matches pie chart
                                     )
                                 }
@@ -335,6 +337,7 @@ fun PPFCalculatorScreen(
 
 @Composable
 fun PPFCalculatorHeader(onBackClick: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -351,14 +354,14 @@ fun PPFCalculatorHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "PPF Calculator",
+            text = context.getString(R.string.ppf_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,

@@ -17,6 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlin.math.pow
 
@@ -73,13 +75,13 @@ fun EMIDetailsScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    ResultRowBold("Amount", formatCurrencyWithDecimal(context, amount))
-                    ResultRowBold("Interest", String.format("%.2f", interestRate))
-                    ResultRowBold("Periods (months)", emiResult.periodMonths.toString())
-                    ResultRowBold("Monthly EMI", formatCurrencyWithDecimal(context, emiResult.monthlyEMI))
-                    ResultRowBold("Total Interest", formatCurrencyWithDecimal(context, emiResult.totalInterest))
-                    ResultRowBold("Processing Fees", formatCurrencyWithDecimal(context, emiResult.processingFees))
-                    ResultRowBold("Total Payment", formatCurrencyWithDecimal(context, emiResult.totalPayment))
+                    ResultRowBold(context.getString(R.string.amount), formatCurrencyWithDecimal(context, amount))
+                    ResultRowBold(context.getString(R.string.interest_rate), String.format("%.2f", interestRate))
+                    ResultRowBold(context.getString(R.string.periods_months), emiResult.periodMonths.toString())
+                    ResultRowBold(context.getString(R.string.monthly_emi), formatCurrencyWithDecimal(context, emiResult.monthlyEMI))
+                    ResultRowBold(context.getString(R.string.total_interest), formatCurrencyWithDecimal(context, emiResult.totalInterest))
+                    ResultRowBold(context.getString(R.string.processing_fees), formatCurrencyWithDecimal(context, emiResult.processingFees))
+                    ResultRowBold(context.getString(R.string.total_payment), formatCurrencyWithDecimal(context, emiResult.totalPayment))
                 }
             }
 
@@ -105,10 +107,10 @@ fun EMIDetailsScreen(
                             .padding(12.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        TableHeaderCell("Month", weightValue = 1f)
-                        TableHeaderCell("Principal", weightValue = 1.5f)
-                        TableHeaderCell("Interest", weightValue = 1.5f)
-                        TableHeaderCell("Balance", weightValue = 1.5f)
+                        TableHeaderCell(context.getString(R.string.month_label), weightValue = 1f)
+                        TableHeaderCell(context.getString(R.string.principal), weightValue = 1.5f)
+                        TableHeaderCell(context.getString(R.string.interest), weightValue = 1.5f)
+                        TableHeaderCell(context.getString(R.string.balance), weightValue = 1.5f)
                     }
 
                     // Table Rows
@@ -141,6 +143,7 @@ fun EMIDetailsScreen(
 
 @Composable
 fun EMIDetailsHeader(onBackClick: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -157,14 +160,14 @@ fun EMIDetailsHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "EMI Details",
+            text = context.getString(R.string.emi_details),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,

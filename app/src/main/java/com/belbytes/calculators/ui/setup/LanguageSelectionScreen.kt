@@ -17,6 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.PreferenceManager
 
 @Composable
@@ -35,7 +38,7 @@ fun LanguageSelectionScreen(
     ) {
         // Header
         HeaderSection(
-            title = "Language",
+            title = context.getString(R.string.language),
             onBackClick = { /* Can't go back from first screen */ },
             onDoneClick = {
                 PreferenceManager.setSelectedLanguage(context, selectedLanguage)
@@ -51,14 +54,14 @@ fun LanguageSelectionScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             LanguageOption(
-                language = "English",
+                language = context.getString(R.string.english),
                 languageCode = "en",
                 isSelected = selectedLanguage == "en",
                 onClick = { selectedLanguage = "en" }
             )
             
             LanguageOption(
-                language = "हिंदी",
+                language = context.getString(R.string.hindi),
                 languageCode = "hi",
                 isSelected = selectedLanguage == "hi",
                 onClick = { selectedLanguage = "hi" }

@@ -32,6 +32,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import android.view.View
 import com.belbytes.calculators.ads.BannerAd
 import com.belbytes.calculators.ads.NativeAd
@@ -47,9 +50,12 @@ import kotlin.math.roundToInt
 fun QuickCalculatorScreen(
     onBackClick: () -> Unit
 ) {
-    val categories = listOf("EMI", "Amount")
+    val context = LocalContext.current
+    val emiLabel = context.getString(R.string.emi)
+    val amountLabel = context.getString(R.string.amount)
+    val categories = listOf(emiLabel, amountLabel)
     val pagerState = rememberPagerState(initialPage = 0) { categories.size }
-    var selectedCategory by rememberSaveable { mutableStateOf("EMI") }
+    var selectedCategory by rememberSaveable { mutableStateOf(emiLabel) }
     
     var amountEMI by rememberSaveable { mutableStateOf(100000f) }
     var interestRateEMI by rememberSaveable { mutableStateOf(1.0f) }
@@ -65,7 +71,7 @@ fun QuickCalculatorScreen(
     }
     
     val emiResult = remember(amountEMI, interestRateEMI, periodYearsEMI, amountAmount, interestRateAmount, monthlyEMI, selectedCategory) {
-        if (selectedCategory == "EMI") {
+        if (selectedCategory == emiLabel) {
             calculateQuickEMI(amountEMI.toDouble(), interestRateEMI.toDouble(), periodYearsEMI.toInt())
         } else {
             calculateQuickAmountFromInputs(amountAmount.toDouble(), interestRateAmount.toDouble(), monthlyEMI.toDouble())
@@ -115,9 +121,9 @@ fun QuickCalculatorScreen(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
-                    if (categories[page] == "EMI") {
+                    if (categories[page] == emiLabel) {
                         SliderInputField(
-                            label = "Amount",
+                            label = context.getString(R.string.amount),
                             value = amountEMI,
                             onValueChange = { amountEMI = it },
                             valueRange = 100000f..10000000f,
@@ -126,7 +132,7 @@ fun QuickCalculatorScreen(
                         )
                         
                         SliderInputField(
-                            label = "Interest (%)",
+                            label = context.getString(R.string.interest_rate),
                             value = interestRateEMI,
                             onValueChange = { interestRateEMI = it },
                             valueRange = 1.0f..30.0f,
@@ -134,7 +140,7 @@ fun QuickCalculatorScreen(
                         )
                         
                         SliderInputField(
-                            label = "Period (Years)",
+                            label = context.getString(R.string.period_years),
                             value = periodYearsEMI,
                             onValueChange = { periodYearsEMI = it },
                             valueRange = 1f..100f,
@@ -146,7 +152,7 @@ fun QuickCalculatorScreen(
                         )
                     } else {
                         SliderInputField(
-                            label = "Amount",
+                            label = context.getString(R.string.amount),
                             value = amountAmount,
                             onValueChange = { amountAmount = it },
                             valueRange = 100000f..10000000f,
@@ -155,7 +161,7 @@ fun QuickCalculatorScreen(
                         )
                         
                         SliderInputField(
-                            label = "Interest (%)",
+                            label = context.getString(R.string.interest_rate),
                             value = interestRateAmount,
                             onValueChange = { interestRateAmount = it },
                             valueRange = 1.0f..30.0f,
@@ -163,7 +169,7 @@ fun QuickCalculatorScreen(
                         )
                         
                         SliderInputField(
-                            label = "Monthly EMI",
+                            label = context.getString(R.string.monthly_emi),
                             value = monthlyEMI,
                             onValueChange = { monthlyEMI = it },
                             valueRange = 1000f..100000f,
@@ -189,7 +195,7 @@ fun QuickCalculatorScreen(
                     )
                 ) {
                     Text(
-                        text = "Unable to calculate. Please check your inputs.",
+                        text = context.getString(R.string.error_check_inputs),
                         modifier = Modifier.padding(16.dp),
                         color = Color(0xFFC62828),
                         fontSize = 14.sp
@@ -209,6 +215,7 @@ fun QuickCalculatorScreen(
 
 @Composable
 fun QuickCalculatorHeader(onBackClick: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -225,14 +232,14 @@ fun QuickCalculatorHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
         
         Text(
-            text = "Quick Calculator",
+            text = context.getString(R.string.quick_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,

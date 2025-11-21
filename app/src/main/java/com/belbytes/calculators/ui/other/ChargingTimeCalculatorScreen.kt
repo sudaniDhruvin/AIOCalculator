@@ -23,6 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import kotlin.math.floor
 
 data class ChargingTimeResult(
@@ -37,6 +40,7 @@ data class ChargingTimeResult(
 fun ChargingTimeCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
     // State variables
     var batteryCapacity by rememberSaveable { mutableStateOf("") }
     var chargerOutput by rememberSaveable { mutableStateOf("") }
@@ -74,16 +78,16 @@ fun ChargingTimeCalculatorScreen(
         ) {
             // Battery Capacity Input
             ChargingTimeInputField(
-                label = "Battery Capacity (mAh)",
-                placeholder = "Ex: 5,000",
+                label = context.getString(R.string.battery_capacity),
+                placeholder = context.getString(R.string.placeholder_amount),
                 value = batteryCapacity,
                 onValueChange = { batteryCapacity = it }
             )
 
             // Charger Output Input
             ChargingTimeInputField(
-                label = "Charger Output (mA)",
-                placeholder = "Ex: 6.5",
+                label = context.getString(R.string.charger_output),
+                placeholder = context.getString(R.string.placeholder_rate),
                 value = chargerOutput,
                 onValueChange = { chargerOutput = it }
             )
@@ -102,12 +106,12 @@ fun ChargingTimeCalculatorScreen(
                         errorMessage = null
                         when {
                             batteryCapacity.isBlank() || (batteryCapacity.toDoubleOrNull() ?: -1.0) <= 0 -> {
-                                errorMessage = "Please enter a valid battery capacity"
+                                errorMessage = context.getString(R.string.error_invalid_amount)
                                 showResults = false
                                 chargingTimeResult = null
                             }
                             chargerOutput.isBlank() || (chargerOutput.toDoubleOrNull() ?: -1.0) <= 0 -> {
-                                errorMessage = "Please enter a valid charger output"
+                                errorMessage = context.getString(R.string.error_invalid_rate)
                                 showResults = false
                                 chargingTimeResult = null
                             }
@@ -118,7 +122,7 @@ fun ChargingTimeCalculatorScreen(
                                     showResults = true
                                     errorMessage = null
                                 } else {
-                                    errorMessage = "Please check all input values"
+                                    errorMessage = context.getString(R.string.error_check_inputs)
                                     showResults = false
                                     chargingTimeResult = null
                                 }
@@ -134,7 +138,7 @@ fun ChargingTimeCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = context.getString(R.string.calculate),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -159,7 +163,7 @@ fun ChargingTimeCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Reset",
+                        text = context.getString(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -244,6 +248,7 @@ fun ChargingTimeCalculatorScreen(
 
 @Composable
 fun ChargingTimeCalculatorHeader(onBackClick: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -260,14 +265,14 @@ fun ChargingTimeCalculatorHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "Charging Time Calculator",
+            text = context.getString(R.string.charging_time_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,

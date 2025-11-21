@@ -24,6 +24,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.PreferenceManager
 import com.belbytes.calculators.utils.LocaleHelper
@@ -51,49 +52,49 @@ fun SettingsScreen(
     val settingsItems = listOf(
         SettingsItem(
             id = "language",
-            title = "Language",
+            title = context.getString(R.string.language),
             iconName = "language",
             color = "#E1F5FE", // Very light blue
             onClick = { showLanguageDialog = true }
         ),
         SettingsItem(
             id = "number_format",
-            title = "Number Format",
+            title = context.getString(R.string.number_format),
             iconName = "format",
             color = "#F3E5F5", // Very light purple
             onClick = { showNumberFormatDialog = true }
         ),
         SettingsItem(
             id = "decimal_places",
-            title = "Decimal Places",
+            title = context.getString(R.string.decimal_places),
             iconName = "decimal",
             color = "#FFF9C4", // Very light yellow
             onClick = { showDecimalPlacesDialog = true }
         ),
         SettingsItem(
             id = "1",
-            title = "Share App",
+            title = context.getString(R.string.share_app),
             iconName = "share",
             color = "#E8F5E9", // Very light green
             onClick = { shareApp(context, packageName) }
         ),
         SettingsItem(
             id = "2",
-            title = "Rate App",
+            title = context.getString(R.string.rate_app),
             iconName = "rate",
             color = "#E3F2FD", // Very light blue
             onClick = { rateApp(context, packageName) }
         ),
         SettingsItem(
             id = "3",
-            title = "Privacy Policy",
+            title = context.getString(R.string.privacy_policy),
             iconName = "privacy",
             color = "#EFEBE9", // Very light brown/maroon
             onClick = { openPrivacyPolicy(context) }
         ),
         SettingsItem(
             id = "4",
-            title = "More App",
+            title = context.getString(R.string.more_app),
             iconName = "more",
             color = "#FFF3E0", // Very light orange
             onClick = { moreApps(context) }
@@ -122,13 +123,13 @@ fun SettingsScreen(
                     subtitle = when (item.id) {
                         "language" -> {
                             val lang = PreferenceManager.getSelectedLanguage(context)
-                            if (lang == "hi") "हिंदी" else "English"
+                            if (lang == "hi") context.getString(R.string.hindi) else context.getString(R.string.english)
                         }
                         "number_format" -> {
                             PreferenceManager.getNumberFormat(context)
                         }
                         "decimal_places" -> {
-                            "${PreferenceManager.getDecimalPlaces(context)} places"
+                            "${PreferenceManager.getDecimalPlaces(context)} ${context.getString(R.string.places)}"
                         }
                         else -> null
                     }
@@ -148,6 +149,8 @@ fun SettingsScreen(
                 PreferenceManager.setSelectedLanguage(context, language)
                 LocaleHelper.setLocale(context, language)
                 showLanguageDialog = false
+                // Recreate activity to apply language change
+                (context as? android.app.Activity)?.recreate()
             }
         )
     }
@@ -177,6 +180,7 @@ fun SettingsScreen(
 
 @Composable
 fun HeaderSection() {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -192,7 +196,7 @@ fun HeaderSection() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Settings",
+                text = context.getString(R.string.settings),
                 color = Color.White,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
@@ -333,7 +337,7 @@ fun LanguageSelectionDialog(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "Select Language",
+                    text = context.getString(R.string.select_language),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -344,14 +348,14 @@ fun LanguageSelectionDialog(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     LanguageOption(
-                        language = "English",
+                        language = context.getString(R.string.english),
                         languageCode = "en",
                         isSelected = selectedLanguage == "en",
                         onClick = { selectedLanguage = "en" }
                     )
                     
                     LanguageOption(
-                        language = "हिंदी",
+                        language = context.getString(R.string.hindi),
                         languageCode = "hi",
                         isSelected = selectedLanguage == "hi",
                         onClick = { selectedLanguage = "hi" }
@@ -365,7 +369,7 @@ fun LanguageSelectionDialog(
                     horizontalArrangement = Arrangement.End
                 ) {
                     TextButton(onClick = onDismiss) {
-                        Text("Cancel")
+                        Text(context.getString(R.string.cancel))
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
@@ -377,7 +381,7 @@ fun LanguageSelectionDialog(
                             containerColor = Color(0xFF2196F3)
                         )
                     ) {
-                        Text("Save")
+                        Text(context.getString(R.string.save))
                     }
                 }
             }
@@ -418,7 +422,7 @@ fun NumberFormatSelectionDialog(
                     .heightIn(max = 500.dp)
             ) {
                 Text(
-                    text = "Select Number Format",
+                    text = context.getString(R.string.select_number_format),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -447,7 +451,7 @@ fun NumberFormatSelectionDialog(
                     horizontalArrangement = Arrangement.End
                 ) {
                     TextButton(onClick = onDismiss) {
-                        Text("Cancel")
+                        Text(context.getString(R.string.cancel))
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
@@ -459,7 +463,7 @@ fun NumberFormatSelectionDialog(
                             containerColor = Color(0xFF2196F3)
                         )
                     ) {
-                        Text("Save")
+                        Text(context.getString(R.string.save))
                     }
                 }
             }
@@ -491,7 +495,7 @@ fun DecimalPlacesSelectionDialog(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "Select Decimal Places",
+                    text = context.getString(R.string.select_decimal_places),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -518,7 +522,7 @@ fun DecimalPlacesSelectionDialog(
                     horizontalArrangement = Arrangement.End
                 ) {
                     TextButton(onClick = onDismiss) {
-                        Text("Cancel")
+                        Text(context.getString(R.string.cancel))
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
@@ -530,7 +534,7 @@ fun DecimalPlacesSelectionDialog(
                             containerColor = Color(0xFF2196F3)
                         )
                     ) {
-                        Text("Save")
+                        Text(context.getString(R.string.save))
                     }
                 }
             }

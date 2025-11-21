@@ -16,6 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.PreferenceManager
 
 @Composable
@@ -36,7 +39,7 @@ fun DecimalPlacesScreen(
     ) {
         // Header
         HeaderSection(
-            title = "Select Decimal Places",
+            title = context.getString(R.string.select_decimal_places),
             onBackClick = { /* Handle back */ },
             onDoneClick = {
                 PreferenceManager.setDecimalPlaces(context, selectedPlaces)

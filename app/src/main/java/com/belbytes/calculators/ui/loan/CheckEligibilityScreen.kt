@@ -26,6 +26,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlin.math.pow
 
@@ -87,31 +89,31 @@ fun CheckEligibilityScreen(
         ) {
             // Gross Monthly Income Input
             EligibilityInputField(
-                label = "Gross Monthly Income",
-                placeholder = "Ex: 10000",
+                label = context.getString(R.string.gross_monthly_income),
+                placeholder = context.getString(R.string.placeholder_amount),
                 value = grossMonthlyIncome,
                 onValueChange = { grossMonthlyIncome = it }
             )
 
             // FOIR Dropdown
             EligibilityFOIRDropdown(
-                label = "FOIR(MAX. %of salary)",
+                label = context.getString(R.string.foir_percent),
                 value = foirPercent,
                 onValueChange = { foirPercent = it }
             )
 
             // Total Monthly EMI's Input
             EligibilityInputField(
-                label = "Total Monthly EMI's",
-                placeholder = "Ex: 5000",
+                label = context.getString(R.string.total_monthly_emis),
+                placeholder = context.getString(R.string.placeholder_amount),
                 value = totalMonthlyEMIs,
                 onValueChange = { totalMonthlyEMIs = it }
             )
 
             // Interest % Input
             EligibilityInputField(
-                label = "Interest %",
-                placeholder = "Ex: 12",
+                label = context.getString(R.string.interest_rate),
+                placeholder = context.getString(R.string.placeholder_rate),
                 value = interestRate,
                 onValueChange = { interestRate = it }
             )
@@ -126,7 +128,7 @@ fun CheckEligibilityScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Period",
+                        text = context.getString(R.string.period),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.Black,
@@ -136,12 +138,12 @@ fun CheckEligibilityScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         EligibilityPeriodTypeRadioButton(
-                            label = "Years",
+                            label = context.getString(R.string.years),
                             selected = periodType == EligibilityPeriodType.YEARS,
                             onClick = { periodTypeString = EligibilityPeriodType.YEARS.name }
                         )
                         EligibilityPeriodTypeRadioButton(
-                            label = "Months",
+                            label = context.getString(R.string.months),
                             selected = periodType == EligibilityPeriodType.MONTHS,
                             onClick = { periodTypeString = EligibilityPeriodType.MONTHS.name }
                         )
@@ -149,7 +151,7 @@ fun CheckEligibilityScreen(
                 }
                 EligibilityInputField(
                     label = "",
-                    placeholder = "Ex: 6",
+                    placeholder = context.getString(R.string.placeholder_period),
                     value = period,
                     onValueChange = { period = it }
                 )
@@ -223,7 +225,7 @@ fun CheckEligibilityScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = context.getString(R.string.calculate),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -252,7 +254,7 @@ fun CheckEligibilityScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Reset",
+                        text = context.getString(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -312,13 +314,13 @@ fun CheckEligibilityScreen(
                         ) {
                             // Eligible EMI
                             EligibilityResultRow(
-                                "Eligible EMI",
+                                context.getString(R.string.eligible_emi),
                                 formatCurrencyWithDecimal(context, result.eligibleEMI)
                             )
                             
                             // Eligible Loan Amount
                             EligibilityResultRow(
-                                "Eligible Loan Amount",
+                                context.getString(R.string.eligible_loan_amount),
                                 formatCurrencyWithDecimal(context, result.eligibleLoanAmount)
                             )
                         }
@@ -345,14 +347,14 @@ fun CheckEligibilityScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = context.getString(R.string.back),
                     tint = Color.White,
                     modifier = Modifier.size(28.dp)
                 )
             }
 
             Text(
-                text = "Check Eligibility",
+                text = context.getString(R.string.check_eligibility),
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
@@ -365,6 +367,7 @@ fun CheckEligibilityScreen(
 
 @Composable
 fun CheckEligibilityHeader(onBackClick: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -381,14 +384,14 @@ fun CheckEligibilityHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "Check Eligibility",
+            text = context.getString(R.string.check_eligibility),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,

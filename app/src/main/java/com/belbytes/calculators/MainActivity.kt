@@ -1,6 +1,7 @@
 package com.belbytes.calculators
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,10 +20,25 @@ import com.belbytes.calculators.ui.navigation.Screen
 import com.belbytes.calculators.ui.theme.AIOCalculatorTheme
 import com.belbytes.calculators.utils.LocaleHelper
 import com.belbytes.calculators.utils.PreferenceManager
+import java.util.*
 
 class MainActivity : ComponentActivity() {
+    private var currentLanguage: String = ""
+    
+    override fun attachBaseContext(newBase: Context?) {
+        val languageCode = PreferenceManager.getSelectedLanguage(newBase ?: return)
+        val locale = Locale(languageCode)
+        val config = Configuration()
+        config.setLocale(locale)
+        val context = newBase.createConfigurationContext(config)
+        super.attachBaseContext(context)
+    }
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Track current language
+        currentLanguage = PreferenceManager.getSelectedLanguage(this)
         
         // Update language based on user preference
         LocaleHelper.updateLanguage(this)
@@ -35,10 +51,14 @@ class MainActivity : ComponentActivity() {
         }
     }
     
-    override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(
-            newBase?.let { LocaleHelper.setLocale(it, PreferenceManager.getSelectedLanguage(it)) }
-        )
+    override fun onResume() {
+        super.onResume()
+        // Check if language has changed and recreate if needed
+        val newLanguage = PreferenceManager.getSelectedLanguage(this)
+        if (currentLanguage != newLanguage) {
+            currentLanguage = newLanguage
+            recreate()
+        }
     }
 }
 

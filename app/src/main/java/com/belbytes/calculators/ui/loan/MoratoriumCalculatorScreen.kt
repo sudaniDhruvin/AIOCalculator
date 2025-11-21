@@ -27,6 +27,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.belbytes.calculators.R
 import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlin.math.ln
 import kotlin.math.pow
@@ -101,16 +103,16 @@ fun MoratoriumCalculatorScreen(
         ) {
             // Loan Amount Input
             MoratoriumInputField(
-                label = "Loan Amount",
-                placeholder = "Ex: 500,000",
+                label = context.getString(R.string.loan_amount),
+                placeholder = context.getString(R.string.placeholder_amount_large),
                 value = loanAmount,
                 onValueChange = { loanAmount = it }
             )
 
             // Interest % Input
             MoratoriumInputField(
-                label = "Interest %",
-                placeholder = "Ex: 12%",
+                label = context.getString(R.string.interest_rate),
+                placeholder = context.getString(R.string.placeholder_rate_percent),
                 value = interestRate,
                 onValueChange = { interestRate = it }
             )
@@ -125,7 +127,7 @@ fun MoratoriumCalculatorScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Period",
+                        text = context.getString(R.string.period),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.Black,
@@ -135,12 +137,12 @@ fun MoratoriumCalculatorScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         MoratoriumPeriodTypeRadioButton(
-                            label = "Years",
+                            label = context.getString(R.string.years),
                             selected = periodType == MoratoriumPeriodType.YEARS,
                             onClick = { periodTypeString = MoratoriumPeriodType.YEARS.name }
                         )
                         MoratoriumPeriodTypeRadioButton(
-                            label = "Months",
+                            label = context.getString(R.string.months),
                             selected = periodType == MoratoriumPeriodType.MONTHS,
                             onClick = { periodTypeString = MoratoriumPeriodType.MONTHS.name }
                         )
@@ -148,7 +150,7 @@ fun MoratoriumCalculatorScreen(
                 }
                 MoratoriumInputField(
                     label = "",
-                    placeholder = "Ex: 6",
+                    placeholder = context.getString(R.string.placeholder_period),
                     value = period,
                     onValueChange = { period = it }
                 )
@@ -156,15 +158,15 @@ fun MoratoriumCalculatorScreen(
 
             // Moratorium Period Input
             MoratoriumInputField(
-                label = "Moratorium Period",
-                placeholder = "Ex: 12",
+                label = context.getString(R.string.moratorium_period),
+                placeholder = context.getString(R.string.placeholder_period),
                 value = moratoriumPeriod,
                 onValueChange = { moratoriumPeriod = it }
             )
 
             // Select your option Dropdown
             MoratoriumOptionDropdown(
-                label = "Select your option",
+                label = context.getString(R.string.select_option),
                 value = moratoriumOption,
                 onValueChange = { moratoriumOption = it }
             )
@@ -236,7 +238,7 @@ fun MoratoriumCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Calculate",
+                        text = context.getString(R.string.calculate),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -265,7 +267,7 @@ fun MoratoriumCalculatorScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Reset",
+                        text = context.getString(R.string.reset),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -336,35 +338,35 @@ fun MoratoriumCalculatorScreen(
                             
                             // Total Principal Row
                             MoratoriumTableRow(
-                                label = "Total Principal",
+                                label = context.getString(R.string.total_principal),
                                 noMoratoriumValue = formatCurrencyWithDecimal(context, result.noMoratoriumPrincipal),
                                 moratoriumValue = formatCurrencyWithDecimal(context, result.moratoriumPrincipal)
                             )
                             
                             // Monthly EMI Row
                             MoratoriumTableRow(
-                                label = "Monthly EMI",
+                                label = context.getString(R.string.monthly_emi),
                                 noMoratoriumValue = formatCurrencyWithDecimal(context, result.noMoratoriumEMI),
                                 moratoriumValue = formatCurrencyWithDecimal(context, result.moratoriumEMI)
                             )
                             
                             // Tenure Row
                             MoratoriumTableRow(
-                                label = "Tenure (in Month)",
+                                label = context.getString(R.string.tenure_months),
                                 noMoratoriumValue = "${result.noMoratoriumTenure}.00",
                                 moratoriumValue = "${result.moratoriumTenure}.00"
                             )
                             
                             // Total Interest Row
                             MoratoriumTableRow(
-                                label = "Total Interest",
+                                label = context.getString(R.string.total_interest),
                                 noMoratoriumValue = formatCurrencyWithDecimal(context, result.noMoratoriumTotalInterest),
                                 moratoriumValue = formatCurrencyWithDecimal(context, result.moratoriumTotalInterest)
                             )
                             
                             // Total Payment Row
                             MoratoriumTableRow(
-                                label = "Total Payment",
+                                label = context.getString(R.string.total_payment),
                                 noMoratoriumValue = formatCurrencyWithDecimal(context, result.noMoratoriumTotalPayment),
                                 moratoriumValue = formatCurrencyWithDecimal(context, result.moratoriumTotalPayment)
                             )
@@ -399,7 +401,7 @@ fun MoratoriumCalculatorScreen(
             }
 
             Text(
-                text = "Moratorium Calculator",
+                text = context.getString(R.string.moratorium_calculator),
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
@@ -412,6 +414,7 @@ fun MoratoriumCalculatorScreen(
 
 @Composable
 fun MoratoriumCalculatorHeader(onBackClick: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -428,14 +431,14 @@ fun MoratoriumCalculatorHeader(onBackClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = context.getString(R.string.back),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
         }
 
         Text(
-            text = "Moratorium Calculator",
+            text = context.getString(R.string.moratorium_calculator),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,

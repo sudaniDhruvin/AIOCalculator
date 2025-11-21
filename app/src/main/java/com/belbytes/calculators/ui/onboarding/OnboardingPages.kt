@@ -7,13 +7,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.belbytes.calculators.R
 
 @Composable
 fun OnboardingPage1() {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -41,7 +45,7 @@ fun OnboardingPage1() {
         
         // Title
         Text(
-            text = "Calculate EMI",
+            text = context.getString(R.string.onboarding_title_1),
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF2196F3),
@@ -52,7 +56,7 @@ fun OnboardingPage1() {
         
         // Description
         Text(
-            text = "Perform calculations for EMI with Advanced and Quick options, Also easy to compare loans for better option.",
+            text = context.getString(R.string.onboarding_desc_1),
             fontSize = 16.sp,
             color = Color(0xFF757575),
             textAlign = TextAlign.Center,
@@ -63,6 +67,7 @@ fun OnboardingPage1() {
 
 @Composable
 fun OnboardingPage2() {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -90,7 +95,7 @@ fun OnboardingPage2() {
         
         // Title
         Text(
-            text = "Track Everything",
+            text = context.getString(R.string.onboarding_title_2),
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF2196F3),
@@ -101,7 +106,7 @@ fun OnboardingPage2() {
         
         // Description
         Text(
-            text = "Create and track various loan profiles such as personal loan, home loan, car loan and others that you many have, Also evaluate prepayment and rate of interest(ROI) change.",
+            text = context.getString(R.string.onboarding_desc_2),
             fontSize = 16.sp,
             color = Color(0xFF757575),
             textAlign = TextAlign.Left,
@@ -112,6 +117,7 @@ fun OnboardingPage2() {
 
 @Composable
 fun OnboardingPage3() {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -139,7 +145,7 @@ fun OnboardingPage3() {
         
         // Title
         Text(
-            text = "Banking Calculators",
+            text = context.getString(R.string.onboarding_title_3),
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF2196F3),
@@ -150,7 +156,7 @@ fun OnboardingPage3() {
         
         // Description
         Text(
-            text = "Accurate and fastest calculator related to banking scheme such as FD, RD, PPF, VAT and GST. Other financial tools like currency converter and cash note counter etc.",
+            text = context.getString(R.string.onboarding_desc_3),
             fontSize = 16.sp,
             color = Color(0xFF757575),
             textAlign = TextAlign.Left,
@@ -161,6 +167,7 @@ fun OnboardingPage3() {
 
 @Composable
 fun OnboardingPage4() {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -188,7 +195,7 @@ fun OnboardingPage4() {
         
         // Title
         Text(
-            text = "Statistics",
+            text = context.getString(R.string.onboarding_title_4),
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF2196F3),
@@ -199,7 +206,7 @@ fun OnboardingPage4() {
         
         // Description
         Text(
-            text = "Statistics show the principal amount, interest rate, and remaining balance per month, And also graphical representation of complete tenure of loan.",
+            text = context.getString(R.string.onboarding_desc_4),
             fontSize = 16.sp,
             color = Color(0xFF757575),
             textAlign = TextAlign.Left,
