@@ -83,6 +83,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation("androidx.compose.foundation:foundation")
+    implementation("com.google.accompanist:accompanist-pager:0.32.0")
     
     // Room Database
     implementation(libs.androidx.room.runtime)

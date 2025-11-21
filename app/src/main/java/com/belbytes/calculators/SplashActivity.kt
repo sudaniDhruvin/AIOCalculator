@@ -17,7 +17,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
+import com.belbytes.calculators.ui.onboarding.OnboardingActivity
+import com.belbytes.calculators.ui.setup.LanguageSelectionActivity
 import com.belbytes.calculators.ui.theme.AIOCalculatorTheme
+import com.belbytes.calculators.utils.PreferenceManager
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -37,9 +40,8 @@ class SplashActivity : ComponentActivity() {
         // Initialize AdMob
         MobileAds.initialize(this) {}
         
-        // Retrieve SharedPreferences
-        val prefs: SharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        isFirstTime = prefs.getBoolean("FirstTimeLaunch", true)
+        // Check if first time launch
+        isFirstTime = PreferenceManager.isFirstTimeLaunch(this)
         
         // Show custom Compose splash screen immediately
         setContent {
@@ -55,12 +57,19 @@ class SplashActivity : ComponentActivity() {
     private fun goToActivity(isFirstTime: Boolean) {
         lifecycleScope.launch {
             delay(10) // Small delay
-            if (!isFirstTime) {
-                goToMainActivity()
+            if (isFirstTime) {
+                // First time launch - go to language selection first
+                goToLanguageSelection()
             } else {
+                // Not first time - go to main activity
                 goToMainActivity()
             }
         }
+    }
+    
+    private fun goToLanguageSelection() {
+        startActivity(Intent(this@SplashActivity, LanguageSelectionActivity::class.java))
+        finish()
     }
     
     private fun goToMainActivity() {

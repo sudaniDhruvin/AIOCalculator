@@ -29,6 +29,21 @@
             android:exported="false"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.setup.LanguageSelectionActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AIOCalculator" />
+        <activity
+            android:name=".ui.onboarding.OnboardingActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AIOCalculator" />
+        <activity
+            android:name=".ui.setup.SetupActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AIOCalculator" />
         
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
