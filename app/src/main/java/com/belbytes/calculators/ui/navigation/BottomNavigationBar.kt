@@ -26,6 +26,7 @@ import com.belbytes.calculators.R
 import com.belbytes.calculators.data.BottomNavItem
 import com.belbytes.calculators.data.DataRepository
 import com.belbytes.calculators.ui.navigation.Screen
+import com.belbytes.calculators.utils.LabelMapper
 
 @Composable
 fun BottomNavigationBar(
@@ -59,7 +60,7 @@ fun BottomNavigationBar(
                 },
                 label = {
                     Text(
-                        text = item.label,
+                        text = LabelMapper.getLocalizedBottomNavLabel(context, item.label),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Normal
                     )

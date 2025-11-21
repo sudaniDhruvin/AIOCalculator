@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import com.belbytes.calculators.R
 import com.belbytes.calculators.data.DataRepository
 import com.belbytes.calculators.data.CalculatorItemData
+import com.belbytes.calculators.utils.LabelMapper
 
 @Composable
 fun CalculatorsScreen(
@@ -57,7 +58,7 @@ fun CalculatorsScreen(
             featuredTools.forEach { featuredTool ->
                 item {
                     CalculatorCategorySection(
-                        categoryTitle = featuredTool.name,
+                        categoryTitle = LabelMapper.getLocalizedCategoryLabel(context, featuredTool.name),
                         calculatorItems = featuredTool.calculatorItems,
                         onCalculatorClick = { calculatorId ->
                             onCalculatorClick(calculatorId)
@@ -76,6 +77,7 @@ fun CalculatorsScreen(
 
 @Composable
 fun HeaderSection() {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -84,7 +86,7 @@ fun HeaderSection() {
             .statusBarsPadding()
     ) {
         Text(
-            text = "Calculators",
+            text = context.getString(R.string.calculators),
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
@@ -151,6 +153,7 @@ fun CalculatorCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     Card(
         modifier = modifier
             .aspectRatio(1f)
@@ -175,7 +178,7 @@ fun CalculatorCard(
             Spacer(modifier = Modifier.height(6.dp))
             
             Text(
-                text = calculator.name,
+                text = LabelMapper.getLocalizedSubcategoryLabel(context, calculator.name),
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Normal,
                 color = Color.Black,

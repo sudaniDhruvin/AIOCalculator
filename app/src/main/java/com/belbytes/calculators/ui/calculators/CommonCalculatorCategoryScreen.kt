@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import com.belbytes.calculators.R
 import com.belbytes.calculators.data.CalculatorItemData
 import com.belbytes.calculators.data.DataRepository
+import com.belbytes.calculators.utils.LabelMapper
 
 @Composable
 fun CommonCalculatorCategoryScreen(
@@ -41,7 +42,9 @@ fun CommonCalculatorCategoryScreen(
     LaunchedEffect(route) {
         val data = DataRepository.loadAppData(context)
         val featuredTool = DataRepository.getFeaturedToolByRoute(route)
-        title = featuredTool?.name ?: ""
+        title = featuredTool?.name?.let { 
+            LabelMapper.getLocalizedCategoryLabel(context, it)
+        } ?: ""
         calculatorItems = featuredTool?.calculatorItems ?: emptyList()
     }
 
@@ -167,6 +170,7 @@ fun CalculatorCategoryCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val iconColor = Color(android.graphics.Color.parseColor(calculator.color))
     val lightCardColor = lightenColorForCard(iconColor)
     
@@ -204,7 +208,7 @@ fun CalculatorCategoryCard(
             Spacer(modifier = Modifier.height(6.dp))
             
             Text(
-                text = calculator.name,
+                text = LabelMapper.getLocalizedSubcategoryLabel(context, calculator.name),
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Normal,
                 color = Color.Black,

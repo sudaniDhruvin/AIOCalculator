@@ -265,4 +265,41 @@
     <string name="error_valid_stp_amount">कृपया एक वैध एसटीपी राशि दर्ज करें</string>
     <string name="error_valid_transferor_rate">कृपया एक वैध स्थानांतरणकर्ता दर दर्ज करें</string>
     <string name="error_valid_transferee_rate">कृपया एक वैध स्थानांतरिती दर दर्ज करें</string>
+    
+    <!-- Bottom Navigation -->
+    <string name="nav_home">होम</string>
+    <string name="nav_calculators">कैलकुलेटर</string>
+    <string name="nav_history">इतिहास</string>
+    <string name="nav_settings">सेटिंग्स</string>
+    
+    <!-- Calculator Categories -->
+    <string name="category_emi_calculators">ईएमआई कैलकुलेटर</string>
+    <string name="category_sip_calculators">एसआईपी कैलकुलेटर</string>
+    <string name="category_loan_calculators">ऋण कैलकुलेटर</string>
+    <string name="category_bank_calculators">बैंक कैलकुलेटर</string>
+    <string name="category_gst_vat">जीएसटी और वैट</string>
+    <string name="category_other_calculators">अन्य कैलकुलेटर</string>
+    
+    <!-- Calculator Subcategories -->
+    <string name="subcategory_emi_calculator">ईएमआई कैलकुलेटर</string>
+    <string name="subcategory_quick_calculator">त्वरित कैलकुलेटर</string>
+    <string name="subcategory_advance_emi">एडवांस ईएमआई</string>
+    <string name="subcategory_compare_loans">ऋणों की तुलना</string>
+    <string name="subcategory_sip_calculator">एसआईपी कैलकुलेटर</string>
+    <string name="subcategory_quick_sip">त्वरित एसआईपी</string>
+    <string name="subcategory_advance_sip">एडवांस एसआईपी</string>
+    <string name="subcategory_compare_sip">एसआईपी की तुलना</string>
+    <string name="subcategory_swp_calculator">एसडब्ल्यूपी कैलकुलेटर</string>
+    <string name="subcategory_stp_calculator">एसटीपी कैलकुलेटर</string>
+    <string name="subcategory_pre_payment_roi_change">पूर्व भुगतान आरओआई परिवर्तन</string>
+    <string name="subcategory_check_eligibility">पात्रता जांचें</string>
+    <string name="subcategory_fd_calculator">एफडी कैलकुलेटर</string>
+    <string name="subcategory_rd_calculator">आरडी कैलकुलेटर</string>
+    <string name="subcategory_ppf_calculator">पीपीएफ कैलकुलेटर</string>
+    <string name="subcategory_simple_interest">साधारण ब्याज</string>
+    <string name="subcategory_gst_calculator">जीएसटी कैलकुलेटर</string>
+    <string name="subcategory_vat_calculator">वैट कैलकुलेटर</string>
+    <string name="subcategory_discount_calculator">छूट कैलकुलेटर</string>
+    <string name="subcategory_cash_note_counter">कैश नोट काउंटर</string>
+    <string name="subcategory_charging_time">चार्जिंग समय</string>
 </resources>

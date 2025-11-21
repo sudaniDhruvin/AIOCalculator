@@ -265,4 +265,41 @@
     <string name="error_valid_stp_amount">Please enter a valid STP amount</string>
     <string name="error_valid_transferor_rate">Please enter a valid transferor rate</string>
     <string name="error_valid_transferee_rate">Please enter a valid transferee rate</string>
+    
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_calculators">Calculators</string>
+    <string name="nav_history">History</string>
+    <string name="nav_settings">Settings</string>
+    
+    <!-- Calculator Categories -->
+    <string name="category_emi_calculators">EMI Calculators</string>
+    <string name="category_sip_calculators">SIP Calculators</string>
+    <string name="category_loan_calculators">Loan Calculators</string>
+    <string name="category_bank_calculators">Bank Calculators</string>
+    <string name="category_gst_vat">GST &amp; VAT</string>
+    <string name="category_other_calculators">Other Calculators</string>
+    
+    <!-- Calculator Subcategories -->
+    <string name="subcategory_emi_calculator">EMI Calculator</string>
+    <string name="subcategory_quick_calculator">Quick Calculator</string>
+    <string name="subcategory_advance_emi">Advance EMI</string>
+    <string name="subcategory_compare_loans">Compare Loans</string>
+    <string name="subcategory_sip_calculator">SIP Calculator</string>
+    <string name="subcategory_quick_sip">Quick SIP</string>
+    <string name="subcategory_advance_sip">Advance SIP</string>
+    <string name="subcategory_compare_sip">Compare SIP</string>
+    <string name="subcategory_swp_calculator">SWP Calculator</string>
+    <string name="subcategory_stp_calculator">STP Calculator</string>
+    <string name="subcategory_pre_payment_roi_change">Pre Payment ROI Change</string>
+    <string name="subcategory_check_eligibility">Check Eligibility</string>
+    <string name="subcategory_fd_calculator">FD Calculator</string>
+    <string name="subcategory_rd_calculator">RD Calculator</string>
+    <string name="subcategory_ppf_calculator">PPF Calculator</string>
+    <string name="subcategory_simple_interest">Simple Interest</string>
+    <string name="subcategory_gst_calculator">GST Calculator</string>
+    <string name="subcategory_vat_calculator">VAT Calculator</string>
+    <string name="subcategory_discount_calculator">Discount Calculator</string>
+    <string name="subcategory_cash_note_counter">Cash Note Counter</string>
+    <string name="subcategory_charging_time">Charging Time</string>
 </resources>

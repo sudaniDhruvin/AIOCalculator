@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import com.belbytes.calculators.R
 import com.belbytes.calculators.ads.BannerAd
 import com.belbytes.calculators.ads.NativeAd
+import com.belbytes.calculators.utils.LabelMapper
 
 @Composable
 fun HomeScreen(
@@ -238,8 +239,10 @@ fun FeaturedToolCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val iconColor = Color(android.graphics.Color.parseColor(tool.color))
     val lightCardColor = lightenColorForCard(iconColor)
+    val localizedName = LabelMapper.getLocalizedCategoryLabel(context, tool.name)
     
     Card(
         modifier = modifier
@@ -285,7 +288,7 @@ fun FeaturedToolCard(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = formatToolName(tool.name),
+                    text = formatToolName(localizedName),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Normal,
                     color = Color.Black,
