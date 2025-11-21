@@ -27,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -44,6 +46,8 @@ fun CompareLoansScreen(
     onBackClick: () -> Unit,
     onCompareMoreClick: (List<LoanTableEntry>) -> Unit = { }
 ) {
+    val context = LocalContext.current
+    
     // Loan 1 State
     var loan1Amount by rememberSaveable { mutableStateOf("") }
     var loan1InterestRate by rememberSaveable { mutableStateOf("") }
@@ -657,6 +661,7 @@ fun CompareResultCard(
     loan1Value: Double,
     loan2Value: Double
 ) {
+    val context = LocalContext.current
     val difference = loan2Value - loan1Value
 
     Card(
@@ -692,7 +697,7 @@ fun CompareResultCard(
             ) {
                 // Loan 1 Value (Green)
                 Text(
-                    text = formatCurrencyWithDecimal(loan1Value),
+                    text = formatCurrencyWithDecimal(context, loan1Value),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF4CAF50),
@@ -701,7 +706,7 @@ fun CompareResultCard(
 
                 // Loan 2 Value (Red)
                 Text(
-                    text = formatCurrencyWithDecimal(loan2Value),
+                    text = formatCurrencyWithDecimal(context, loan2Value),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFFF3235E)
@@ -710,7 +715,7 @@ fun CompareResultCard(
 
             // Difference - Centered
             Text(
-                text = "Difference : ${formatCurrencyWithDecimal(difference)}",
+                text = "Difference : ${formatCurrencyWithDecimal(context, difference)}",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Normal,
                 color = Color(0xFF2196F3),

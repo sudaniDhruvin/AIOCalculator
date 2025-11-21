@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.*
 import com.belbytes.calculators.ui.onboarding.OnboardingActivity
 import com.belbytes.calculators.ui.theme.AIOCalculatorTheme
+import com.belbytes.calculators.utils.LocaleHelper
 import com.belbytes.calculators.utils.PreferenceManager
 
 class LanguageSelectionActivity : ComponentActivity() {
@@ -19,6 +20,8 @@ class LanguageSelectionActivity : ComponentActivity() {
                 LanguageSelectionScreen(
                     onLanguageSelected = { language ->
                         PreferenceManager.setSelectedLanguage(this, language)
+                        // Update app language immediately
+                        LocaleHelper.setLocale(this, language)
                         // Navigate to onboarding after language selection
                         startActivity(Intent(this, OnboardingActivity::class.java))
                         finish()

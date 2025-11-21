@@ -28,6 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlin.math.ceil
 import kotlin.math.ln
 import kotlin.math.pow
@@ -526,6 +528,7 @@ fun PrePaymentROIScenarioCard(
     newInterest: Double,
     showMonths: Boolean = false
 ) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -561,20 +564,20 @@ fun PrePaymentROIScenarioCard(
                 // EMI Comparison Table
                 PrePaymentROIComparisonTable(
                     label1 = "New EMI",
-                    value1 = formatCurrencyWithDecimal(newEMI),
+                    value1 = formatCurrencyWithDecimal(context, newEMI),
                     label2 = "Old EMI",
-                    value2 = formatCurrencyWithDecimal(oldEMI),
-                    difference = formatCurrencyWithDecimal(oldEMI - newEMI)
+                    value2 = formatCurrencyWithDecimal(context, oldEMI),
+                    difference = formatCurrencyWithDecimal(context, oldEMI - newEMI)
                 )
             }
 
             // Interest Comparison Table
             PrePaymentROIComparisonTable(
                 label1 = "New Interest",
-                value1 = formatCurrencyWithDecimal(newInterest),
+                value1 = formatCurrencyWithDecimal(context, newInterest),
                 label2 = "Old Interest",
-                value2 = formatCurrencyWithDecimal(oldInterest),
-                difference = formatCurrencyWithDecimal(oldInterest - newInterest)
+                value2 = formatCurrencyWithDecimal(context, oldInterest),
+                difference = formatCurrencyWithDecimal(context, oldInterest - newInterest)
             )
         }
     }
@@ -812,7 +815,4 @@ fun calculateROIChange(
     }
 }
 
-private fun formatCurrencyWithDecimal(amount: Double): String {
-    return String.format("%,.2f", amount)
-}
 

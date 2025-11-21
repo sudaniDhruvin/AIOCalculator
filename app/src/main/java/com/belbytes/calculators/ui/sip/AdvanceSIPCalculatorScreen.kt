@@ -24,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.PieChart as MPAndroidPieChart
 import com.github.mikephil.charting.data.PieData
@@ -41,6 +43,8 @@ data class AdvanceSIPResult(
 fun AdvanceSIPCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    
     // State variables
     var initialInvestmentEnabled by rememberSaveable { mutableStateOf(true) }
     var initialInvestment by rememberSaveable { mutableStateOf("") }
@@ -390,15 +394,15 @@ fun AdvanceSIPCalculatorScreen(
                             ) {
                                 AdvanceSIPResultRow(
                                     label = "Total Investment",
-                                    value = formatCurrencyWithDecimal(result.totalInvestment)
+                                    value = formatCurrencyWithDecimal(context, result.totalInvestment)
                                 )
                                 AdvanceSIPResultRow(
                                     label = "Estimated Returns",
-                                    value = formatCurrencyWithDecimal(result.estimatedReturns)
+                                    value = formatCurrencyWithDecimal(context, result.estimatedReturns)
                                 )
                                 AdvanceSIPResultRow(
                                     label = "Total Value",
-                                    value = formatCurrencyWithDecimal(result.totalValue)
+                                    value = formatCurrencyWithDecimal(context, result.totalValue)
                                 )
                             }
                         }
@@ -938,7 +942,4 @@ fun calculateTotalInvestedValueForAdvancedSIPByAmount(sipAmount: Double, stepUpA
     return totalInvested
 }
 
-private fun formatCurrencyWithDecimal(amount: Double): String {
-    return String.format("%,.2f", amount)
-}
 

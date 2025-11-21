@@ -24,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 
 data class VATResult(
     val initialAmount: Double,
@@ -35,6 +37,8 @@ data class VATResult(
 fun VATCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    
     // State variables
     var initialAmount by rememberSaveable { mutableStateOf("") }
     var vatRate by rememberSaveable { mutableStateOf("") }
@@ -235,13 +239,13 @@ fun VATCalculatorScreen(
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             // Initial Amount
-                            VATResultRow("Initial Amount", formatCurrencyWithDecimal(result.initialAmount))
+                            VATResultRow("Initial Amount", formatCurrencyWithDecimal(context, result.initialAmount))
                             
                             // VAT Amount
-                            VATResultRow("VAT Amount", formatCurrencyWithDecimal(result.vatAmount))
+                            VATResultRow("VAT Amount", formatCurrencyWithDecimal(context, result.vatAmount))
                             
                             // Total Amount
-                            VATResultRow("Total Amount", formatCurrencyWithDecimal(result.totalAmount))
+                            VATResultRow("Total Amount", formatCurrencyWithDecimal(context, result.totalAmount))
                         }
                     }
                 }

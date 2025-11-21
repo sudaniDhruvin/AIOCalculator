@@ -1,5 +1,6 @@
 package com.belbytes.calculators
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,16 +17,28 @@ import com.belbytes.calculators.ui.navigation.BottomNavigationBar
 import com.belbytes.calculators.ui.navigation.NavigationGraph
 import com.belbytes.calculators.ui.navigation.Screen
 import com.belbytes.calculators.ui.theme.AIOCalculatorTheme
+import com.belbytes.calculators.utils.LocaleHelper
+import com.belbytes.calculators.utils.PreferenceManager
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Update language based on user preference
+        LocaleHelper.updateLanguage(this)
+        
         enableEdgeToEdge()
         setContent {
             AIOCalculatorTheme {
                 MainScreen()
             }
         }
+    }
+    
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(
+            newBase?.let { LocaleHelper.setLocale(it, PreferenceManager.getSelectedLanguage(it)) }
+        )
     }
 }
 

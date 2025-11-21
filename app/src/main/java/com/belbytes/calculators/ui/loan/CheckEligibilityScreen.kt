@@ -25,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlin.math.pow
 
 data class EligibilityResult(
@@ -41,6 +43,8 @@ enum class EligibilityPeriodType {
 fun CheckEligibilityScreen(
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    
     // State variables
     var grossMonthlyIncome by rememberSaveable { mutableStateOf("") }
     var foirPercent by rememberSaveable { mutableStateOf("40") }
@@ -309,13 +313,13 @@ fun CheckEligibilityScreen(
                             // Eligible EMI
                             EligibilityResultRow(
                                 "Eligible EMI",
-                                formatCurrencyWithDecimal(result.eligibleEMI)
+                                formatCurrencyWithDecimal(context, result.eligibleEMI)
                             )
                             
                             // Eligible Loan Amount
                             EligibilityResultRow(
                                 "Eligible Loan Amount",
-                                formatCurrencyWithDecimal(result.eligibleLoanAmount)
+                                formatCurrencyWithDecimal(context, result.eligibleLoanAmount)
                             )
                         }
                     }
@@ -653,7 +657,4 @@ fun calculateEligibility(
     }
 }
 
-private fun formatCurrencyWithDecimal(amount: Double): String {
-    return String.format("%,.2f", amount)
-}
 

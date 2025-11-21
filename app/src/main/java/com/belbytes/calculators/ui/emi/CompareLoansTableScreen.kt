@@ -29,6 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -46,6 +48,7 @@ fun CompareLoansTableScreen(
     onBackClick: () -> Unit,
     initialLoans: List<LoanTableEntry> = emptyList()
 ) {
+    val context = LocalContext.current
     var loans by remember { mutableStateOf(initialLoans) }
     var showAddLoanDialog by remember { mutableStateOf(false) }
     
@@ -635,6 +638,8 @@ fun LoanDataColumn(
     isFirst: Boolean = false,
     isLast: Boolean = false
 ) {
+    val context = LocalContext.current
+    
     Column(
         modifier = Modifier.width(120.dp)
     ) {
@@ -658,12 +663,12 @@ fun LoanDataColumn(
         
         // Data cells - all center-aligned with consistent height matching labels
         val values = listOf(
-            formatCurrencyWithDecimal(entry.loanAmount),
+            formatCurrencyWithDecimal(context, entry.loanAmount),
             entry.interestRate.toInt().toString(),
             entry.periodMonths.toString(),
-            formatCurrencyWithDecimal(entry.monthlyEMI),
-            formatCurrencyWithDecimal(entry.totalInterest),
-            formatCurrencyWithDecimal(entry.totalPayment)
+            formatCurrencyWithDecimal(context, entry.monthlyEMI),
+            formatCurrencyWithDecimal(context, entry.totalInterest),
+            formatCurrencyWithDecimal(context, entry.totalPayment)
         )
         
         values.forEachIndexed { cellIndex, value ->
@@ -695,6 +700,8 @@ fun LoanTableRow(
     index: Int,
     isLast: Boolean
 ) {
+    val context = LocalContext.current
+    
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -710,7 +717,7 @@ fun LoanTableRow(
         ) {
             // Loan Amount - Single line, right-aligned
             TableDataCell(
-                text = formatCurrencyWithDecimal(entry.loanAmount),
+                text = formatCurrencyWithDecimal(context, entry.loanAmount),
                 weight = 1.2f,
                 alignment = TextAlign.End
             )
@@ -731,21 +738,21 @@ fun LoanTableRow(
             
             // Monthly EMI - Single line, right-aligned
             TableDataCell(
-                text = formatCurrencyWithDecimal(entry.monthlyEMI),
+                text = formatCurrencyWithDecimal(context, entry.monthlyEMI),
                 weight = 1.2f,
                 alignment = TextAlign.End
             )
             
             // Total Interest - Single line, right-aligned
             TableDataCell(
-                text = formatCurrencyWithDecimal(entry.totalInterest),
+                text = formatCurrencyWithDecimal(context, entry.totalInterest),
                 weight = 1.2f,
                 alignment = TextAlign.End
             )
             
             // Total Payment - Single line, right-aligned
             TableDataCell(
-                text = formatCurrencyWithDecimal(entry.totalPayment),
+                text = formatCurrencyWithDecimal(context, entry.totalPayment),
                 weight = 1.2f,
                 alignment = TextAlign.End
             )
@@ -775,7 +782,8 @@ fun RowScope.TableDataCellTwoLines(
     weight: Float,
     alignment: TextAlign
 ) {
-    val formattedValue = formatCurrencyWithDecimal(value)
+    val context = LocalContext.current
+    val formattedValue = formatCurrencyWithDecimal(context, value)
     // Split by decimal point, handling comma-separated thousands
     val parts = formattedValue.split(".")
     val integerPart = parts[0] // This includes commas for thousands

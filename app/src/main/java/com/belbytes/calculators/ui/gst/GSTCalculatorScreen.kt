@@ -24,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 
 data class GSTResult(
     val initialAmount: Double,
@@ -39,6 +41,8 @@ data class GSTResult(
 fun GSTCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    
     // State variables
     var initialAmount by rememberSaveable { mutableStateOf("") }
     var gstRate by rememberSaveable { mutableStateOf("") }
@@ -239,13 +243,13 @@ fun GSTCalculatorScreen(
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             // Initial Amount
-                            GSTResultRow("Initial Amount", formatCurrencyWithDecimal(result.initialAmount))
+                            GSTResultRow("Initial Amount", formatCurrencyWithDecimal(context, result.initialAmount))
                             
                             // GST Amount
-                            GSTResultRow("GST Amount", formatCurrencyWithDecimal(result.gstAmount))
+                            GSTResultRow("GST Amount", formatCurrencyWithDecimal(context, result.gstAmount))
                             
                             // Total Amount
-                            GSTResultRow("Total Amount", formatCurrencyWithDecimal(result.totalAmount))
+                            GSTResultRow("Total Amount", formatCurrencyWithDecimal(context, result.totalAmount))
                             
                             // CGST and SGST Breakdown
                             Row(
@@ -264,7 +268,7 @@ fun GSTCalculatorScreen(
                                         color = Color.Black
                                     )
                                     Text(
-                                        text = formatCurrencyWithDecimal(result.cgstAmount),
+                                        text = formatCurrencyWithDecimal(context, result.cgstAmount),
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = Color.Black
@@ -283,7 +287,7 @@ fun GSTCalculatorScreen(
                                         color = Color.Black
                                     )
                                     Text(
-                                        text = formatCurrencyWithDecimal(result.sgstAmount),
+                                        text = formatCurrencyWithDecimal(context, result.sgstAmount),
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = Color.Black
@@ -473,7 +477,4 @@ fun calculateGST(
     }
 }
 
-fun formatCurrencyWithDecimal(amount: Double): String {
-    return String.format("%,.2f", amount)
-}
 

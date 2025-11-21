@@ -24,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlin.math.max
 import kotlin.math.pow
 
@@ -37,6 +39,8 @@ data class SWPResult(
 fun SWPCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    
     // State variables
     var totalInvestment by rememberSaveable { mutableStateOf("") }
     var withdrawalPerMonth by rememberSaveable { mutableStateOf("") }
@@ -269,15 +273,15 @@ fun SWPCalculatorScreen(
                             ) {
                                 SWPResultRow(
                                     label = "Estimated Returns",
-                                    value = formatCurrencyWithDecimal(result.estimatedReturns)
+                                    value = formatCurrencyWithDecimal(context, result.estimatedReturns)
                                 )
                                 SWPResultRow(
                                     label = "Total Withdrawal",
-                                    value = formatCurrencyWithDecimal(result.totalWithdrawal)
+                                    value = formatCurrencyWithDecimal(context, result.totalWithdrawal)
                                 )
                                 SWPResultRow(
                                     label = "Final Balance",
-                                    value = formatCurrencyWithDecimal(result.finalBalance)
+                                    value = formatCurrencyWithDecimal(context, result.finalBalance)
                                 )
                             }
                         }
@@ -443,7 +447,4 @@ fun calculateSWP(
     }
 }
 
-private fun formatCurrencyWithDecimal(amount: Double): String {
-    return String.format("%,.2f", amount)
-}
 

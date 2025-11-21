@@ -34,6 +34,7 @@ import android.content.Context
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -59,6 +60,7 @@ enum class CompoundingFrequency {
 fun SimpleInterestCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
     var selectedTab by rememberSaveable { mutableStateOf("Duration") }
     var amount by rememberSaveable { mutableStateOf("") }
     var interestRate by rememberSaveable { mutableStateOf("") }
@@ -532,15 +534,15 @@ fun SimpleInterestCalculatorScreen(
                                 ) {
                                     SimpleInterestResultRow(
                                         label = "Principal Amount",
-                                        value = formatCurrencyWithDecimal(res.principalAmount)
+                                        value = formatCurrencyWithDecimal(context, res.principalAmount)
                                     )
                                     SimpleInterestResultRow(
                                         label = "Interest Amount",
-                                        value = formatCurrencyWithDecimal(res.interestAmount)
+                                        value = formatCurrencyWithDecimal(context, res.interestAmount)
                                     )
                                     SimpleInterestResultRow(
                                         label = "Total Amount",
-                                        value = formatCurrencyWithDecimal(res.totalAmount)
+                                        value = formatCurrencyWithDecimal(context, res.totalAmount)
                                     )
                                 }
                             }
@@ -986,8 +988,4 @@ fun calculateSimpleInterest(
     } catch (e: Exception) {
         null
     }
-}
-
-private fun formatCurrencyWithDecimal(amount: Double): String {
-    return String.format("%,.2f", amount)
 }

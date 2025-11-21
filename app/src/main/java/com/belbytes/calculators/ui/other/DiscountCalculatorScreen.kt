@@ -24,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 
 data class DiscountResult(
     val amount: Double,
@@ -36,6 +38,8 @@ data class DiscountResult(
 fun DiscountCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    
     // State variables
     var amount by rememberSaveable { mutableStateOf("") }
     var discountPercent by rememberSaveable { mutableStateOf("") }
@@ -256,16 +260,16 @@ fun DiscountCalculatorScreen(
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             // Amount
-                            DiscountResultRow("Amount", formatCurrencyWithDecimal(result.amount))
+                            DiscountResultRow("Amount", formatCurrencyWithDecimal(context, result.amount))
                             
                             // Sales Tax
-                            DiscountResultRow("Sales Tax", formatCurrencyWithDecimal(result.salesTax))
+                            DiscountResultRow("Sales Tax", formatCurrencyWithDecimal(context, result.salesTax))
                             
                             // Saving
-                            DiscountResultRow("Saving", formatCurrencyWithDecimal(result.saving))
+                            DiscountResultRow("Saving", formatCurrencyWithDecimal(context, result.saving))
                             
                             // Payable Amount
-                            DiscountResultRow("Payable Amount", formatCurrencyWithDecimal(result.payableAmount))
+                            DiscountResultRow("Payable Amount", formatCurrencyWithDecimal(context, result.payableAmount))
                         }
                     }
                 }
@@ -447,7 +451,4 @@ fun calculateDiscount(
     }
 }
 
-fun formatCurrencyWithDecimal(amount: Double): String {
-    return String.format("%,.2f", amount)
-}
 

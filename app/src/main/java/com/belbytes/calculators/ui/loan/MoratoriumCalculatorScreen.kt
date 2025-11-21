@@ -26,6 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlin.math.ln
 import kotlin.math.pow
 
@@ -51,6 +53,7 @@ enum class MoratoriumPeriodType {
 fun MoratoriumCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
     // State variables
     var loanAmount by rememberSaveable { mutableStateOf("") }
     var interestRate by rememberSaveable { mutableStateOf("") }
@@ -334,15 +337,15 @@ fun MoratoriumCalculatorScreen(
                             // Total Principal Row
                             MoratoriumTableRow(
                                 label = "Total Principal",
-                                noMoratoriumValue = formatCurrencyWithDecimal(result.noMoratoriumPrincipal),
-                                moratoriumValue = formatCurrencyWithDecimal(result.moratoriumPrincipal)
+                                noMoratoriumValue = formatCurrencyWithDecimal(context, result.noMoratoriumPrincipal),
+                                moratoriumValue = formatCurrencyWithDecimal(context, result.moratoriumPrincipal)
                             )
                             
                             // Monthly EMI Row
                             MoratoriumTableRow(
                                 label = "Monthly EMI",
-                                noMoratoriumValue = formatCurrencyWithDecimal(result.noMoratoriumEMI),
-                                moratoriumValue = formatCurrencyWithDecimal(result.moratoriumEMI)
+                                noMoratoriumValue = formatCurrencyWithDecimal(context, result.noMoratoriumEMI),
+                                moratoriumValue = formatCurrencyWithDecimal(context, result.moratoriumEMI)
                             )
                             
                             // Tenure Row
@@ -355,15 +358,15 @@ fun MoratoriumCalculatorScreen(
                             // Total Interest Row
                             MoratoriumTableRow(
                                 label = "Total Interest",
-                                noMoratoriumValue = formatCurrencyWithDecimal(result.noMoratoriumTotalInterest),
-                                moratoriumValue = formatCurrencyWithDecimal(result.moratoriumTotalInterest)
+                                noMoratoriumValue = formatCurrencyWithDecimal(context, result.noMoratoriumTotalInterest),
+                                moratoriumValue = formatCurrencyWithDecimal(context, result.moratoriumTotalInterest)
                             )
                             
                             // Total Payment Row
                             MoratoriumTableRow(
                                 label = "Total Payment",
-                                noMoratoriumValue = formatCurrencyWithDecimal(result.noMoratoriumTotalPayment),
-                                moratoriumValue = formatCurrencyWithDecimal(result.moratoriumTotalPayment)
+                                noMoratoriumValue = formatCurrencyWithDecimal(context, result.noMoratoriumTotalPayment),
+                                moratoriumValue = formatCurrencyWithDecimal(context, result.moratoriumTotalPayment)
                             )
                         }
                     }
@@ -783,7 +786,4 @@ fun calculateMoratorium(
     }
 }
 
-private fun formatCurrencyWithDecimal(amount: Double): String {
-    return String.format("%,.2f", amount)
-}
 

@@ -30,6 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import androidx.compose.ui.viewinterop.AndroidView
 import android.view.View
 import com.github.mikephil.charting.charts.PieChart as MPAndroidPieChart
@@ -49,6 +51,7 @@ data class QuickSIPResult(
 fun QuickSIPCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
     val tabs = listOf("SIP", "Lumpsum", "Plan")
     val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
     var selectedTab by rememberSaveable { mutableStateOf("SIP") }
@@ -450,6 +453,7 @@ fun QuickSIPResultsSection(
     result: QuickSIPResult,
     selectedTab: String
 ) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -495,19 +499,19 @@ fun QuickSIPResultsSection(
             ) {
                 when (selectedTab) {
                     "SIP" -> {
-                        QuickSIPResultCard("Total Investment", formatCurrencyWithDecimal(result.totalInvestment))
-                        QuickSIPResultCard("Estimated Return", formatCurrencyWithDecimal(result.estimatedReturns))
-                        QuickSIPResultCard("Total Value", formatCurrencyWithDecimal(result.totalValue), isHighlighted = true)
+                        QuickSIPResultCard("Total Investment", formatCurrencyWithDecimal(context, result.totalInvestment))
+                        QuickSIPResultCard("Estimated Return", formatCurrencyWithDecimal(context, result.estimatedReturns))
+                        QuickSIPResultCard("Total Value", formatCurrencyWithDecimal(context, result.totalValue), isHighlighted = true)
                     }
                     "Lumpsum" -> {
-                        QuickSIPResultCard("Investment Amount", formatCurrencyWithDecimal(result.totalInvestment))
-                        QuickSIPResultCard("Estimated Return", formatCurrencyWithDecimal(result.estimatedReturns))
-                        QuickSIPResultCard("Total Value", formatCurrencyWithDecimal(result.totalValue), isHighlighted = true)
+                        QuickSIPResultCard("Investment Amount", formatCurrencyWithDecimal(context, result.totalInvestment))
+                        QuickSIPResultCard("Estimated Return", formatCurrencyWithDecimal(context, result.estimatedReturns))
+                        QuickSIPResultCard("Total Value", formatCurrencyWithDecimal(context, result.totalValue), isHighlighted = true)
                     }
                     "Plan" -> {
-                        QuickSIPResultCard("Total Investment", formatCurrencyWithDecimal(result.totalInvestment))
-                        QuickSIPResultCard("Estimated Return", formatCurrencyWithDecimal(result.estimatedReturns))
-                        QuickSIPResultCard("Monthly Investment", formatCurrencyWithDecimal(result.monthlyInvestment), isHighlighted = true)
+                        QuickSIPResultCard("Total Investment", formatCurrencyWithDecimal(context, result.totalInvestment))
+                        QuickSIPResultCard("Estimated Return", formatCurrencyWithDecimal(context, result.estimatedReturns))
+                        QuickSIPResultCard("Monthly Investment", formatCurrencyWithDecimal(context, result.monthlyInvestment), isHighlighted = true)
                     }
                 }
             }
@@ -739,7 +743,4 @@ private fun formatCurrency(amount: Double): String {
     return String.format("₹ %,.0f", amount)
 }
 
-private fun formatCurrencyWithDecimal(amount: Double): String {
-    return String.format("%,.2f", amount)
-}
 

@@ -25,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.PieChart as MPAndroidPieChart
 import com.github.mikephil.charting.data.PieData
@@ -42,6 +44,8 @@ data class FDResult(
 fun FDCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    
     // State variables
     var depositAmount by rememberSaveable { mutableStateOf("") }
     var interestRate by rememberSaveable { mutableStateOf("") }
@@ -397,13 +401,13 @@ fun FDCalculatorScreen(
                                 // Total Interest
                                 FDResultRow(
                                     "Total Interest",
-                                    formatCurrencyWithDecimal(result.totalInterest)
+                                    formatCurrencyWithDecimal(context, result.totalInterest)
                                 )
                                 
                                 // Maturity Amount
                                 FDResultRow(
                                     "Maturity Amount",
-                                    formatCurrencyWithDecimal(result.maturityAmount)
+                                    formatCurrencyWithDecimal(context, result.maturityAmount)
                                 )
                             }
                         }
@@ -864,7 +868,4 @@ fun calculateFD(
     }
 }
 
-private fun formatCurrencyWithDecimal(amount: Double): String {
-    return String.format("%,.2f", amount)
-}
 

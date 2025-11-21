@@ -24,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlin.math.pow
 
 data class STPResult(
@@ -42,6 +44,8 @@ enum class STPPeriodType {
 fun STPCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    
     // State variables
     var investmentAmount by rememberSaveable { mutableStateOf("") }
     var stpAmount by rememberSaveable { mutableStateOf("") }
@@ -325,19 +329,19 @@ fun STPCalculatorScreen(
                             ) {
                                 STPResultRow(
                                     label = "Total Amount Transferred",
-                                    value = formatCurrencyWithDecimal(result.totalAmountTransferred)
+                                    value = formatCurrencyWithDecimal(context, result.totalAmountTransferred)
                                 )
                                 STPResultRow(
                                     label = "Total Profit",
-                                    value = formatCurrencyWithDecimal(result.totalProfit)
+                                    value = formatCurrencyWithDecimal(context, result.totalProfit)
                                 )
                                 STPResultRow(
                                     label = "Balance in Transferor",
-                                    value = formatCurrencyWithDecimal(result.balanceInTransferor)
+                                    value = formatCurrencyWithDecimal(context, result.balanceInTransferor)
                                 )
                                 STPResultRow(
                                     label = "Balance in Transferee",
-                                    value = formatCurrencyWithDecimal(result.balanceInTransferee)
+                                    value = formatCurrencyWithDecimal(context, result.balanceInTransferee)
                                 )
                             }
                         }
@@ -589,7 +593,4 @@ fun calculateSTP(
     }
 }
 
-private fun formatCurrencyWithDecimal(amount: Double): String {
-    return String.format("%,.2f", amount)
-}
 

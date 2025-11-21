@@ -24,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.PieChart as MPAndroidPieChart
 import com.github.mikephil.charting.data.PieData
@@ -46,6 +48,8 @@ enum class PeriodType {
 fun RDCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    
     // State variables
     var monthlyAmount by rememberSaveable { mutableStateOf("") }
     var interestRate by rememberSaveable { mutableStateOf("") }
@@ -287,19 +291,19 @@ fun RDCalculatorScreen(
                                 // Total Investment
                                 RDResultRow(
                                     "Total Investment",
-                                    formatCurrencyWithDecimal(result.totalInvestment)
+                                    formatCurrencyWithDecimal(context, result.totalInvestment)
                                 )
                                 
                                 // Total Interest
                                 RDResultRow(
                                     "Total Interest",
-                                    formatCurrencyWithDecimal(result.totalInterest)
+                                    formatCurrencyWithDecimal(context, result.totalInterest)
                                 )
                                 
                                 // Maturity Amount
                                 RDResultRow(
                                     "Maturity Amount",
-                                    formatCurrencyWithDecimal(result.maturityAmount)
+                                    formatCurrencyWithDecimal(context, result.maturityAmount)
                                 )
                             }
                         }
@@ -701,7 +705,4 @@ fun calculateRD(
     }
 }
 
-private fun formatCurrencyWithDecimal(amount: Double): String {
-    return String.format("%,.2f", amount)
-}
 

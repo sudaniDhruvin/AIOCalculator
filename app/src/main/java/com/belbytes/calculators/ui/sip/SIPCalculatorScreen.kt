@@ -30,6 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import androidx.compose.ui.viewinterop.AndroidView
 import android.view.View
 import com.belbytes.calculators.ads.BannerAd
@@ -52,6 +54,7 @@ data class SIPCalculatorResult(
 fun SIPCalculatorScreen(
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
     val tabs = listOf("SIP", "Lumpsum", "Plan")
     val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
     var selectedTab by rememberSaveable { mutableStateOf("SIP") }
@@ -410,19 +413,19 @@ fun SIPCalculatorScreen(
                             ) {
                                 when (selectedTab) {
                                     "SIP" -> {
-                                        SIPCalculatorResultRow("Total Investment", formatCurrencyWithDecimal(result.totalInvestment))
-                                        SIPCalculatorResultRow("Estimated Returns", formatCurrencyWithDecimal(result.estimatedReturns))
-                                        SIPCalculatorResultRow("Total Value", formatCurrencyWithDecimal(result.totalValue))
+                                        SIPCalculatorResultRow("Total Investment", formatCurrencyWithDecimal(context, result.totalInvestment))
+                                        SIPCalculatorResultRow("Estimated Returns", formatCurrencyWithDecimal(context, result.estimatedReturns))
+                                        SIPCalculatorResultRow("Total Value", formatCurrencyWithDecimal(context, result.totalValue))
                                     }
                                     "Lumpsum" -> {
-                                        SIPCalculatorResultRow("Invested Amount", formatCurrencyWithDecimal(result.totalInvestment))
-                                        SIPCalculatorResultRow("Estimated Returns", formatCurrencyWithDecimal(result.estimatedReturns))
-                                        SIPCalculatorResultRow("Total Value", formatCurrencyWithDecimal(result.totalValue))
+                                        SIPCalculatorResultRow("Invested Amount", formatCurrencyWithDecimal(context, result.totalInvestment))
+                                        SIPCalculatorResultRow("Estimated Returns", formatCurrencyWithDecimal(context, result.estimatedReturns))
+                                        SIPCalculatorResultRow("Total Value", formatCurrencyWithDecimal(context, result.totalValue))
                                     }
                                     "Plan" -> {
-                                        SIPCalculatorResultRow("Total Investment", formatCurrencyWithDecimal(result.totalInvestment))
-                                        SIPCalculatorResultRow("Estimated Returns", formatCurrencyWithDecimal(result.estimatedReturns))
-                                        SIPCalculatorResultRow("Monthly Investment", formatCurrencyWithDecimal(result.monthlyInvestment))
+                                        SIPCalculatorResultRow("Total Investment", formatCurrencyWithDecimal(context, result.totalInvestment))
+                                        SIPCalculatorResultRow("Estimated Returns", formatCurrencyWithDecimal(context, result.estimatedReturns))
+                                        SIPCalculatorResultRow("Monthly Investment", formatCurrencyWithDecimal(context, result.monthlyInvestment))
                                     }
                                 }
                             }
@@ -829,7 +832,4 @@ fun calculatePlanSIP(
     }
 }
 
-private fun formatCurrencyWithDecimal(amount: Double): String {
-    return String.format("%,.2f", amount)
-}
 

@@ -16,6 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 
 @Composable
 fun AdvanceEMIDetailsScreen(
@@ -26,6 +28,7 @@ fun AdvanceEMIDetailsScreen(
     emiType: String,
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
     val schedule = calculateAdvanceEMISchedule(
         principal = amount,
         monthlyEMI = emiResult.monthlyEMI,
@@ -66,15 +69,15 @@ fun AdvanceEMIDetailsScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    ResultRowBold("Amount", formatCurrencyWithDecimal(amount))
+                    ResultRowBold("Amount", formatCurrencyWithDecimal(context, amount))
                     ResultRowBold("Interest", String.format("%.2f", interestRate))
                     ResultRowBold("Periods (months)", emiResult.periodMonths.toString())
-                    ResultRowBold("Monthly EMI", formatCurrencyWithDecimal(emiResult.monthlyEMI))
-                    ResultRowBold("Total Interest", formatCurrencyWithDecimal(emiResult.totalInterest))
-                    ResultRowBold("Processing Fees", formatCurrencyWithDecimal(emiResult.processingFees))
-                    ResultRowBold("GST On Interest", formatCurrencyWithDecimal(emiResult.gstOnInterest))
-                    ResultRowBold("GST On Processing Fees", formatCurrencyWithDecimal(emiResult.gstOnProcessingFees))
-                    ResultRowBold("Total Payment", formatCurrencyWithDecimal(emiResult.totalPayment))
+                    ResultRowBold("Monthly EMI", formatCurrencyWithDecimal(context, emiResult.monthlyEMI))
+                    ResultRowBold("Total Interest", formatCurrencyWithDecimal(context, emiResult.totalInterest))
+                    ResultRowBold("Processing Fees", formatCurrencyWithDecimal(context, emiResult.processingFees))
+                    ResultRowBold("GST On Interest", formatCurrencyWithDecimal(context, emiResult.gstOnInterest))
+                    ResultRowBold("GST On Processing Fees", formatCurrencyWithDecimal(context, emiResult.gstOnProcessingFees))
+                    ResultRowBold("Total Payment", formatCurrencyWithDecimal(context, emiResult.totalPayment))
                 }
             }
 
@@ -121,9 +124,9 @@ fun AdvanceEMIDetailsScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 TableCell(entry.month.toString(), weightValue = 1f)
-                                TableCell(formatCurrencyWithDecimal(entry.principal), weightValue = 1.5f)
-                                TableCell(formatCurrencyWithDecimal(entry.interest), weightValue = 1.5f)
-                                TableCell(formatCurrencyWithDecimal(entry.balance), weightValue = 1.5f)
+                                TableCell(formatCurrencyWithDecimal(context, entry.principal), weightValue = 1.5f)
+                                TableCell(formatCurrencyWithDecimal(context, entry.interest), weightValue = 1.5f)
+                                TableCell(formatCurrencyWithDecimal(context, entry.balance), weightValue = 1.5f)
                             }
                         }
                     }

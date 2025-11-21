@@ -27,6 +27,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.platform.LocalContext
+import com.belbytes.calculators.utils.formatCurrencyWithDecimal
 import kotlinx.parcelize.Parcelize
 import kotlin.math.pow
 
@@ -45,6 +47,7 @@ fun CompareSIPScreen(
     onBackClick: () -> Unit,
     initialSIPs: List<SIPTableEntry> = emptyList()
 ) {
+    val context = LocalContext.current
     var sips by remember { mutableStateOf(initialSIPs) }
     var showAddSIPDialog by remember { mutableStateOf(false) }
     
@@ -541,6 +544,8 @@ fun SIPDataColumn(
     isFirst: Boolean = false,
     isLast: Boolean = false
 ) {
+    val context = LocalContext.current
+    
     Column(
         modifier = Modifier.width(120.dp)
     ) {
@@ -564,12 +569,12 @@ fun SIPDataColumn(
         
         // Data cells - all center-aligned with consistent height matching labels
         val values = listOf(
-            formatCurrencyWithDecimal(entry.monthlyInvestment),
+            formatCurrencyWithDecimal(context, entry.monthlyInvestment),
             String.format("%.2f", entry.expectedReturnRate),
             String.format("%.2f", entry.periodMonths),
-            formatCurrencyWithDecimal(entry.investedAmount),
-            formatCurrencyWithDecimal(entry.estimatedReturn),
-            formatCurrencyWithDecimal(entry.totalValue)
+            formatCurrencyWithDecimal(context, entry.investedAmount),
+            formatCurrencyWithDecimal(context, entry.estimatedReturn),
+            formatCurrencyWithDecimal(context, entry.totalValue)
         )
         
         values.forEachIndexed { cellIndex, value ->
@@ -601,6 +606,7 @@ fun SIPTableRow(
     index: Int,
     isLast: Boolean
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -616,7 +622,7 @@ fun SIPTableRow(
         ) {
             // Monthly Investment - Single line, right-aligned
             SIPTableDataCell(
-                text = formatCurrencyWithDecimal(entry.monthlyInvestment),
+                text = formatCurrencyWithDecimal(context, entry.monthlyInvestment),
                 weight = 1.2f,
                 alignment = TextAlign.End
             )
@@ -681,7 +687,8 @@ fun RowScope.SIPTableDataCellTwoLines(
     weight: Float,
     alignment: TextAlign
 ) {
-    val formattedValue = formatCurrencyWithDecimal(value)
+    val context = LocalContext.current
+    val formattedValue = formatCurrencyWithDecimal(context, value)
     // Split by decimal point, handling comma-separated thousands
     val parts = formattedValue.split(".")
     val integerPart = parts[0] // This includes commas for thousands
@@ -717,7 +724,4 @@ fun RowScope.SIPTableDataCellTwoLines(
     }
 }
 
-private fun formatCurrencyWithDecimal(amount: Double): String {
-    return String.format("%,.2f", amount)
-}
 
