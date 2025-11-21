@@ -184,6 +184,18 @@
     <string name="monthly">Monthly</string>
     <string name="quarterly">Quarterly</string>
     <string name="half_yearly">Half Yearly</string>
+    <string name="days">Days</string>
+    <string name="quarterly_payout">Quarterly Payout</string>
+    <string name="monthly_payout">Monthly Payout</string>
+    <string name="short_term">Short Term</string>
+    <string name="reinvestment_cumulative">Reinvestment/Cumulative</string>
+    <string name="years_short">Yr</string>
+    <string name="months_short">months</string>
+    <string name="days_short">days</string>
+    <string name="no_change_in_monthly_emi">No change in monthly EMI</string>
+    <string name="no_change_in_loan_tenure">No change in loan tenure</string>
+    <string name="emi_calculator_type">EMI</string>
+    <string name="loan_tenure_calculator_type">Loan Tenure</string>
     
     <!-- Loan Calculators -->
     <string name="gross_monthly_income">Gross Monthly Income</string>

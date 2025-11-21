@@ -181,6 +181,18 @@
     <string name="monthly">मासिक</string>
     <string name="quarterly">त्रैमासिक</string>
     <string name="half_yearly">अर्धवार्षिक</string>
+    <string name="days">दिन</string>
+    <string name="quarterly_payout">त्रैमासिक भुगतान</string>
+    <string name="monthly_payout">मासिक भुगतान</string>
+    <string name="short_term">लघु अवधि</string>
+    <string name="reinvestment_cumulative">पुनर्निवेश/संचयी</string>
+    <string name="years_short">वर्ष</string>
+    <string name="months_short">महीने</string>
+    <string name="days_short">दिन</string>
+    <string name="no_change_in_monthly_emi">मासिक ईएमआई में कोई परिवर्तन नहीं</string>
+    <string name="no_change_in_loan_tenure">ऋण अवधि में कोई परिवर्तन नहीं</string>
+    <string name="emi_calculator_type">ईएमआई</string>
+    <string name="loan_tenure_calculator_type">ऋण अवधि</string>
     
     <!-- Loan Calculators -->
     <string name="gross_monthly_income">सकल मासिक आय</string>

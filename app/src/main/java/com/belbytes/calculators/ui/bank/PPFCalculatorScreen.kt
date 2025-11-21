@@ -377,7 +377,12 @@ fun PPFDropdownField(
     value: String,
     onValueChange: (String) -> Unit
 ) {
+    val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
+    // Map English key to localized display string
+    val frequencyMap = mapOf(
+        "Yearly" to context.getString(R.string.yearly)
+    )
     val frequencyOptions = listOf("Yearly")
 
     Column {
@@ -394,7 +399,7 @@ fun PPFDropdownField(
                 .clickable { expanded = !expanded }
         ) {
             OutlinedTextField(
-                value = value,
+                value = frequencyMap[value] ?: value, // Display localized string
                 onValueChange = {},
                 readOnly = true,
                 enabled = false,
@@ -412,7 +417,7 @@ fun PPFDropdownField(
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "Dropdown",
+                        contentDescription = context.getString(R.string.select_option),
                         tint = Color.Gray
                     )
                 }
@@ -450,13 +455,13 @@ fun PPFDropdownField(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    onValueChange(option)
+                                    onValueChange(option) // Store English key
                                     expanded = false
                                 }
                                 .padding(horizontal = 16.dp, vertical = 12.dp)
                         ) {
                             Text(
-                                text = option,
+                                text = frequencyMap[option] ?: option, // Display localized string
                                 fontSize = 14.sp,
                                 color = Color.Black
                             )

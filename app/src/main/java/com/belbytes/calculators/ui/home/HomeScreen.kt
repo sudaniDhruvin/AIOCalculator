@@ -28,6 +28,7 @@ import com.belbytes.calculators.data.*
 import com.belbytes.calculators.data.local.AppDatabase
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.belbytes.calculators.R
 import com.belbytes.calculators.ads.BannerAd
 import com.belbytes.calculators.ads.NativeAd
@@ -67,11 +68,11 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Text(
-                        text = "Error: ${uiState.error}",
+                        text = "${stringResource(R.string.error)}: ${uiState.error}",
                         color = MaterialTheme.colorScheme.error
                     )
                     Button(onClick = { viewModel.refresh() }) {
-                        Text("Retry")
+                        Text(stringResource(R.string.retry))
                     }
                 }
             }
@@ -134,6 +135,7 @@ fun HomeScreen(
 
 @Composable
 fun HeaderSection() {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -148,13 +150,13 @@ fun HeaderSection() {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Welcome to",
+                text = stringResource(R.string.welcome_to),
                 color = Color.White,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "All in one calculators",
+                text = stringResource(R.string.app_name_full),
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
@@ -169,6 +171,7 @@ fun FeaturedToolsSection(
     onToolClick: (String) -> Unit,
     onViewAll: () -> Unit
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -180,13 +183,13 @@ fun FeaturedToolsSection(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Featured Tools",
+                text = stringResource(R.string.featured_tools),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
             Text(
-                text = "View All",
+                text = stringResource(R.string.view_all),
                 fontSize = 14.sp,
                 color = Color.Gray,
                 modifier = Modifier.clickable { onViewAll() }
@@ -324,6 +327,7 @@ fun RecentCalculationsSection(
     onCalculationClick: (String) -> Unit,
     onViewAll: () -> Unit
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -335,14 +339,14 @@ fun RecentCalculationsSection(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Recent Calculations",
+                text = stringResource(R.string.recent_calculations),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
             if (calculations.isNotEmpty()) {
                 Text(
-                    text = "View All",
+                    text = stringResource(R.string.view_all),
                     fontSize = 14.sp,
                     color = Color.Gray,
                     modifier = Modifier.clickable { onViewAll() }
@@ -372,7 +376,7 @@ fun RecentCalculationsSection(
                     )
                     
                     Text(
-                        text = "No Any Calculations",
+                        text = stringResource(R.string.no_any_calculations),
                         fontSize = 15.sp,
                         color = Color(0xFF919191), // Light grey color
                         fontWeight = FontWeight.Normal
@@ -401,9 +405,11 @@ fun RecentCalculationCard(
     calculation: RecentCalculation,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
     val baseColor = Color(android.graphics.Color.parseColor(calculation.color))
     val lightIconContainerColor = lightenIconContainerColor(baseColor) // Light color for container
     val darkIconColor = darkenIconColor(baseColor) // Dark color for icon
+    val localizedCategoryName = LabelMapper.getLocalizedCategoryLabel(context, calculation.calculatorType)
     
     Card(
         modifier = Modifier
@@ -445,7 +451,7 @@ fun RecentCalculationCard(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = calculation.calculatorType,
+                    text = localizedCategoryName,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold, // Bold text
                     color = Color.Black

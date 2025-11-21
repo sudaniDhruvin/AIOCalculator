@@ -450,6 +450,7 @@ fun EligibilityFOIRDropdown(
     value: String,
     onValueChange: (String) -> Unit
 ) {
+    val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
     val foirOptions = listOf("35", "40", "45", "50", "55", "60", "65", "70", "75", "80", "85", "90", "95")
 
@@ -485,7 +486,7 @@ fun EligibilityFOIRDropdown(
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "Dropdown",
+                        contentDescription = context.getString(R.string.select_option),
                         tint = Color.Gray
                     )
                 }

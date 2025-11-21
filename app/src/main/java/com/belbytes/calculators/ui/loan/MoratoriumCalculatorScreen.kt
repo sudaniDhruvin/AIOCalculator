@@ -528,7 +528,13 @@ fun MoratoriumOptionDropdown(
     value: String,
     onValueChange: (String) -> Unit
 ) {
+    val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
+    // Map English keys to localized display strings
+    val optionsMap = mapOf(
+        "No change in monthly EMI" to context.getString(R.string.no_change_in_monthly_emi),
+        "No change in loan tenure" to context.getString(R.string.no_change_in_loan_tenure)
+    )
     val options = listOf(
         "No change in monthly EMI",
         "No change in loan tenure"
@@ -548,7 +554,7 @@ fun MoratoriumOptionDropdown(
                 .clickable { expanded = !expanded }
         ) {
             OutlinedTextField(
-                value = value,
+                value = optionsMap[value] ?: value, // Display localized string
                 onValueChange = {},
                 readOnly = true,
                 enabled = false,
@@ -566,7 +572,7 @@ fun MoratoriumOptionDropdown(
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "Dropdown",
+                        contentDescription = context.getString(R.string.select_option),
                         tint = Color.Gray
                     )
                 }
@@ -604,13 +610,13 @@ fun MoratoriumOptionDropdown(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    onValueChange(option)
+                                    onValueChange(option) // Store English key
                                     expanded = false
                                 }
                                 .padding(horizontal = 16.dp, vertical = 12.dp)
                         ) {
                             Text(
-                                text = option,
+                                text = optionsMap[option] ?: option, // Display localized string
                                 fontSize = 14.sp,
                                 color = Color.Black
                             )

@@ -839,7 +839,7 @@ fun SimpleInterestCompoundingDropdown(
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "Dropdown",
+                        contentDescription = context.getString(R.string.select_option),
                         tint = Color.Gray
                     )
                 }

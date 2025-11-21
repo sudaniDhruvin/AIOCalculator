@@ -30,7 +30,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.belbytes.calculators.R
 import com.github.mikephil.charting.charts.PieChart as MPAndroidPieChart
@@ -718,7 +717,13 @@ fun EMIDropdownField(
     value: String,
     onValueChange: (String) -> Unit
 ) {
+    val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
+    // Map English keys to localized display strings
+    val emiOptionsMap = mapOf(
+        "EMI" to context.getString(R.string.emi_calculator_type),
+        "Loan Tenure" to context.getString(R.string.loan_tenure_calculator_type)
+    )
     val emiOptions = listOf("EMI", "Loan Tenure")
 
     Column {
@@ -735,7 +740,7 @@ fun EMIDropdownField(
                 .clickable { expanded = !expanded }
         ) {
             OutlinedTextField(
-                value = value,
+                value = emiOptionsMap[value] ?: value, // Display localized string
                 onValueChange = {},
                 readOnly = true,
                 enabled = false,
@@ -753,7 +758,7 @@ fun EMIDropdownField(
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "Dropdown",
+                        contentDescription = context.getString(R.string.select_option),
                         tint = Color.Gray
                     )
                 }
@@ -791,13 +796,13 @@ fun EMIDropdownField(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    onValueChange(option)
+                                    onValueChange(option) // Store English key
                                     expanded = false
                                 }
                                 .padding(horizontal = 16.dp, vertical = 12.dp)
                         ) {
                             Text(
-                                text = option,
+                                text = emiOptionsMap[option] ?: option, // Display localized string
                                 fontSize = 14.sp,
                                 color = Color.Black
                             )

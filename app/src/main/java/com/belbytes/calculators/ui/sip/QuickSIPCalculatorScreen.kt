@@ -172,7 +172,9 @@ fun QuickSIPCalculatorScreen(
                                 formatValue = {
                                     val years = it.toInt()
                                     val months = (it * 12).toInt()
-                                    "$years Yr - $months months"
+                                    val yearsShort = stringResource(R.string.years_short)
+                                    val monthsShort = stringResource(R.string.months_short)
+                                    "$years $yearsShort - $months $monthsShort"
                                 }
                             )
                         }
@@ -202,7 +204,9 @@ fun QuickSIPCalculatorScreen(
                                 formatValue = {
                                     val years = it.toInt()
                                     val months = (it * 12).toInt()
-                                    "$years Yr - $months months"
+                                    val yearsShort = stringResource(R.string.years_short)
+                                    val monthsShort = stringResource(R.string.months_short)
+                                    "$years $yearsShort - $months $monthsShort"
                                 }
                             )
                         }
@@ -232,7 +236,9 @@ fun QuickSIPCalculatorScreen(
                                 formatValue = {
                                     val years = it.toInt()
                                     val months = (it * 12).toInt()
-                                    "$years Yr - $months months"
+                                    val yearsShort = stringResource(R.string.years_short)
+                                    val monthsShort = stringResource(R.string.months_short)
+                                    "$years $yearsShort - $months $monthsShort"
                                 }
                             )
                         }
@@ -358,7 +364,7 @@ fun QuickSIPSliderInputField(
     value: Float,
     onValueChange: (Float) -> Unit,
     valueRange: ClosedFloatingPointRange<Float>,
-    formatValue: (Float) -> String,
+    formatValue: @Composable (Float) -> String,
     step: Float = 1f
 ) {
     Column(

@@ -192,7 +192,7 @@ fun FDCalculatorScreen(
                     // Days Input
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Days",
+                            text = context.getString(R.string.days),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
                             color = Color.Black,
@@ -552,7 +552,15 @@ fun FDDepositTypeDropdown(
     value: String,
     onValueChange: (String) -> Unit
 ) {
+    val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
+    // Map English keys to localized display strings
+    val depositTypeMap = mapOf(
+        "Reinvestment/Cumulative" to context.getString(R.string.reinvestment_cumulative),
+        "Quarterly Payout" to context.getString(R.string.quarterly_payout),
+        "Monthly Payout" to context.getString(R.string.monthly_payout),
+        "Short Term" to context.getString(R.string.short_term)
+    )
     val depositTypeOptions = listOf(
         "Reinvestment/Cumulative",
         "Quarterly Payout",
@@ -574,7 +582,7 @@ fun FDDepositTypeDropdown(
                 .clickable { expanded = !expanded }
         ) {
             OutlinedTextField(
-                value = value,
+                value = depositTypeMap[value] ?: value, // Display localized string
                 onValueChange = {},
                 readOnly = true,
                 enabled = false,
@@ -592,7 +600,7 @@ fun FDDepositTypeDropdown(
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "Dropdown",
+                        contentDescription = context.getString(R.string.select_option),
                         tint = Color.Gray
                     )
                 }
@@ -630,13 +638,13 @@ fun FDDepositTypeDropdown(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    onValueChange(option)
+                                    onValueChange(option) // Store English key
                                     expanded = false
                                 }
                                 .padding(horizontal = 16.dp, vertical = 12.dp)
                         ) {
                             Text(
-                                text = option,
+                                text = depositTypeMap[option] ?: option, // Display localized string
                                 fontSize = 14.sp,
                                 color = Color.Black
                             )
